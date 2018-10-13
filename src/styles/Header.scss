@@ -42,10 +42,23 @@ nav {
     }
     .newpost {
         a {
+            color: #000;
+            border: 1px solid #000;
             @media #{$small-and-down} {
-            background: transparent;
-            border: none;
-            box-shadow: none;
+                box-shadow: none;
+            }
+            &.android {
+                @media #{$small-and-down} {
+                    position: fixed;
+                    right: 5px;
+                    bottom: 70px;
+                    width: 59px;
+                    height: 56px;
+                    border-radius: 50px;
+                    .fa {
+                        line-height: 56px;
+                    }
+                }
             }
         }
     }

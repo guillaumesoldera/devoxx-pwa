@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {NavLink, withRouter} from "react-router-dom";
 import '../styles/Header.scss'
+import { classSet, getDevice, Devices } from '../utils/utils';
 
 export class Header extends Component {
     render() {
@@ -19,7 +20,14 @@ export class Header extends Component {
                     </ul>
                     <ul className="right newpost">
                         <li>
-                            <NavLink to={'/new'} className="btn waves-effect waves-light btn-rounded"><i className="material-icons fa fa-beer large left"></i><span>Add new post</span></NavLink>
+                            <NavLink to={'/new'}
+                            className={classSet(
+                                {
+                                    "btn waves-effect waves-light btn-rounded": true,
+                                    "android": getDevice() === Devices.android
+                                }
+                            )}
+                            ><i className="material-icons fa fa-beer large left"></i><span>Add new post</span></NavLink>
                         </li>
                     </ul>
                     </div>
