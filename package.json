@@ -1,10 +1,13 @@
 {
-  "name": "devoxx-demo",
+  "name": "devoxx-pwa",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "font-awesome": "^4.7.0",
+    "node-sass": "^4.9.3",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.4"
   },
   "scripts": {

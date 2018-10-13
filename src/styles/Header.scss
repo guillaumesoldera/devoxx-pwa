@@ -1,0 +1,78 @@
+@import 'components/variables';
+nav {
+    padding: 0 10px;
+    li {
+        a.active {
+          background-color: rgba(0, 0, 0, 0.1);
+          @media #{$small-and-down} {
+              height: 56px;;
+          }
+        }
+    }
+    .navigation {
+        @media #{$medium-and-down} {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: $primary-color;
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .tab {
+            @media #{$small-and-down} {
+                padding: 0 25px;
+            }
+        }
+    }
+    .fa {
+        display: none;
+        @media #{$medium-and-down} {
+            display: inline-block;
+            line-height: inherit;
+        }
+        @media #{$small-and-down} {
+            margin-right: 0;
+        }
+    }
+    .profile {
+        .fa {
+            display: inline-block;
+        }
+    }
+    .newpost {
+        a {
+            @media #{$small-and-down} {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            }
+        }
+    }
+    span {
+        @media #{$small-and-down} {
+            display: none;
+        }
+    }
+}
+.connection-message {
+    opacity: 0;
+    position: absolute;
+    top: 56px;
+    z-index: 1;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    background-color: $header-title-color;
+    -webkit-transition: opacity 1s; /* Safari */
+    transition: opacity 1s;
+    @media #{$medium-and-up} {
+        top : 64px;
+    }
+    &.offline {
+        background-color: $secondary-color;
+    }
+    &.show {
+        opacity: 1 !important;
+    }
+}

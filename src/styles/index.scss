@@ -1,0 +1,15 @@
+@import "components/variables";
+
+html {
+  background-color: $main-bg-color;
+  height: 100%;
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Monosten, monospace;
+    #root {
+      height: 100%;
+    }
+  }
+}
