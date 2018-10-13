@@ -40,7 +40,15 @@ nav {
             display: inline-block;
         }
     }
+    .brand-logo {
+        @media #{$small-and-down} {
+            font-size: 1.4rem;
+        }
+    }
     .newpost {
+        @media #{$small-and-down} {
+            margin-right: -15px;
+        }
         a {
             color: #000;
             border: 1px solid #000;

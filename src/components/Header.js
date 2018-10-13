@@ -9,7 +9,7 @@ export class Header extends Component {
             <div className="navbar-fixed">
                 <nav>
                     <div className="nav-wrapper">
-                    <NavLink to={'/'} className="brand-logo center">Logo</NavLink>
+                    <NavLink to={'/'} className="brand-logo center">AirBeerN'Beer</NavLink>
                     <ul className="left profile">
                         <li><NavLink to={"/profile"} className="tab"><i className="fa fa-user-circle small left"></i><span>Profile</span></NavLink></li>
                     </ul>

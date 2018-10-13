@@ -1,0 +1,13 @@
+@import 'components/variables';
+
+.content-container {
+    padding: 10px;
+    height: calc(100vh - 56px - 56px);
+    overflow-y: auto;
+    @media #{$medium-only} {
+        height: calc(100vh - 64px - 64px);
+    }
+    @media #{$large-and-up} {
+        height: calc(100vh - 64px);
+    }
+}

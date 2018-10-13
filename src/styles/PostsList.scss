@@ -1,0 +1,85 @@
+@import 'components/variables';
+
+  .line-clamp {
+        position: relative;
+        height: 3.6em; /* exactly three lines */
+        overflow: hidden;
+      }
+  .line-clamp:after {
+        content: "";
+        text-align: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 70%;
+        height: 1.2em;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), $main-bg-color 80%);
+   }
+  
+  @supports (-webkit-line-clamp: 3) {
+      .line-clamp {
+          line-height: 1.2em;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          /* autoprefixer: off */
+        -webkit-box-orient: vertical;
+        /* autoprefixer: on */
+          height: auto;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+      .line-clamp:after {
+          display: none;
+      }
+  }
+.posts-list-container {
+    .post {
+        display: flex;
+        flex-direction: column;
+        margin: 0 -0.75rem;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #000;
+        .post-metadata {
+            display: flex;
+            position: relative;
+            .post-author-avatar {
+                width: 50px;
+                height: 50px;
+            }
+            .post-infos {
+                display: flex;
+                flex-direction: column;
+                margin-left: 5px;
+                justify-content: space-around;
+            }
+            .post-date {
+                position: absolute;
+                right: 5px;
+            }
+        }
+        .post-text {
+            line-height: 18px;
+        }
+        .post-picture {
+            width: 100%;
+            height: auto;
+        }
+        .post-actions-container {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            .post-votes {
+                display: flex;
+                width: 40%;
+                justify-content: space-around;
+                align-items: center;
+            }
+            .post-actions {
+                display: flex;
+                width: 40%;
+                justify-content: space-around;
+                align-items: center;
+            }
+        }
+    }
+}
