@@ -50,6 +50,9 @@ export class PostsList extends Component {
                     <div className="col s12 m6 l3">
                         <Post />
                     </div>
+                    <div className="col s12 m6 l3">
+                        <Post />
+                    </div>
                 </div>
             </div>
         );

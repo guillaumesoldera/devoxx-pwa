@@ -36,9 +36,14 @@
     .post {
         display: flex;
         flex-direction: column;
-        margin: 0 -0.75rem;
+        margin: 5px;
         padding-bottom: 20px;
         border-bottom: 1px solid #000;
+        @media #{$small-and-down} {
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+            margin-bottom: 10px;
+        }
         .post-metadata {
             display: flex;
             position: relative;
@@ -51,10 +56,25 @@
                 flex-direction: column;
                 margin-left: 5px;
                 justify-content: space-around;
+                .post-author-name {
+                    color: #000;
+                    font-weight: 600;
+                }
+                .post-location {
+                    color: #888a8a;
+                    font-weight: 100;
+                    &::before {
+                        font-family: FontAwesome;
+                        display: inline-block;
+                        content: "\f041";
+                        margin-right: 3px;
+                    }
+                }
             }
             .post-date {
                 position: absolute;
                 right: 5px;
+                font-style: italic;
             }
         }
         .post-text {
