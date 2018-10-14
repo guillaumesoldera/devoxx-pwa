@@ -9,7 +9,7 @@ export class Header extends Component {
             <div className="navbar-fixed">
                 <nav>
                     <div className="nav-wrapper">
-                    <NavLink to={'/'} className="brand-logo center">AirBeerN'Beer</NavLink>
+                    <NavLink to={'/'} className="brand-logo center"><h1>AirBeerN'Beer</h1></NavLink>
                     <ul className="left profile">
                         <li><NavLink to={"/profile"} className="tab"><i className="fa fa-user-circle small left"></i><span>Profile</span></NavLink></li>
                     </ul>
@@ -35,4 +35,40 @@ export class Header extends Component {
             </div>
         );
     }
-}   
+}
+
+class _BackHeader extends Component {
+
+    goBack = (e) => {
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
+        if (this.props.history.length > 1) {
+            this.props.history.goBack();
+        } else {
+            this.props.history.replace("/")
+        }
+    }
+
+    render () {
+        return (
+            <div className="navbar-fixed navbar-back">
+                <nav>
+                    <div className="nav-wrapper">
+                        <ul className="left back">
+                            <li>
+                                <a href="#" onClick={this.goBack}>
+                                    <i className="fa fa-chevron-left material-icons small"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <h1 className="brand-logo center">{this.props.title}</h1>
+                    </div>
+                </nav>
+            </div>
+        )
+    }
+}
+
+export const BackHeader = withRouter(_BackHeader);
+
