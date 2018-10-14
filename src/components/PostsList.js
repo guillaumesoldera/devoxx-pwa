@@ -32,7 +32,7 @@ class Post extends Component {
                     </div>
                     <div className="post-actions">
                         <i className="fa fa-share-alt material-icons small"></i>
-                        <i className="fa fa-comment-o material-icons small"></i>
+                        <a href="/comment/id_post"><i className="fa fa-comment-o material-icons small"></i></a>
                         <i className="fa fa-heart-o material-icons small"></i>
                     </div>
                 </div>
