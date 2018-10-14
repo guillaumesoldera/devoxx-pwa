@@ -8,6 +8,7 @@ import { Notifications } from './pages/Notifications';
 import { NoMatch } from './pages/NoMatch';
 import { Author } from './pages/Author';
 import { PostDetail } from './pages/PostDetail';
+import { NewPost } from './pages/NewPost';
 class App extends Component {
   render() {
     return (
@@ -15,6 +16,7 @@ class App extends Component {
           <div>
               <Switch>
                 <Route exact path="/" component={Home} />
+                <Route exact path="/new" component={NewPost} />
                 <Route exact path="/beers" component={Home} />
                 <Route exact path="/notifications" component={Notifications} />
                 <Route exact path="/favourites" component={Favourites} />

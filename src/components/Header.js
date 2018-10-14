@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {NavLink, withRouter} from "react-router-dom";
 import '../styles/Header.scss'
 import { classSet, getDevice, Devices } from '../utils/utils';
@@ -39,6 +40,14 @@ export class Header extends Component {
 
 class _BackHeader extends Component {
 
+    static propTypes = {
+        iconClassName: PropTypes.string.isRequired,
+    }
+
+    static defaultProps = {
+        iconClassName: 'fa fa-chevron-left'
+    }
+
     goBack = (e) => {
         if (e && e.preventDefault) {
             e.preventDefault();
@@ -58,11 +67,12 @@ class _BackHeader extends Component {
                         <ul className="left back">
                             <li>
                                 <a href="#" onClick={this.goBack}>
-                                    <i className="fa fa-chevron-left material-icons small"></i>
+                                    <i className={`${this.props.iconClassName} material-icons small`}></i>
                                 </a>
                             </li>
                         </ul>
                         <h1 className="brand-logo center">{this.props.title}</h1>
+                        {this.props.children}
                     </div>
                 </nav>
             </div>

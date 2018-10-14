@@ -1,0 +1,63 @@
+@import "components/variables";
+
+.new-post-container {
+    @media #{$medium-and-up} {
+        width: 65%;
+        margin: 0 auto;
+    }
+    nav {
+        background: transparent;
+        box-shadow: none;
+        @media #{$medium-and-up} {
+            width: 65%;
+        }
+        .close {
+            color: #000;
+        }
+        .add-post {
+            span {
+                color: #000;
+                display: block;
+                font-weight: 400;
+            }
+        }
+    }
+    .new-post-content {
+        padding: 10px;
+        height: calc(100vh - 56px - 10px); // nav bar and padding 
+        margin: 0 8px;
+        @media #{$medium-and-up} { 
+            height: calc(100vh - 64px - 10px); // nav bar and padding
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border: 1px solid $primary-color;
+            border-radius: 5px;
+        }
+        .post-text {
+            height: calc(100% - 80px);
+            &:focus {
+                border-bottom: none;//1px solid #fbca04;
+                box-shadow: none;//0 1px 0 0 #fbca04;
+            }
+        }
+        .new-post-more {
+            display: flex;
+            justify-content: space-around;
+            .new-post-action {
+                color: #000;
+                padding: 8px;
+                border: 1px solid lighten($primary-color, 55%);
+                border-radius: 5px;
+                width: 80px;
+                background: transparent;
+                height: 78px;
+                i {
+                    line-height: initial;
+                    font-size: 4rem;
+                }
+            }
+        }
+    }
+}
