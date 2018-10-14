@@ -1,0 +1,33 @@
+@import 'components/variables';
+
+.post-detail {
+    .post {
+        @media #{$medium-only} {
+            width: 55%;
+            margin: 5px auto;
+        }
+        @media #{$large-and-up} {
+            width: 45%;
+            margin: 5px auto;
+        }
+        
+        @media #{$small-and-down} {
+            margin: 10px;
+        }
+        
+        .post-text {
+            line-height: 18px;
+        }
+        .post-picture-container {
+            text-align: center;
+            margin-bottom: 10px;
+            .post-picture {
+                width: 100%;
+                height: auto;
+                @media #{$medium-and-up} {
+                    width: 60%;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,93 @@
+@import 'components/variables';
+
+.author-detail {
+
+    .author-infos-container {
+        color: #000;
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+        padding-bottom: 20px;
+        @media #{$medium-only} {
+            width: 55%;
+            margin: 15px auto;
+        }
+        @media #{$large-and-up} {
+            width: 45%;
+            margin: 15px auto;
+        }
+        
+        @media #{$small-and-down} {
+            margin: 10px;
+        }
+        .author-metadata {
+            display: flex;
+            position: relative;
+            .author-avatar {
+                width: 100px;
+                height: 100px;
+                border: 1px solid $primary-color;
+                border-radius: 5px;
+            }
+            .author-infos {
+                display: flex;
+                flex-direction: column;
+                margin-left: 5px;
+                justify-content: start;
+                .author-name {
+                    color: #000;
+                    font-weight: 600;
+                    font-size: 21px;
+                }
+            }
+            
+        }
+        .author-bio {
+            line-height: 18px;
+        }
+    }
+    .posts-separator-title {
+        @media #{$medium-only} {
+            width: 55%;
+            margin: 15px auto;
+        }
+        @media #{$large-and-up} {
+            width: 45%;
+            margin: 15px auto;
+        }
+        
+        @media #{$small-and-down} {
+            margin: 10px;
+        }
+    }
+
+    .post {
+        @media #{$medium-only} {
+            width: 55%;
+            margin: 15px auto;
+        }
+        @media #{$large-and-up} {
+            width: 45%;
+            margin: 15px auto;
+        }
+        
+        @media #{$small-and-down} {
+            margin: 10px;
+        }
+        
+        .post-text {
+            line-height: 18px;
+        }
+        .post-picture-container {
+            text-align: center;
+            margin-bottom: 10px;
+            .post-picture {
+                width: 100%;
+                height: auto;
+                @media #{$medium-and-up} {
+                    width: 60%;
+                }
+            }
+        }
+    }
+}

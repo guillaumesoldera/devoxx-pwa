@@ -1,0 +1,49 @@
+@import 'components/variables';
+
+.post-comment {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #000;
+    @media #{$medium-only} {
+        width: 55%;
+        margin: 5px auto;
+    }
+    @media #{$large-and-up} {
+        width: 45%;
+        margin: 5px auto;
+    }
+    
+    @media #{$small-and-down} {
+        margin: 10px;
+    }
+    .post-comment-metadata {
+        display: flex;
+        position: relative;
+        .post-comment-author-avatar {
+            width: 50px;
+            height: 50px;
+            border: 1px solid $primary-color;
+            border-radius: 5px;
+        }
+        .post-comment-infos {
+            display: flex;
+            flex-direction: column;
+            margin-left: 5px;
+            justify-content: start;
+            .post-comment-author-name {
+                color: #000;
+                font-weight: 600;
+            }
+        }
+        .post-comment-date {
+            position: absolute;
+            right: 5px;
+            font-style: italic;
+        }
+    }
+    .post-comment-text {
+        line-height: 18px;
+    }
+}
