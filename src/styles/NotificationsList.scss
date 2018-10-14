@@ -1,0 +1,63 @@
+@import 'components/variables';
+
+.notification-list-container {
+    width: 100%;
+    margin: 0 auto;
+    @media #{$medium-only} {
+        width: 70%;
+    }
+    @media #{$large-and-up} {
+        width: 55%;
+    }
+    .notification {
+        display: flex;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #000;
+        position: relative;
+        .notification-content, .notification-content-comment {
+            display: flex;
+            flex-direction: column;
+            margin-left: 8px;
+            @media #{$medium-and-up} {
+                flex-direction: row;
+                margin-left: 15px;
+            }
+            .post-author-avatar {
+                width: 40px;
+                height: 40px;   
+                border: 1px solid $primary-color;
+                border-radius: 5px;
+                @media #{$medium-and-up} {
+                    width: 50px;
+                    height: 50px;
+                    margin-right: 8px;
+                }
+            }
+            .notification-post-infos {
+                margin-top: 5px;
+                .post-author-name, .post-title {
+                    color: #000;
+                    font-weight: 600;
+                }
+            }
+            .notification-post-date {
+                position: absolute;
+                right: 5px;
+                font-style: italic;
+            }
+        }
+        &.comment {
+            .notification-content {
+                display: flex;
+                flex-direction: column;
+                .notification-content-comment {
+                    margin-left: 0;
+                }
+                .notification-post-comment {
+                    margin-top: 10px;
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}
