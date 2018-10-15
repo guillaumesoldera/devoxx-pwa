@@ -19,7 +19,7 @@ export class Header extends Component {
                                 {user === undefined && <li><NavLink to={"/login"} className="tab"><i className="fa fa-sign-in small left"></i><span>Login</span></NavLink></li>}
                             </ul>
                             <ul className="left navigation">
-                                <li><NavLink to={"/beers"} className="tab"><i className="fa fa-beer small left" aria-hidden="true"></i><span>Beers</span></NavLink></li>
+                                <li><NavLink to={"/"} exact={true} className="tab"><i className="fa fa-beer small left" aria-hidden="true"></i><span>Beers</span></NavLink></li>
                                 <li><NavLink to={"/favourites"} className="tab"><i className="fa fa-heart small left" aria-hidden="true"></i><span>Favourites</span></NavLink></li>
                                 <li>
                                     <NavLink
