@@ -29,6 +29,42 @@
         @media #{$medium-and-up} { 
             height: calc(100vh - 64px - 10px); // nav bar and padding
         }
+        .video-container {
+            position: relative;
+            height: 100%;
+            video {
+                width: 100%;
+                height: auto;
+            }
+        }
+        .buttons-actions {
+            color: #000;
+            position: absolute;
+            bottom: 10px;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            display: flex;
+            button {
+                margin: 0 5px;
+            }
+        }
+        .pictures-validated-container {
+            position: absolute;
+            bottom: 95px;
+            img {
+                width: 100px;
+                height: auto;
+            }
+        }
+        .picture-container {
+            height: 100%;
+            text-align: center;
+            position: relative;
+            img {
+                width: 80%;
+                height: auto;
+            }
+        }
         .user-avatar {
             width: 50px;
             height: 50px;
