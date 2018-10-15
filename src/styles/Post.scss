@@ -49,6 +49,9 @@
     }
     .post-text {
         line-height: 18px;
+        p {
+            color: #000;
+        }
     }
     .post-picture {
         width: 100%;
@@ -63,6 +66,10 @@
             width: 40%;
             justify-content: space-around;
             align-items: center;
+            .disabled {
+                opacity: 0.3;
+                pointer-events: none
+            }
         }
         .post-actions {
             display: flex;
@@ -71,6 +78,10 @@
             align-items: center;
             i {
                 color: #000;
+            }
+            .disabled {
+                opacity: 0.3;
+                pointer-events: none
             }
         }
     }

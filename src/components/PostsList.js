@@ -10,14 +10,10 @@ export class PostsList extends Component {
             <div className="posts-list-container">
                 <div className="row">
                     <div className="col s12 m6 l3">
-                        <NavLink to={'/authorId/postId'}>
-                            <Post />
-                        </NavLink>
+                        <Post linkToPost={true} />
                     </div>
                     <div className="col s12 m6 l3">
-                        <NavLink to={'/authorId/postId'}>
-                            <Post />
-                        </NavLink>
+                        <Post linkToPost={true} />
                     </div>
                 </div>
             </div>

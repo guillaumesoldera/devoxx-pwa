@@ -34,9 +34,9 @@ class FavouriteNotification extends Component {
             <Notification type={<i className="fa fa-heart material-icons small"></i>}>
                 <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
                 <div className="notification-post-infos">
-                    <NavLink to={"/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                    <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
                     &nbsp;favourites&nbsp;
-                    <NavLink to={"/authorId/postId"} className="post-title">Post title</NavLink>
+                    <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
                 </div>
                 <span className="notification-post-date">11 oct.</span>
             </Notification>
@@ -50,9 +50,9 @@ class VoteUpNotification extends Component {
             <Notification type={<i className="fa fa-thumbs-up material-icons small"></i>}>
                 <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
                 <div className="notification-post-infos">
-                    <NavLink to={"/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                    <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
                     &nbsp;votes up&nbsp;
-                    <NavLink to={"/authorId/postId"} className="post-title">Post title</NavLink>
+                    <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
                 </div>
                 <span className="notification-post-date">11 oct.</span>
             </Notification>
@@ -66,9 +66,9 @@ class VoteDownNotification extends Component {
             <Notification type={<i className="fa fa-thumbs-down material-icons small"></i>}>
                 <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
                 <div className="notification-post-infos">
-                    <NavLink to={"/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                    <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
                     &nbsp;votes down&nbsp;
-                    <NavLink to={"/authorId/postId"} className="post-title">Post title</NavLink>
+                    <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
                 </div>
                 <span className="notification-post-date">11 oct.</span>
             </Notification>
@@ -83,9 +83,9 @@ class CommentNotification extends Component {
                 <div className="notification-content-comment">
                     <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
                     <div className="notification-post-infos">
-                        <NavLink to={"/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                        <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
                         &nbsp;comments on&nbsp;
-                        <NavLink to={"/authorId/postId"} className="post-title">Post title</NavLink>
+                        <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
                     </div>
                     <span className="notification-post-date">11 oct.</span>
                 </div>

@@ -31,14 +31,10 @@ export class Author extends Component {
                 <h3 className="posts-separator-title">All posts</h3>
                 <ul>
                     <li>
-                        <NavLink to={`${this.props.authorId}/postId`}>
-                            <Post />
-                        </NavLink>
+                        <Post linkToPost={true} />/>
                     </li>
                     <li>
-                        <NavLink to={`${this.props.authorId}/postId`}>
-                            <Post />
-                        </NavLink>
+                        <Post linkToPost={true} />/>
                     </li>
                 </ul>
             </div>

@@ -31,6 +31,10 @@ nav {
             @media #{$small-and-down} {
                 padding: 0 25px;
             }
+            &.disabled {
+                opacity: 0.3;
+                pointer-events: none;
+            }
         }
     }
     .fa {

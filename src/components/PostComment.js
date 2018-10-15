@@ -9,7 +9,7 @@ export class PostComment extends Component {
                  <div className="post-comment-metadata">
                     <img src="https://randomuser.me/api/portraits/men/4.jpg" className="post-comment-author-avatar" />
                     <div className="post-comment-infos">
-                        <NavLink to={'/authorId'} className="post-comment-author-name">Billy Bob</NavLink>
+                        <NavLink to={'/authors/authorId'} className="post-comment-author-name">Billy Bob</NavLink>
                     </div>
                     <span className="post-comment-date">11 oct.</span>
                 </div>
