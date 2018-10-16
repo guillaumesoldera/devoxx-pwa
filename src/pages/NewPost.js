@@ -4,34 +4,28 @@ import '../styles/NewPost.scss';
 
 export class NewPost extends Component {
 
-    _imageCapture = null;
-
     state = {
         cameraDisabled: false,
         openCamera: false,
         imageSrc: undefined,
         imgValidated: false,
+        mediaStream: undefined
     }
 
     componentDidMount() {
         this._input.focus();
     }
 
-    componentWillMount() {
-        this._imageCapture = null;
-    }
-
     openCamera = (e) => {
         navigator.mediaDevices.getUserMedia({video: true})
         .then(mediaStream => {
             this.setState({
-                openCamera: true
+                openCamera: true,
+                mediaStream,
+                imageSrc: undefined,
             }, () => {
                 document.querySelector('video').srcObject = mediaStream;
-    
-                const track = mediaStream.getVideoTracks()[0];
-                this._imageCapture = new ImageCapture(track);
-            })
+            });
         })
         .catch(err => {
             console.log('err', err);
@@ -45,31 +39,26 @@ export class NewPost extends Component {
     closeCamera = (e) => {
         this.setState({
             openCamera: false,
-        }, () => {
-            this._imageCapture = null;
         })
     }
 
     takePicture = (e) => {
-        if (this._imageCapture) {
-            this._imageCapture.takePhoto()
-            .then(blob => {
-                this.setState({
-                    openCamera: false,
-                    imageSrc: URL.createObjectURL(blob)
-                });
-              })
-              .catch(error => console.error('takePhoto() error:', error));
-        }
+        const canvas = document.querySelector('canvas');
+        const video = document.querySelector('video');
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageSrc = canvas.toDataURL('image/png');
+        this.state.mediaStream.getTracks()[0].stop();
+        this.setState({
+            imageSrc,
+            openCamera: false,
+            mediaStream: undefined,
+        })
+
     }
 
     retry = (e) => {
         URL.revokeObjectURL(this.state.imageSrc);
-        this.setState({
-            imageSrc: undefined,
-        }, () => {
-            this.openCamera();
-        })
+        this.openCamera();
     }
 
     valid = (e) => {
@@ -139,9 +128,10 @@ export class NewPost extends Component {
                             </div>
                         )
                     }
-                    {this.state.openCamera && (
+                    {this.state.openCamera && this.state.mediaStream && (
                         <div className="video-container">
                             <video autoPlay></video>
+                            <canvas></canvas>
                             <div className="buttons-actions">
                                 <button className="btn btn-rounded" onClick={this.takePicture}>Take a picture</button>
                                 <button className="btn btn-rounded" onClick={this.closeCamera}>Close</button>
