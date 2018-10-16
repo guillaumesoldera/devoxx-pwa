@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { BackHeader } from '../components/Header';
 import '../styles/NewPost.scss';
+import { classSet } from '../utils/utils';
 
 export class NewPost extends Component {
 
@@ -37,8 +38,12 @@ export class NewPost extends Component {
     }
 
     closeCamera = (e) => {
+        if (this.state.mediaStream) {
+            this.state.mediaStream.getTracks()[0].stop();
+        }
         this.setState({
             openCamera: false,
+            mediaStream: undefined
         })
     }
 
@@ -65,6 +70,12 @@ export class NewPost extends Component {
         this.setState({
             imgValidated: true,
         })
+    }
+
+    componentWillUnmount() {
+        if (this.state.mediaStream) {
+            this.state.mediaStream.getTracks()[0].stop();
+        }
     }
 
     render() {
@@ -117,21 +128,18 @@ export class NewPost extends Component {
                             </div>
                         </Fragment>
                     )}
-                    {
-                        this.state.imageSrc && !this.state.imgValidated &&  (
-                            <div className="picture-container">
-                                <img src={this.state.imageSrc}/>
-                                <div className="buttons-actions">
-                                    <button className="btn btn-rounded" onClick={this.valid}>Valid</button>
-                                    <button className="btn btn-rounded" onClick={this.retry}>Retry</button>
-                                </div>
-                            </div>
-                        )
-                    }
+                    
+                    <div className={classSet({"picture-container": true, "hide": !(this.state.imageSrc && !this.state.imgValidated)})}>
+                        <canvas></canvas>
+                        <div className="buttons-actions">
+                            <button className="btn btn-rounded" onClick={this.valid}>Valid</button>
+                            <button className="btn btn-rounded" onClick={this.retry}>Retry</button>
+                        </div>
+                    </div>
+                        
                     {this.state.openCamera && this.state.mediaStream && (
                         <div className="video-container">
                             <video autoPlay></video>
-                            <canvas></canvas>
                             <div className="buttons-actions">
                                 <button className="btn btn-rounded" onClick={this.takePicture}>Take a picture</button>
                                 <button className="btn btn-rounded" onClick={this.closeCamera}>Close</button>
