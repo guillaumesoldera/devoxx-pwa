@@ -9,6 +9,10 @@ import { UserContext } from '../context/user';
 class _Profile extends Component {
 
 
+    state = {
+        imageSrc: 'https://randomuser.me/api/portraits/men/3.jpg'
+    }
+
     goBack = (e) => {
         if (e && e.preventDefault) {
             e.preventDefault();
@@ -25,6 +29,44 @@ class _Profile extends Component {
         this.goBack(e);
     }
 
+    picChange = (evt) => {
+        const fileInput = evt.target.files;
+        if(fileInput.length>0){
+            this._picURL = URL.createObjectURL(fileInput[0]);
+            const canvas = document.querySelector('canvas');
+            const ctx = canvas.getContext('2d')
+            const photo = new Image();
+            photo.onload = () => {
+                //draw photo into canvas when ready
+                const ratio = photo.width / photo.height
+                const height = canvas.width / ratio;
+                canvas.height = height;
+                ctx.drawImage(photo, 0, 0, canvas.width, canvas.height);
+                const imageSrc = canvas.toDataURL('image/png');
+                //this.state.mediaStream.getTracks()[0].stop(); // stop camera
+                this.setState({
+                    imageSrc,
+                }, () => {
+                    if (this._picURL) {
+                        URL.revokeObjectURL(this._picURL);
+                    }
+                })
+              };
+
+            photo.src = this._picURL;
+        }
+    }
+
+    modifyAvatar = () => {
+        document.querySelector('input[type=file]').click();
+    }
+
+    componentWillUnmount() {
+        if (this._picURL) {
+            URL.revokeObjectURL(this._picURL);
+        }
+    }
+
     render() {
         return (
             <UserContext.Consumer>
@@ -33,15 +75,17 @@ class _Profile extends Component {
                 <BackHeader title={"Your profile"}>
                     <ul className="right">
                         <li>
-                            <button className="logout" onClick={(e) => this.logoutUser(e, logout)}>
-                                <i className="fa fa-sign-out material-icons small"></i><span>Logout</span>
-                            </button>
+                            <a href="#" className="logout" onClick={(e) => this.logoutUser(e, logout)}>
+                                <i className="fa fa-sign-out material-icons small"></i><span>&nbsp;Logout</span>
+                            </a>
                         </li>
                     </ul>
                 </BackHeader>
                 <div className="profile-infos-container">
                     <div className="profile-metadata">
-                        <img src="https://randomuser.me/api/portraits/men/3.jpg" className="profile-avatar" />
+                        <img onClick={this.modifyAvatar} src={this.state.imageSrc} className="profile-avatar" />
+                        <input type="file" accept="image/*" onChange={this.picChange}/>
+                        <canvas width="100" height="100"></canvas>
                         <div className="profile-infos">
                             <span className="profile-name">Jack Vagabond</span>
                         </div>
