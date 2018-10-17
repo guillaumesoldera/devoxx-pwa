@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { BackHeader } from '../components/Header';
 import '../styles/NewPost.scss';
-import { classSet } from '../utils/utils';
+import { classSet, isOnDesktop, isOnMediumScreen } from '../utils/utils';
 
 export class NewPost extends Component {
 
@@ -18,6 +18,7 @@ export class NewPost extends Component {
     }
 
     openCamera = (e) => {
+        this._chooseFileSelected = false;
         navigator.mediaDevices.getUserMedia({video: true})
         .then(mediaStream => {
             this.setState({
@@ -29,7 +30,6 @@ export class NewPost extends Component {
             });
         })
         .catch(err => {
-            console.log('err', err);
             this.setState({
                 openCamera: false,
                 cameraDisabled: true,
@@ -50,6 +50,10 @@ export class NewPost extends Component {
     takePicture = (e) => {
         const canvas = document.querySelector('canvas');
         const video = document.querySelector('video');
+        const ratio = video.width / video.height
+        console.log('ratio', ratio)
+        const height = canvas.width / ratio;
+        canvas.height = height;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageSrc = canvas.toDataURL('image/png');
         this.state.mediaStream.getTracks()[0].stop();
@@ -63,13 +67,55 @@ export class NewPost extends Component {
 
     retry = (e) => {
         URL.revokeObjectURL(this.state.imageSrc);
-        this.openCamera();
+        this.setState({
+            imageSrc: undefined
+        })
+        if (this._chooseFileSelected) {
+            this.openChooseFile();
+        } else {
+            this.openCamera();
+        }
+        
     }
 
     valid = (e) => {
+        if (this._picURL) {
+            URL.revokeObjectURL(this._picURL);
+        }
         this.setState({
             imgValidated: true,
         })
+    }
+
+    picChange = (evt) => {
+        const fileInput = evt.target.files;
+        if(fileInput.length>0){
+            this._picURL = URL.createObjectURL(fileInput[0]);
+            const canvas = document.querySelector('canvas');
+            const ctx = canvas.getContext('2d')
+            const photo = new Image();
+            photo.onload = () => {
+                //draw photo into canvas when ready
+                const ratio = photo.width / photo.height
+                const height = canvas.width / ratio;
+                canvas.height = height;
+                ctx.drawImage(photo, 0, 0, canvas.width, canvas.height);
+                const imageSrc = canvas.toDataURL('image/png');
+                //this.state.mediaStream.getTracks()[0].stop();
+                this.setState({
+                    imageSrc,
+                    openCamera: false,
+                    mediaStream: undefined,
+                })
+              };
+
+            photo.src = this._picURL;
+        }
+    }
+
+    openChooseFile = () => {
+        this._chooseFileSelected = true
+        document.querySelector('input[type=file]').click();
     }
 
     componentWillUnmount() {
@@ -78,7 +124,17 @@ export class NewPost extends Component {
         }
     }
 
+    
     render() {
+        let width = 280;
+        let height = 210;
+        if (isOnDesktop()) {
+            width = 640;
+            height = 480;
+        } else if (isOnMediumScreen()) {
+            width = 460;
+            height = 345;
+        }
         const takingPicture = this.state.openCamera || (this.state.imageSrc && !this.state.imgValidated)
         return (
             <div className="new-post-container">
@@ -112,14 +168,14 @@ export class NewPost extends Component {
                             <div className="new-post-more">
                                 {navigator.mediaDevices && (
                                     <button
-                                        className="btn new-post-action"
+                                        className="btn new-post-action camera"
                                         disabled={this.state.cameraDisabled || this.state.imgValidated}
                                         onClick={this.openCamera}>
                                         <i className="fa fa-camera material-icons medium"></i>
                                     </button>
                                 )
                                 }
-                                <button className="btn new-post-action" disabled={this.state.imgValidated}>
+                                <button className="btn new-post-action" disabled={this.state.imgValidated} onClick={this.openChooseFile}>
                                     <i className="fa fa-image material-icons medium"></i>
                                 </button>
                                 <button className="btn new-post-action">
@@ -128,9 +184,10 @@ export class NewPost extends Component {
                             </div>
                         </Fragment>
                     )}
+                    <input type="file" accept="image/*" onChange={this.picChange}/>
                     
                     <div className={classSet({"picture-container": true, "hide": !(this.state.imageSrc && !this.state.imgValidated)})}>
-                        <canvas></canvas>
+                        <canvas width={width} height={height}></canvas>
                         <div className="buttons-actions">
                             <button className="btn btn-rounded" onClick={this.valid}>Valid</button>
                             <button className="btn btn-rounded" onClick={this.retry}>Retry</button>
@@ -139,7 +196,7 @@ export class NewPost extends Component {
                         
                     {this.state.openCamera && this.state.mediaStream && (
                         <div className="video-container">
-                            <video autoPlay></video>
+                            <video width={width} height={height} autoPlay></video>
                             <div className="buttons-actions">
                                 <button className="btn btn-rounded" onClick={this.takePicture}>Take a picture</button>
                                 <button className="btn btn-rounded" onClick={this.closeCamera}>Close</button>

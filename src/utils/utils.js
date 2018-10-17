@@ -25,6 +25,25 @@ export function chunk(size, list) {
   }, []);
 }
 
+export function isOnDesktop() {
+  if("matchMedia" in window) {
+    return window.matchMedia("(min-width:992px)").matches;
+  }
+  return false;
+}
+
+export function isOnMediumScreen() {
+  return !isOnSmallScreen() && !isOnDesktop();
+}
+
+
+export function isOnSmallScreen() {
+  if("matchMedia" in window) {
+    return !(window.matchMedia("(min-width:768px)").matches);
+  }
+  return false;
+}
+
 export const Devices = Object.freeze({
   ios: Symbol('IOS'),
   android:  Symbol('ANDROID'),
