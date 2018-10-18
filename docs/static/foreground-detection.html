@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .container {
+                text-align: center;
+            }
+            #imgLogo {
+                width: 183px;
+                height: 25px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Foreground detection</h2>
+            <p>Switch the browser tab to see the changes.</p>
+            <p>Initial page visibility was <b id="status">unknown</b>.</p>
+            <div id="target"></div>
+        </div>
+        <footer>
+            <small>Demo from MDN.</small>
+        </footer>
+        <script>
+            function handleVisibilityChange() {
+                var timeBadge = new Date().toTimeString().split(' ')[0];
+                var newState = document.createElement('p');
+                newState.innerHTML = '<span class="badge">' + timeBadge + '</span> Page visibility changed to <b>' + document.visibilityState + '</b>.';
+                target.appendChild(newState);
+            }
+
+
+            if (document.visibilityState) {
+                document.addEventListener('visibilitychange', handleVisibilityChange, false);
+                document.getElementById('status').innerHTML = document.visibilityState;
+            } else {
+                document.getElementById('status').innerHTML = "Page Visibility API not available"
+            }
+        </script>
+    </body>
+</html>
