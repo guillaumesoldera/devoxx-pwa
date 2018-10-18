@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                color: #FFF;
+                padding: 0.5em;
+            }
+            .online {
+                background: green;
+            }
+
+            .offline {
+                background: red;
+            }
+        </style>
+        <script>
+            if ('DeviceOrientationEvent' in window) {
+                window.addEventListener('deviceorientation', deviceOrientationHandler, false);
+            } else {
+                document.getElementById('logoContainer').innerText = 'Device Orientation API not supported.';
+                document.getElementById('status').innerHTML = '';
+            }
+
+            function deviceOrientationHandler (eventData) {
+                var tiltLR = eventData.gamma;
+                var tiltFB = eventData.beta;
+                var dir = eventData.alpha;
+                
+                document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+                document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+                document.getElementById("doDirection").innerHTML = Math.round(dir);
+
+                var logo = document.getElementById("imgLogo");
+                logo.style.webkitTransform = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB * -1) + "deg)";
+                logo.style.MozTransform = "rotate(" + tiltLR + "deg)";
+                logo.style.transform = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB * -1) + "deg)";
+            }
+        </script>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Dealing with connection - Online / Offline status</h2>
+            <div id="status">
+                <ul>
+                    <li>Tilt Left/Right [gamma] : <span id="doTiltLR"></span></li>
+                    <li>Tilt Front/Back [beta] : <span id="doTiltFB"></span></li>
+                    <li>Direction [alpha] : <span id="doDirection"></span></li>
+                </ul>
+            </div>
+            <div class="container" id="logoContainer">
+                <img src="../assets/images/DevoxxLogo.png" id="imgLogo">
+            </div>
+        </div>
+        <footer>
+            <small>Demo from HTML5 Rocks article.</small>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                color: #FFF;
+                padding: 0.5em;
+            }
+            .online {
+                background: green;
+            }
+
+            .offline {
+                background: red;
+            }
+        </style>
+        <script>
+            function updateStatus() {
+                var status = document.getElementById("status");
+                var condition = navigator.onLine ? "online" : "offline";
+                
+                status.className = condition;
+                status.innerHTML = condition.toUpperCase();
+            }
+            window.addEventListener('load', function() {
+            updateStatus();
+            function updateOnlineStatus(event) {
+                updateStatus()
+            }
+
+            window.addEventListener('online',  updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            });
+        </script>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Dealing with connection - Online / Offline status</h2>
+            <div id="status"></div>
+        </div>
+    </body>
+</html>
