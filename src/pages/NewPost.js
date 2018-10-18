@@ -33,6 +33,7 @@ export class NewPost extends Component {
             this.setState({
                 openCamera: false,
                 cameraDisabled: true,
+                imageSrc: undefined,
             })
         })
     }
@@ -51,7 +52,6 @@ export class NewPost extends Component {
         const canvas = document.querySelector('canvas');
         const video = document.querySelector('video');
         const ratio = video.width / video.height
-        console.log('ratio', ratio)
         const height = canvas.width / ratio;
         canvas.height = height;
         canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
