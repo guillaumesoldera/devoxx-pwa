@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+        </style>
+        <script>
+            function handleChange(permissionName, newState) {
+                var timeBadge = new Date().toTimeString().split(' ')[0];
+                var newStateInfo = document.createElement('p');
+                newStateInfo.innerHTML = '<span class="badge">' + timeBadge + '</span> State of <b>' + permissionName + '</b> permission status changed to <b>' + newState + '</b>.';
+                document.getElementById('log').appendChild(newStateInfo);
+            }
+            function requestGeolocation() {
+                navigator.geolocation.getCurrentPosition(function(){});
+            }
+            function checkPermission(permissionName, descriptor) {
+                try {
+                    navigator.permissions.query(Object.assign({name: permissionName}, descriptor))
+                    .then(function (permission) {
+                        document.getElementById(permissionName + '-status').innerHTML = permission.state;
+                        permission.addEventListener('change', function (e) {
+                            document.getElementById(permissionName + '-status').innerHTML = permission.state;
+                            handleChange(permissionName, permission.state);
+                        });
+                    });
+                } catch (e) {
+                }
+            }
+
+            if (navigator.permissions) {
+                checkPermission('geolocation');
+            } else {
+                document.getElementById('status').innerHTML = 'Permissions API not available';
+            }
+        </script>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Permissions</h2>
+            <p>Tips: Ask permission only when needed ;)</p>
+            <div id="status">
+                <p>
+                    <b>Geolocation</b> permission status is <b id="geolocation-status">unknown</b>.
+                </p>
+                <button class="btn btn-sm btn-default" onclick="requestGeolocation()">Request</button>
+            </div>
+            <div id="log">
+
+            </div>
+        </div>
+        <footer>
+            <small>Based on demo from WhatWebCanDoToday.</small>
+        </footer>
+        
+    </body>
+</html>
