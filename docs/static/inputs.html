@@ -19,10 +19,10 @@
                         var height = canvas.width / ratio;
                         canvas.height = height;
                         ctx.drawImage(photo, 0, 0, canvas.width, canvas.height);
+                        URL.revokeObjectURL(picURL);
                     };
 
                     photo.src = picURL;
-                    URL.revokeObjectURL(picURL);
                 }
             }
         </script>
