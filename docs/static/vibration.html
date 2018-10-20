@@ -28,6 +28,7 @@
         <script>
 
             function vibration(durationOrPattern) {
+                // if it's a pattern, it's an array of durations for vibrate duration and stop vibration duration
                 navigator.vibrate(durationOrPattern)
             }
 
@@ -51,7 +52,7 @@
             </p>
             <div id="status">
                 <button class="btn" onclick="vibration(500)">Vibrate during 500ms</button>
-                <button class="btn" onclick="vibration([300, 100, 500, 500, 100])">Vibrate with a pattern</button>
+                <button class="btn" onclick="vibration([300, 200, 500, 500, 300])">Vibrate with a pattern</button>
             </div>
             
         </div>
