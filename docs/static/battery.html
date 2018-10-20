@@ -1,0 +1,101 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .label::after {
+                content: ' : ';
+            }
+        </style>
+        <script>
+
+            function secondToHHMMSS(value) {
+                var sec_num = parseInt(value, 10); // don't forget the second param
+                var hours   = Math.floor(sec_num / 3600);
+                var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+                var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+                if (hours   < 10) {hours   = "0"+hours;}
+                if (minutes < 10) {minutes = "0"+minutes;}
+                if (seconds < 10) {seconds = "0"+seconds;}
+                return hours+'h '+minutes+'m '+seconds+'s';
+            }
+
+
+            function updateState(battery) {
+                document.getElementById('charging-state').innerHTML = battery.charging ? 'charging' : 'discharging';
+                document.getElementById('charging-time').innerHTML = battery.charging ? secondToHHMMSS(battery.chargingTime) : '-';
+                document.getElementById('discharging-time').innerHTML = battery.charging ? '-' : secondToHHMMSS(battery.dischargingTime);
+                document.getElementById('battery-level').innerHTML = (battery.level * 100) + '%';
+            }
+
+            function handleBatteryChange(battery) {
+                updateState(battery)
+                
+                battery.addEventListener('chargingchange', function() {
+                    updateState(this);
+                });
+                battery.addEventListener('chargingtimechange', function() {
+                    updateState(this);
+                });
+                battery.addEventListener('dischargingtimechange', function() {
+                    updateState(this);
+                });
+                battery.addEventListener('levelchange', function() {
+                    updateState(this);
+                });
+            }
+
+            if (navigator.getBattery) {
+                navigator.getBattery()
+                .then(handleBatteryChange)
+            } else {
+                document.getElementById('status').innerHTML = 'Battery status API not available';
+            }
+        </script>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Battery status</h2>
+            <p>
+                WARNING : Mark as obsolete on MDN
+            </p>
+            <div id="status">
+                    <ul>
+                        <li>
+                            <span class="label">Charging state</span>
+                            <span class="value" id="charging-state"></span>
+                        </li>
+                        <li>
+                            <span class="label">Charging time</span>
+                            <span class="value" id="charging-time"></span>
+                        </li>
+                        <li>
+                            <span class="label">Discharging time</span>
+                            <span class="value" id="discharging-time"></span>
+                        </li>
+                        <li>
+                            <span class="label">Battery level</span>
+                            <span class="value" id="battery-level"></span>
+                        </li>
+                    </ul>
+            </div>
+            
+        </div>
+        
+        
+    </body>
+</html>
