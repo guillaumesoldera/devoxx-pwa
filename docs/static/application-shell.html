@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            @keyframes loadingAnimation {
+                0%   { opacity:1; }
+                50%  { opacity:0; }
+                100% { opacity:1; }
+            }
+            @-o-keyframes loadingAnimation{
+                0%   { opacity:1; }
+                50%  { opacity:0; }
+                100% { opacity:1; }
+            }
+            @-moz-keyframes loadingAnimation{
+                0%   { opacity:1; }
+                50%  { opacity:0; }
+                100% { opacity:1; }
+            }
+            @-webkit-keyframes loadingAnimation{
+                0%   { opacity:1; }
+                50%  { opacity:0; }
+                100% { opacity:1; }
+            }
+            .loader {
+                position: absolute;
+                top: 300px;
+                left: calc(50% - 150px);
+                opacity:1;  
+                -webkit-animation: loadingAnimation 2.5s infinite;
+                -moz-animation: loadingAnimation 2.5s infinite;
+                -o-animation: loadingAnimation 2.5s infinite;
+                animation: loadingAnimation 2.5s infinite;
+                background: url('../assets/images/DevoxxLogo.png') no-repeat;
+                background-color: black;
+                background-size: contain;
+                width: 300px;
+                height: 80px;
+            }
+            .loader img {
+                width: 300px;
+                height: auto;
+            }
+            .container {
+                width: 80%;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+            }
+            .line {
+                width: 100%;
+                height: calc(1.4em);
+                background-color: #e6e6e6;
+                margin-bottom: 12px;
+            }
+            .column {
+                width: 30%;
+            }
+            .block {
+                margin-bottom: 50px;
+            }
+            #intro blockquote {
+                margin-top: 0;
+            }
+            .columns {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content" id="content">
+            <h2>Performance - Application Shell</h2>
+            <div class="container"">
+                <div class="block" id="intro">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line" style="width: 40%"></div>
+                </div>
+                <div class="columns">
+                    <div class="column" id="column-1">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line" style="width: 30%"></div>
+                    </div>
+                    <div class="column" id="column-2">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line" style="width: 30%"></div>
+                    </div>
+                    <div class="column" id="column-3">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line" style="width: 30%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="loader" id="loader">
+            </div>
+        </div>
+        
+        <script>
+                function loadPage() {
+                    document.getElementById('intro').innerHTML = "<small><i>From https://developers.google.com/web/fundamentals/architecture/app-shell</i></small><blockquote>The app \"shell\" is the minimal HTML, CSS and JavaScript required to power the user interface and when cached offline can ensure instant, reliably good performance to users on repeat visits. This means the application shell is not loaded from the network every time the user visits. Only the necessary content is needed from the network.</blockquote>"
+                    document.getElementById('column-1').innerHTML = "<span>Some very interesting dynamic content</span>"
+                    document.getElementById('column-2').innerHTML = "<span>An other important content retrieved from network</span>";
+                    document.getElementById('column-3').innerHTML = "<span>Last absolutely necessary sentence</span>";
+                    document.getElementById('content').removeChild(document.getElementById('loader'))
+                }
+                setTimeout(() => {
+                    loadPage()
+                }, 3000);
+            </script>
+    </body>
+</html>
