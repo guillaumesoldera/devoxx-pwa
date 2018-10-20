@@ -25,19 +25,7 @@
                 border: 1px solid rgba(0,0,0,.84);
             }
         </style>
-        <script>
-
-            function vibration(durationOrPattern) {
-                // if it's a pattern, it's an array of durations for vibrate duration and stop vibration duration
-                navigator.vibrate(durationOrPattern)
-            }
-
-            if (navigator.vibrate) {
-                
-            } else {
-                document.getElementById('status').innerHTML = 'Vibration API not available';
-            }
-        </script>
+        
     </head>
     <body>
         <nav>
@@ -57,6 +45,18 @@
             
         </div>
         
-        
+        <script>
+
+                function vibration(durationOrPattern) {
+                    // if it's a pattern, it's an array of durations for vibrate duration and stop vibration duration
+                    navigator.vibrate(durationOrPattern)
+                }
+    
+                if (navigator.vibrate) {
+                    
+                } else {
+                    document.getElementById('status').innerHTML = 'Vibration API not available';
+                }
+            </script>
     </body>
 </html>

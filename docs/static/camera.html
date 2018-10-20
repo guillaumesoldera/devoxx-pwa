@@ -32,50 +32,6 @@
             }
 
         </style>
-        <script>
-            var _mediaStream;
-            function openCamera() {
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user"} }) // "environment" is also available for back camera
-                .then(mediaStream => {
-                    _mediaStream = mediaStream
-                    document.querySelector('video').srcObject = mediaStream;
-                    document.getElementById('open-camera').classList.add('hide');
-                    document.getElementById('close-camera').classList.remove('hide');
-                    document.getElementById('take-picture').classList.remove('hide');
-                })
-                .catch(err => {
-                    console.error(err);
-                    document.getElementById('log').innerHTML = '<span>' + err.message + '</span>'
-                })
-            }
-            function takePicture() {
-                const canvas = document.querySelector('canvas');
-                const video = document.querySelector('video');
-                const ratio = video.width / video.height
-                const height = canvas.width / ratio;
-                canvas.height = height;
-                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                _mediaStream.getTracks()[0].stop();
-                document.getElementById('open-camera').classList.remove('hide');
-                document.getElementById('close-camera').classList.add('hide');
-                document.getElementById('take-picture').classList.add('hide');
-                document.querySelector('video').srcObject = null;
-            }
-
-            function closeCamera() {
-                _mediaStream.getTracks()[0].stop();
-                document.querySelector('video').srcObject = null;
-                document.getElementById('open-camera').classList.remove('hide');
-                document.getElementById('close-camera').classList.add('hide');
-                document.getElementById('take-picture').classList.add('hide');
-            }
-
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                // cool
-            } else {
-                document.getElementById('status').innerHTML = 'Camera usage is not available';
-            }
-        </script>
     </head>
     <body>
         <nav>
@@ -95,5 +51,49 @@
         <div class="log">
             
         </div>
+        <script>
+                var _mediaStream;
+                function openCamera() {
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user"} }) // "environment" is also available for back camera
+                    .then(mediaStream => {
+                        _mediaStream = mediaStream
+                        document.querySelector('video').srcObject = mediaStream;
+                        document.getElementById('open-camera').classList.add('hide');
+                        document.getElementById('close-camera').classList.remove('hide');
+                        document.getElementById('take-picture').classList.remove('hide');
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('log').innerHTML = '<span>' + err.message + '</span>'
+                    })
+                }
+                function takePicture() {
+                    const canvas = document.querySelector('canvas');
+                    const video = document.querySelector('video');
+                    const ratio = video.width / video.height
+                    const height = canvas.width / ratio;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                    _mediaStream.getTracks()[0].stop();
+                    document.getElementById('open-camera').classList.remove('hide');
+                    document.getElementById('close-camera').classList.add('hide');
+                    document.getElementById('take-picture').classList.add('hide');
+                    document.querySelector('video').srcObject = null;
+                }
+    
+                function closeCamera() {
+                    _mediaStream.getTracks()[0].stop();
+                    document.querySelector('video').srcObject = null;
+                    document.getElementById('open-camera').classList.remove('hide');
+                    document.getElementById('close-camera').classList.add('hide');
+                    document.getElementById('take-picture').classList.add('hide');
+                }
+    
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    // cool
+                } else {
+                    document.getElementById('status').innerHTML = 'Camera usage is not available';
+                }
+            </script>
     </body>
 </html>
