@@ -27,6 +27,9 @@
                 transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
                 border: 1px solid rgba(0,0,0,.84);
             }
+            video, canvas {
+                outline: 1px solid;
+            }
 
         </style>
         <script>
@@ -56,10 +59,12 @@
                 document.getElementById('open-camera').classList.remove('hide');
                 document.getElementById('close-camera').classList.add('hide');
                 document.getElementById('take-picture').classList.add('hide');
+                document.querySelector('video').srcObject = null;
             }
 
             function closeCamera() {
                 _mediaStream.getTracks()[0].stop();
+                document.querySelector('video').srcObject = null;
                 document.getElementById('open-camera').classList.remove('hide');
                 document.getElementById('close-camera').classList.add('hide');
                 document.getElementById('take-picture').classList.add('hide');
@@ -83,8 +88,8 @@
             <button id="take-picture" class="btn hide" onclick="takePicture()">Take picture</button>
             <button id="close-camera" class="btn hide" onclick="closeCamera()">Close camera</button>
             <div>
-                <video width="300" height="225"></video>
-                <canvas width="300"></canvas>
+                <video width="300" height="225" autoplay></video>
+                <canvas width="300" height="225"></canvas>
             </div>
         </div>
         <div class="log">
