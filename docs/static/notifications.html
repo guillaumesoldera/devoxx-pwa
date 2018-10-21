@@ -81,7 +81,7 @@
                 
                     setTimeout(() => {
                         try {
-                            navigator.serviceWorker.getRegistration()
+                            navigator.serviceWorker.getRegistration('/')
                             .then(reg => reg.showNotification("Hi there - persistent!"))
                             .catch(err => $logContainer.innerHTML = '<p>Error : ' + err.message + '</p>');
                         } catch (err) {

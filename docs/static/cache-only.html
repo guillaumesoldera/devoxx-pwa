@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .container {
+                text-align: center;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Offline - Cache only</h2>
+            
+            <div id="status">
+
+            </div>
+            <div class="container">
+                <img src="../assets/images/cache-only.png">
+            </div>
+        </div>
+        <script>
+            function registerSW(swUrl) {
+                navigator.serviceWorker
+                .register(swUrl, {scope: './'})
+                .then(registration => {
+                    registration.onupdatefound = () => {
+                    const installingWorker = registration.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            // At this point, the old content will have been purged and
+                            // the fresh content will have been added to the cache.
+                            // It's the perfect time to display a "New content is
+                            // available; please refresh." message in your web app.
+                            document.getElementById('status').innerHTML = 'New content is available; please refresh.'
+                            console.log('New content is available; please refresh.');
+                        } else {
+                            // At this point, everything has been precached.
+                            // It's the perfect time to display a
+                            // "Content is cached for offline use." message.
+                            document.getElementById('status').innerHTML = 'Content is cached for offline use.'
+                            console.log('Content is cached for offline use.');
+                        }
+                        }
+                    };
+                    };
+                })
+                .catch(error => {
+                    console.error('Error during service worker registration:', error);
+                });
+            }
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    registerSW('./cache-only.js');
+                });
+            } else {
+                document.getElementById('status').innerHTML = 'Service worker not available'
+            }
+        </script>
+    </body>
+</html>
