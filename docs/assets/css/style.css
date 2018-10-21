@@ -7,8 +7,7 @@ body {
     overflow-x: hidden; 
 }
 footer {
-    position: fixed;
-    bottom: 10px;
+    position: absolute;
     right: 10px;
     font-style: italic;
 }
@@ -23,11 +22,35 @@ nav {
     z-index: 10;
     margin-bottom: 2px;
 }
+.logo-vis {
+    width: 183px;
+    height: 25px;
+}
+@media screen and (max-width: 600px) {
+    nav {
+      padding: 0 5px;
+    }
+    nav h1 {
+        font-size: 18px;
+        left: auto;
+        right: 5px;
+    }
+    nav .logo-vis {
+        width: 140px;
+        height: 19px;
+    }
+    .twitter-account {
+        position: fixed;
+        bottom: 5px;
+        right: 5px;;
+    }
+}
 h1 {
     text-align: center;
     position: absolute;
+    left: 0;
+    right: 0;
     margin: 0 auto;
-    width: 100%;
     color: rgb(92, 92, 92);
     text-transform: uppercase;
     font-weight: 600;
