@@ -61,10 +61,10 @@
             <small>Based on demo from QuirksMode.org</small>
         </footer>
         <script>
-                if (window.ontouchstart) {
+                if ('ontouchstart' in window) {
                     var elements = document.querySelectorAll('.block');
                     [].forEach.call(elements, function (element) {
-                    element.ontouchstart = element.onmspointerdown = startDrag;
+                    element.ontouchstart = element.onpointerdown = startDrag;
                     });
                 } else {
                     document.getElementById('status').innerText = 'Touch not supported.';

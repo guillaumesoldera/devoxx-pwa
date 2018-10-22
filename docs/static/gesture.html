@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .container {
+                text-align: center;
+            }
+            #imgLogo {
+                width: 183px;
+                height: 25px;
+            }
+            .block {
+                height: 200px;
+                outline: 1px solid black;
+                width: 200px;
+                z-index: 5;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Gesture</h2>
+            <div id="status">
+                    <div
+                        class="block"
+                        ontouchstart="touchStart(event)"
+                        ontouchend="touchEnd()"
+                        ontouchmove="touchMove(event)"
+                    >
+                        <span>Swipe in this block</span>
+                    </div>
+            </div>
+            <div id="log">
+
+            </div>
+        </div>
+        <script>
+                var _touchStart;
+                var _touchCurrent;
+                if ('ontouchstart' in window) {
+                    
+                } else {
+                    document.getElementById('status').innerText = 'Touch not supported.';
+                }
+    
+                function touchStart(touchEvent) {
+                    if (touchEvent.touches.length === 1) {
+                        _touchStart = {
+                        x: touchEvent.targetTouches[0].clientX,
+                        y: touchEvent.targetTouches[0].clientY
+                        };
+                    } else {
+                        _touchStart = undefined;
+                    }
+                }
+
+                function touchMove(touchEvent) {
+                    if (touchEvent.preventDefault) {
+                        // touchEvent.preventDefault();
+                    }
+                    if (touchEvent.touches.length === 1) {
+                        _touchCurrent = {
+                            x: touchEvent.targetTouches[0].clientX,
+                            y: touchEvent.targetTouches[0].clientY
+                        }
+                    } else {
+                        _touchCurrent = undefined
+                    }
+                }
+
+                function touchEnd() {
+                    if (_touchStart && _touchCurrent) {
+                        const deltaX = _touchStart.x - _touchCurrent.x;
+                        const deltaY = _touchStart.y - _touchCurrent.y;
+
+                        if (deltaX > 30 && Math.abs(deltaY) < 30) {
+                            log('Swipe to left');
+                        }
+                        if (deltaX < -30 && Math.abs(deltaY) < 30) {
+                            log('Swipe to right');
+                        }
+                        if (deltaY > 30 && Math.abs(deltaX) < 30) {
+                            log('Swipe to top');
+                        }
+                        if (deltaY < -30 && Math.abs(deltaX) < 30) {
+                            log('Swipe to bottom');
+                        }
+                    }
+                    _touchStart = undefined;
+                    _touchCurrent = undefined;
+                }
+                var logContainer = document.getElementById('log')
+                function log(message) {
+                    logContainer.innerHTML = message;
+                }
+            </script>
+    </body>
+</html>
