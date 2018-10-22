@@ -1,0 +1,112 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .container {
+                text-align: center;
+            }
+            #imgLogo {
+                width: 183px;
+                height: 25px;
+            }
+            .block {
+                height: 100px;
+                background-color: black;
+                width: 100px;
+                z-index: 5;
+                position: absolute;
+                top: 15px;
+                left: 15px;
+                color: white;
+                text-align: center;
+                -ms-touch-action: none;
+            }
+
+            .block:nth-child(2) {
+                top: 150px;
+                left: 150px;
+            }
+
+            .block:nth-child(3) {
+                top: 50px;
+                left: 100px;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Multi touch</h2>
+            <div id="status">
+                    <div class="block">Drag me with one finger</div>
+                    <div class="block">Drag me with another finger</div>
+                    <div class="block">Drag me too</div>
+            </div>
+        </div>
+        <footer>
+            <small>Based on demo from QuirksMode.org</small>
+        </footer>
+        <script>
+                if (window.ontouchstart) {
+                    var elements = document.querySelectorAll('.block');
+                    [].forEach.call(elements, function (element) {
+                    element.ontouchstart = element.onmspointerdown = startDrag;
+                    });
+                } else {
+                    document.getElementById('status').innerText = 'Touch not supported.';
+                }
+    
+                function startDrag(e) {
+                    this.ontouchmove = this.onpointermove = moveDrag;
+
+                    this.ontouchend = this.onpointerup = function () {
+                        this.ontouchmove = this.onpointermove = null;
+                        this.ontouchend = this.onpointerup = null;
+                    }
+
+                    var pos = [this.offsetLeft, this.offsetTop];
+                    var that = this;
+                    var origin = getCoors(e);
+
+                    function moveDrag(e) {
+                        var currentPos = getCoors(e);
+                        var deltaX = currentPos[0] - origin[0];
+                        var deltaY = currentPos[1] - origin[1];
+                        this.style.left = (pos[0] + deltaX) + 'px';
+                        this.style.top = (pos[1] + deltaY) + 'px';
+                        return false; // cancels scrolling
+                    }
+
+                    function getCoors(e) {
+                        var coors = [];
+                        if (e.targetTouches && e.targetTouches.length) {
+                            var thisTouch = e.targetTouches[0];
+                            coors[0] = thisTouch.clientX;
+                            coors[1] = thisTouch.clientY;
+                        } else {
+                            coors[0] = e.clientX;
+                            coors[1] = e.clientY;
+                        }
+                        return coors;
+                    }
+                }
+                document.ongesturechange = function () {
+                   return false;
+                }
+            </script>
+    </body>
+</html>
