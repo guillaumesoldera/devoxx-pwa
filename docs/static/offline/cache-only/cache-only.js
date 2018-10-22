@@ -1,12 +1,12 @@
 'use strict';
 self.addEventListener('install', function(event) {
     event.waitUntil(
-      caches.open('devoxx-pwa-cache-assets').then(function(cache) {
+      caches.open('devoxx-pwa-cache-only-assets').then(function(cache) {
         console.log('caching assets');
         return cache.addAll([
-          '../assets/css/style.css',
-          '../assets/images/devoxx_brand.gif',
-          '../assets/images/cache-only.png',
+          '../../../assets/css/style.css',
+          '../../../assets/images/devoxx_brand.gif',
+          '../../../assets/images/cache-only.png',
           './cache-only.html'
         ]);
       })
@@ -32,7 +32,7 @@ self.addEventListener('install', function(event) {
     event.respondWith(function(){
       var cacheResponse = caches.match(event.request)
       if (cacheResponse) {
-        console.log('element found in cache for ', event.request)
+        console.log('element found in cache for ', event.request);
       } else {
         console.log('element not found in cache for ', event.request)
       }
