@@ -13,7 +13,7 @@ self.addEventListener('notificationclick', function (event) {
     //        }
     //    })
     //);
-    const urlToOpen = new URL(`/static/notifications/notifications.html`, self.location.origin).href;
+    const urlToOpen = new URL(`devoxx-pwa/static/notifications/notifications.html`, self.location.origin).href;
     const promiseChain = clients.matchAll({
         type: 'window',
         includeUncontrolled: true
