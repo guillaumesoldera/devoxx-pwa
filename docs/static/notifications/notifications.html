@@ -90,9 +90,10 @@
                             .then(reg => reg.showNotification("What a wonderful notification!", {
                                 body: "Very useful notification, if you click you can see notification demo",
                                 vibrate: 300,
-                                badge: '../../assets/images/devoxx-robot.jpg',
-                                icon: '../../assets/images/devoxx-robot.jpg',
+                                badge: '../../assets/images/logo-devoxx.png',
+                                icon: '../../assets/images/logo-devoxx.png',
                                 data: {time: new Date().getTime()},
+                                image: '../../assets/images/pwa.png'
                             }))
                             .catch(err => $logContainer.innerHTML = '<p>Error : ' + err.message + '</p>');
                         } catch (err) {
