@@ -9,6 +9,8 @@
 # production
 /build
 
+/docs/assets/images/logo-devoxx.xcf
+
 # misc
 .DS_Store
 .env.local
