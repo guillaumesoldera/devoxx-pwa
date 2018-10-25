@@ -31,14 +31,19 @@
                 <a href="tel:+330123456789">New Call</a>
                 <a id="facetime-call" class="ios hide" href="facetime:+330123456789">A Facetime Call</a>
             <h3>SMS</h3>
-                <a href="sms:+330123456789?body=Yo%20Devoxx">New SMS Message</a>
+                <a href="sms:+330123456789">New SMS Message</a>
         </div>
         <script>
             var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             window.addEventListener('load', function() {
                 if (iOS) {
-                    document.getElementsByClassName('ios').forEach(elem => elem.classList.remove("hide"));
-                    document.getElementsByClassName('android').forEach(elem => elem.classList.add("hide"));
+                    
+                    [].forEach.call(document.getElementsByClassName('ios'), function(elem) {
+                        elem.classList.remove("hide")
+                    });
+                    [].forEach.call(document.getElementsByClassName('android'), function(elem) {
+                        elem.classList.add("hide")
+                    })
                 }
             })
         </script>
