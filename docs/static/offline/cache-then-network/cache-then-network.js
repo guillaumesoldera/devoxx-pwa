@@ -10,6 +10,12 @@ self.addEventListener('install', function(event) {
           './cache-then-network.html'
         ]);
       })
+      .then(function() {
+        console.log('skip waiting');
+        // Force the SW to transition from installing -> active state
+        return self.skipWaiting();
+        
+      })
     );
   });
 
@@ -23,10 +29,15 @@ self.addEventListener('install', function(event) {
           })
         );
       })
+      .then(function() {
+        console.log('clients claim()');
+        return self.clients.claim();
+      })
     );
   });
 
   self.addEventListener('fetch', function(event) {
+    console.log('fetch event listener', event.request);
     event.respondWith(
       caches.open('devoxx-pwa-cache-then-network').then(function(cache) {
         return fetch(event.request).then(function(response) {

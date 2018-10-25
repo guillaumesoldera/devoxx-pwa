@@ -43,7 +43,7 @@
 
             </div>
             <div id="status">
-                <button class="btn" onclick="refreshExchangeRate()">Exchange rate</button>
+                <button class="btn" onclick="refreshExchangeRate()">Refresh exchange rate</button>
                 <div id="new"></div>
                 <div id="exchange-rate"></div>
             </div>
@@ -117,9 +117,7 @@
 
             function refreshExchangeRate() {
                 var networkDataReceived = false;
-                if (statusContainer.firstChild) {
-                    statusContainer.firstChild.classList.remove('new-exchange');
-                }
+                
                 startSpinner();
                 
                 
@@ -150,20 +148,19 @@
                 .then(stopSpinner);
             }
 
-
             function initialLoad() {
                 caches.match(url).then(function(response) {
                     return response.json();
                 }).then(function(data) {
                     updatePage(data);
                 }).catch(function() {
-                
+
                 })
             }
 
 
             function registerSW(swUrl) {
-                navigator.serviceWorker
+                return navigator.serviceWorker
                 .register(swUrl, {scope: './'})
                 .then(registration => {
                     registration.onupdatefound = () => {
@@ -187,6 +184,7 @@
                         }
                     };
                     };
+                    return registration;
                 })
                 .catch(error => {
                     console.error('Error during service worker registration:', error);
@@ -194,8 +192,11 @@
             }
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    registerSW('./cache-then-network.js');
-                    initialLoad();
+                    registerSW('./cache-then-network.js')
+                    .then(function () {
+                        initialLoad();
+                        refreshExchangeRate();
+                    });
                 });
             } else {
                 document.getElementById('status').innerHTML = 'Service worker not available'
