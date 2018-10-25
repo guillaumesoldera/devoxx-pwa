@@ -61,8 +61,8 @@ h1 {
     font-size: 18px;
 }
 .content {
-    font-size: calc(0.8em + 1vw);
-    line-height: calc(1.4em + 1vh);
+    font-size: calc(0.8em + 0.6vw);
+    line-height: calc(1.4em + 0.6vh);
     margin: 7.5vmin;
 }
 .content h2 {
