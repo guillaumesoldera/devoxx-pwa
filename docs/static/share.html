@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Share</h2>
+            <div id="status">
+                <button class="btn" onclick="share()">Share</button>
+            </div>
+            <div id="log"></div>
+        </div>
+        <script>
+            var logContainer = document.getElementById('log');
+            function share() {
+                navigator.share({
+                    title: 'PWA Rocks',
+                    text: 'Check out PWA Rocks website!',
+                    url: 'https://pwa.rocks/',
+                })
+                .then(() => logContainer.innerHTML = '<span>Successful share</span>')
+                .catch((error) => logContainer.innerHTML = '<span>Error sharing ' + error.message + '</span>');
+            }
+
+            if (!navigator.share) {
+                document.getElementById('status').innerHTML = '<span>Web Share API not supported</span>'
+            }
+        </script>
+    </body>
+</html>
