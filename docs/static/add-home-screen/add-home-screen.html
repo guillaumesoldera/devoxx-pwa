@@ -82,7 +82,7 @@
                 window.addEventListener('appinstalled', (evt) => {
                     document.getElementById('container').innerHTML = '<span>App installed</span>'
                 });
-                if (window.matchMedia('(display-mode: standalone)').matches) {
+                if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
                     document.getElementById('log').innerHTML = 'display-mode is standalone';
                 }
                 let deferredPrompt;
