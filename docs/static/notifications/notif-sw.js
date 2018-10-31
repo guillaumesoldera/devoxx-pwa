@@ -1,6 +1,11 @@
 self.addEventListener('fetch', function(event) {})
 
 self.addEventListener('notificationclick', function (event) {
+    const queryparams = []
+    queryparams.push(`time=${event.notification.data.time}`);
+    if (event.action) {
+      queryparams.push(`action=${event.action}`);
+    }
     console.log('On notification click: ', event.notification);
     event.notification.close();
     // open in new window
@@ -13,7 +18,7 @@ self.addEventListener('notificationclick', function (event) {
     //        }
     //    })
     //);
-    const urlToOpen = new URL(`devoxx-pwa/static/notifications/notifications.html`, self.location.origin).href;
+    const urlToOpen = new URL(`static/notifications/notifications.html?${queryparams.join('&')}`, self.location.origin).href;
     const promiseChain = clients.matchAll({
         type: 'window',
         includeUncontrolled: true

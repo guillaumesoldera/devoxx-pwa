@@ -46,6 +46,9 @@
             <div id="time">
                 No time in query params
             </div>
+            <div id="action">
+
+            </div>
             <div id="log">
 
             </div>
@@ -84,6 +87,24 @@
                         return;
                     }
                 
+                    const actions = [
+                        {
+                        action: 'action-1',
+                        title: 'Blind',
+                        icon: '/assets/images/action-1.png'
+                        },
+                        {
+                        action: 'action-2',
+                        title: 'Deaf',
+                        icon: '/assets/images/action-2.png'
+                        },
+                        {
+                        action: 'action-3',
+                        title: 'Mute',
+                        icon: '/assets/images/action-3.png'
+                        }
+                    ]
+
                     setTimeout(() => {
                         try {
                             navigator.serviceWorker.getRegistration()
@@ -93,7 +114,8 @@
                                 badge: '../../assets/images/badge-logo-devoxx.png',
                                 icon: '../../assets/images/logo-devoxx.png',
                                 data: {time: new Date().getTime()},
-                                image: '../../assets/images/pwa.png'
+                                image: '../../assets/images/pwa.png',
+                                actions: actions
                             }))
                             .catch(err => $logContainer.innerHTML = '<p>Error : ' + err.message + '</p>');
                         } catch (err) {
@@ -132,8 +154,13 @@
                 if ('serviceWorker' in navigator) {
                     window.addEventListener('load', () => {
                         const timeQueryParam = location.search.substring(1).split('&').find(param => param.startsWith("time="));
+                        const actionQueryParam = location.search.substring(1).split('&').find(param => param.startsWith("action="));
                         if (timeQueryParam) {
                             document.getElementById('time').innerHTML = 'Time in query param ' + timeQueryParam.split('=')[1];
+                        }
+                        if (actionQueryParam) {
+                            var actionId = actionQueryParam.split('=')[1];
+                            document.getElementById('action').innerHTML = '<img src="/assets/images/' + actionId + '.png">';
                         }
                         registerSW('./notif-sw.js');
                     });
