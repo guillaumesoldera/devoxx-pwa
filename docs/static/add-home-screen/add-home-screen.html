@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <meta name="theme-color" content="#ffab40">
+        <link rel="manifest" href="./manifest.json">
+        <link rel="shortcut icon" href="../../assets/images/icons/icon-72x72.png">
+        <link rel="apple-touch-icon" href="../../assets/images/icons/icon-72x72.png">
+        <link rel="apple-touch-startup-image" href="../../assets/images/icons/icon-128x128.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#ffab40">
+        <link rel="stylesheet" href="../../../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .container {
+                text-align: center;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Add to Home Screen</h2>
+            
+            <div id="status">
+                <button id="add" class="btn" style="display: none">Install App</button>
+            </div>
+            <div id="container" class="container">
+            </div>
+            <div id="log"></div>
+        </div>
+        <script>
+            function registerSW(swUrl) {
+                navigator.serviceWorker
+                .register(swUrl, {scope: './'})
+                .then(registration => {
+                    registration.onupdatefound = () => {
+                    const installingWorker = registration.installing;
+                    installingWorker.onstatechange = () => {
+                        console.log('Service Worker state', installingWorker.state);
+                        if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            console.log('New content is available; please refresh.');
+                        } else {
+                            console.log('Content is cached for offline use.');
+                        }
+                        }
+                    };
+                    };
+                })
+                .catch(error => {
+                    console.error('Error during service worker registration:', error);
+                });
+                
+            }
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    registerSW('./add-home-screen.js');
+                });
+                window.addEventListener('appinstalled', (evt) => {
+                    document.getElementById('container').innerHTML = '<span>App installed</span>'
+                });
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    document.getElementById('log').innerHTML = 'display-mode is standalone';
+                }
+                let deferredPrompt;
+                var btnAdd = document.getElementById('add');
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    console.log('beforeinstallprompt event intercepted')
+                    // Prevent Chrome 67 and earlier from automatically showing the prompt
+                    e.preventDefault();
+                    // Stash the event so it can be triggered later.
+                    deferredPrompt = e;
+                    btnAdd.style = ""
+                });
+                btnAdd.addEventListener('click', (e) => {
+                // hide our user interface that shows our A2HS button
+                btnAdd.style.display = 'none';
+                // Show the prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice
+                    .then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted prompt');
+                    } else {
+                        console.log('User dismissed prompt');
+                    }
+                    deferredPrompt = null;
+                    });
+                });
+
+            } else {
+                document.getElementById('status').innerHTML = 'Service worker not available'
+            }
+        </script>
+    </body>
+</html>
