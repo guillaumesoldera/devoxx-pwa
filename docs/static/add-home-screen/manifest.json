@@ -43,7 +43,7 @@
         "type": "image/png"
       }
     ],
-    "start_url": "/static/add-home-screen/add-home-screen.html",
+    "start_url": "/devoxx-pwa/static/add-home-screen/add-home-screen.html",
     "display": "standalone",
     "theme_color": "#ffab40",
     "background_color": "#ffab40",
