@@ -91,17 +91,17 @@
                         {
                         action: 'action-1',
                         title: 'Blind',
-                        icon: '/assets/images/action-1.png'
+                        icon: '../../assets/images/action-1.png'
                         },
                         {
                         action: 'action-2',
                         title: 'Deaf',
-                        icon: '/assets/images/action-2.png'
+                        icon: '../../assets/images/action-2.png'
                         },
                         {
                         action: 'action-3',
                         title: 'Mute',
-                        icon: '/assets/images/action-3.png'
+                        icon: '../../assets/images/action-3.png'
                         }
                     ]
 
@@ -160,7 +160,7 @@
                         }
                         if (actionQueryParam) {
                             var actionId = actionQueryParam.split('=')[1];
-                            document.getElementById('action').innerHTML = '<img src="/assets/images/' + actionId + '.png">';
+                            document.getElementById('action').innerHTML = '<img src="../../assets/images/' + actionId + '.png">';
                         }
                         registerSW('./notif-sw.js');
                     });
