@@ -10,7 +10,7 @@
         <link rel="apple-touch-icon" href="../../assets/images/icons/icon-72x72.png">
         <link rel="apple-touch-startup-image" href="../../assets/images/icons/icon-128x128.png">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="#ffab40">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <link rel="stylesheet" href="../../assets/css/style.css"/>
         <style>
             #status {
@@ -105,9 +105,9 @@
                 deferredPrompt.userChoice
                     .then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted prompt');
+                        document.getElementById('log').innerHTML = 'User accepted prompt';
                     } else {
-                        console.log('User dismissed prompt');
+                        document.getElementById('log').innerHTML = 'User dismissed prompt';
                     }
                     deferredPrompt = null;
                     });
