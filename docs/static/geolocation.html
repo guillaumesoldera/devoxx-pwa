@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Geolocation</h2>
+            <div id="status">
+                <p id="location-container">
+                </p>
+                <button class="btn btn-sm btn-default" onclick="requestGeolocation()">Location</button>
+            </div>
+            <div id="log">
+
+            </div>
+        </div>
+        <footer>
+            <small>Based on demo from WhatWebCanDoToday.</small>
+        </footer>
+        <script>
+                var locationContainer = document.getElementById('location-container')
+                var logContainer = document.getElementById('log');
+                function handleSuccess(location, when) {
+                    var newLocation = document.createElement('p');
+                    newLocation.innerHTML = when + ' location - Latitude ' + location.coords.latitude + ' / Longitude ' + location.coords.longitude;
+                    locationContainer.appendChild(newLocation);
+                }
+
+                function handleErrors(error) {
+                    var newError = document.createElement('p');
+                    newError.innerHTML = error.message;
+                    logContainer.appendChild(newError)
+                }
+                
+                function requestGeolocation() {
+                    navigator.geolocation.getCurrentPosition(function(location) {
+                        handleSuccess(location, 'Initial')
+                    }, handleErrors);
+                    navigator.geolocation.watchPosition(function(location) {
+                        handleSuccess(location, 'Updated')
+                    }, handleErrors);
+                }
+                
+    
+                if (navigator.geolocation) {
+                    // cool
+                } else {
+                    document.getElementById('status').innerHTML = 'Geolocation is not available';
+                }
+            </script>
+    </body>
+</html>

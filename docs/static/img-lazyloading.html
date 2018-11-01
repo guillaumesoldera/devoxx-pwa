@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            #status img {
+                width: 40%;
+                height: 500px;
+                margin: 0 5px;
+                outline: 1px solid;
+                object-fit: cover;
+            }
+            .lazyloading {
+                opacity: 1;
+                transition: opacity 0.8s;
+            }
+
+            img[data-src] {
+                opacity: 0;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Performance / Fast - Image lazyloading</h2>
+            
+            <div id="status">
+                <img class="lazyloading" data-src="https://images.pexels.com/photos/164196/pexels-photo-164196.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" alt="test image">
+                <img src="https://images.pexels.com/photos/164196/pexels-photo-164196.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940" >
+            </div>
+            
+        </div>
+        
+        <script>
+
+            [].forEach.call(document.querySelectorAll('img[data-src]'), function(img) {
+                img.setAttribute('src', img.getAttribute('data-src'));
+                img.onload = function() {
+                    img.removeAttribute('data-src');
+                };
+            });
+        </script>
+    </body>
+</html>

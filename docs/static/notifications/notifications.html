@@ -1,0 +1,172 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Notification</h2>
+            
+            <div id="status">
+                <p>Current permission status is <b id="permission-status">unavailable</b>.</p>
+
+                <button class="btn btn-default" onclick="requestPermission()">Request permission</button>
+                <button class="btn btn-default" onclick="nonPersistentNotification()">Non-persistent notification</button>
+                <button class="btn btn-default" onclick="persistentNotification()">Persistent notification (in 3s)</button>
+            </div>
+            <div id="time">
+                No time in query params
+            </div>
+            <div id="action">
+
+            </div>
+            <div id="log">
+
+            </div>
+        </div>
+        <footer>
+                <small>Demo from WhatWebCanDoToday</small>
+            </footer>
+        <script>
+
+                var $permissionStatus = document.getElementById('permission-status');
+                var $statusContainer = document.getElementById('status')
+                var $logContainer = document.getElementById('log');
+                if ('Notification' in window) {
+                    $permissionStatus.innerText = Notification.permission;
+                } else {
+                    $statusContainer.innerHTML = '<p>Notification API not supported</p>'
+                }
+
+                function requestPermission() {
+                    Notification.requestPermission(function (result) {
+                        $permissionStatus.innerText = result;
+                    });
+                }
+
+                function nonPersistentNotification() {
+                    try {
+                        var notification = new Notification("This is a non-persistent notification!");
+                    } catch (err) {
+                        $logContainer.innerHTML = '<p>Error : ' + err.message + '</p>'
+                    }
+                }
+
+                function persistentNotification() {
+                    if (!('Notification' in window) || !('ServiceWorkerRegistration' in window)) {
+                        alert('Persistent Notification API not supported!');
+                        return;
+                    }
+                
+                    const actions = [
+                        {
+                        action: 'action-1',
+                        title: 'Blind',
+                        icon: '../../assets/images/action-1.png'
+                        },
+                        {
+                        action: 'action-2',
+                        title: 'Deaf',
+                        icon: '../../assets/images/action-2.png'
+                        },
+                        {
+                        action: 'action-3',
+                        title: 'Mute',
+                        icon: '../../assets/images/action-3.png'
+                        }
+                    ]
+
+                    setTimeout(() => {
+                        try {
+                            navigator.serviceWorker.getRegistration()
+                            .then(reg => reg.showNotification("What a wonderful notification!", {
+                                body: "Very useful notification, if you click you can see notification demo",
+                                vibrate: 300,
+                                badge: '../../assets/images/badge-logo-devoxx.png',
+                                icon: '../../assets/images/logo-devoxx.png',
+                                data: {time: new Date().getTime()},
+                                image: '../../assets/images/pwa.png',
+                                actions: actions
+                            }))
+                            .catch(err => $logContainer.innerHTML = '<p>Error : ' + err.message + '</p>');
+                        } catch (err) {
+                            $logContainer.innerHTML = '<p>Error : ' + err.message + '</p>'
+                        }
+                    }, 3000)
+                }
+                function registerSW(swUrl) {
+                    navigator.serviceWorker
+                    .register(swUrl, {scope: './'})
+                    .then(registration => {
+                        registration.onupdatefound = () => {
+                        const installingWorker = registration.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed') {
+                            if (navigator.serviceWorker.controller) {
+                                // At this point, the old content will have been purged and
+                                // the fresh content will have been added to the cache.
+                                // It's the perfect time to display a "New content is
+                                // available; please refresh." message in your web app.
+                                console.log('New content is available; please refresh.');
+                            } else {
+                                // At this point, everything has been precached.
+                                // It's the perfect time to display a
+                                // "Content is cached for offline use." message.
+                                console.log('Content is cached for offline use.');
+                            }
+                            }
+                        };
+                        };
+                    })
+                    .catch(error => {
+                        console.error('Error during service worker registration:', error);
+                    });
+                }
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        const timeQueryParam = location.search.substring(1).split('&').find(param => param.startsWith("time="));
+                        const actionQueryParam = location.search.substring(1).split('&').find(param => param.startsWith("action="));
+                        if (timeQueryParam) {
+                            document.getElementById('time').innerHTML = 'Time in query param ' + timeQueryParam.split('=')[1];
+                        }
+                        if (actionQueryParam) {
+                            var actionId = actionQueryParam.split('=')[1];
+                            document.getElementById('action').innerHTML = '<img src="../../assets/images/' + actionId + '.png">';
+                        }
+                        registerSW('./notif-sw.js');
+                    });
+                } else {
+                document.getElementById('status').innerHTML = 'Service worker not available'
+                }
+            </script>
+    </body>
+</html>

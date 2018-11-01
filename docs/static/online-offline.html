@@ -2,8 +2,8 @@
     <head>
         <title>Devoxx - PWA Showcase</title>
         <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-        
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
         <link rel="stylesheet" href="../assets/css/style.css"/>
         <style>
             #status {
@@ -29,13 +29,13 @@
                 status.innerHTML = condition.toUpperCase();
             }
             window.addEventListener('load', function() {
-            updateStatus();
-            function updateOnlineStatus(event) {
-                updateStatus()
-            }
+                updateStatus();
+                function updateOnlineStatus(event) {
+                    updateStatus()
+                }
 
-            window.addEventListener('online',  updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
+                window.addEventListener('online',  updateOnlineStatus);
+                window.addEventListener('offline', updateOnlineStatus);
             });
         </script>
     </head>

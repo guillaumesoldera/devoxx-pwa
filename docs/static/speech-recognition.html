@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .container {
+                width: 70%;
+                height: 60%;
+                outline: 1px solid;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+            }
+            #log {
+                text-align: center;
+            }
+            .hide {
+                display: none;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Speech recognition</h2>
+            
+            <div id="status">
+                <button id="start" class="btn">Start</button>
+                <div class="container">
+
+                </div>
+            </div>
+            <div id="log">
+
+            </div>
+        </div>
+        <footer>
+            <small>Based on demo from MDN.</small>
+        </footer>
+        <script>
+            var SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition
+            var SpeechGrammarList = SpeechGrammarList || window.webkitSpeechGrammarList
+            var SpeechRecognitionEvent = SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent
+
+            var colors = [ 'aqua' , 'azure' , 'beige', 'bisque', 'black', 'blue', 'brown', 'chocolate', 'coral', 'crimson', 'cyan', 'fuchsia', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'indigo', 'ivory', 'khaki', 'lavender', 'lime', 'linen', 'magenta', 'maroon', 'moccasin', 'navy', 'olive', 'orange', 'orchid', 'peru', 'pink', 'plum', 'purple', 'red', 'salmon', 'sienna', 'silver', 'snow', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'white', 'yellow'];
+            var grammar = '#JSGF V1.0; grammar colors; public <color> = ' + colors.join(' | ') + ' ;'
+            if (SpeechRecognition && SpeechGrammarList && SpeechRecognitionEvent) {
+                var recognition = new SpeechRecognition();
+                var speechRecognitionList = new SpeechGrammarList();
+                speechRecognitionList.addFromString(grammar, 1);
+                recognition.grammars = speechRecognitionList;
+                //recognition.continuous = false;
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                var diagnostic = document.querySelector('#log');
+                var bg = document.querySelector('.container');
+
+                document.getElementById('start').onclick = function() {
+                    recognition.start();
+                    diagnostic.innerHTML = '<p>Say a color</p>';
+                    this.classList.add('hide');
+                }
+
+                recognition.onresult = function(event) {
+                    var last = event.results.length - 1;
+                    var color = event.results[last][0].transcript;
+
+                    diagnostic.textContent = 'Result received: ' + color + '.';
+                    bg.style.backgroundColor = color;
+                    console.log('Confidence: ' + event.results[0][0].confidence);
+                }
+
+                recognition.onspeechend = function() {
+                    recognition.stop();
+                    document.getElementById('start').classList.remove('hide');
+                }
+
+                recognition.onnomatch = function(event) {
+                    diagnostic.textContent = "I didn't recognise that color.";
+                }
+
+                recognition.onerror = function(event) {
+                    diagnostic.textContent = 'Error occurred in recognition: ' + event.error;
+                }
+            } else {
+                document.getElementById('status').innerHTML = 'Speech recognition not available'
+            }
+        </script>
+    </body>
+</html>

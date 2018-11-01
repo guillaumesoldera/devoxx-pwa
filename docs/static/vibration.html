@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Vibration</h2>
+            <p>
+                WARNING : Mark as obsolete on MDN
+            </p>
+            <div id="status">
+                <button class="btn" onclick="vibration(500)">Vibrate during 500ms</button>
+                <button class="btn" onclick="vibration([300, 200, 500, 500, 300])">Vibrate with a pattern</button>
+            </div>
+            
+        </div>
+        
+        <script>
+
+                function vibration(durationOrPattern) {
+                    // if it's a pattern, it's an array of durations for vibrate duration and stop vibration duration
+                    navigator.vibrate(durationOrPattern)
+                }
+    
+                if (navigator.vibrate) {
+                    
+                } else {
+                    document.getElementById('status').innerHTML = 'Vibration API not available';
+                }
+            </script>
+    </body>
+</html>

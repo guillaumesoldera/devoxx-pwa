@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            .hide {
+                display: none;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+            video, canvas {
+                outline: 1px solid;
+            }
+
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <button id="open-camera" class="btn" onclick="openCamera()">Open camera</button>
+            <button id="take-picture" class="btn hide" onclick="takePicture()">Take picture</button>
+            <button id="close-camera" class="btn hide" onclick="closeCamera()">Close camera</button>
+            <div>
+                <video width="300" height="225" autoplay></video>
+                <canvas width="300" height="225"></canvas>
+            </div>
+        </div>
+        <div class="log">
+            
+        </div>
+        <script>
+                var _mediaStream;
+                function openCamera() {
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user"} }) // "environment" is also available for back camera
+                    .then(mediaStream => {
+                        _mediaStream = mediaStream
+                        document.querySelector('video').srcObject = mediaStream;
+                        document.getElementById('open-camera').classList.add('hide');
+                        document.getElementById('close-camera').classList.remove('hide');
+                        document.getElementById('take-picture').classList.remove('hide');
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById('log').innerHTML = '<span>' + err.message + '</span>'
+                    })
+                }
+                function takePicture() {
+                    const canvas = document.querySelector('canvas');
+                    const video = document.querySelector('video');
+                    const ratio = video.width / video.height
+                    const height = canvas.width / ratio;
+                    canvas.height = height;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                    _mediaStream.getTracks()[0].stop();
+                    document.getElementById('open-camera').classList.remove('hide');
+                    document.getElementById('close-camera').classList.add('hide');
+                    document.getElementById('take-picture').classList.add('hide');
+                    document.querySelector('video').srcObject = null;
+                }
+    
+                function closeCamera() {
+                    _mediaStream.getTracks()[0].stop();
+                    document.querySelector('video').srcObject = null;
+                    document.getElementById('open-camera').classList.remove('hide');
+                    document.getElementById('close-camera').classList.add('hide');
+                    document.getElementById('take-picture').classList.add('hide');
+                }
+    
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    // cool
+                } else {
+                    document.getElementById('status').innerHTML = 'Camera usage is not available';
+                }
+            </script>
+    </body>
+</html>

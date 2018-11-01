@@ -2,8 +2,8 @@
     <head>
         <title>Devoxx - PWA Showcase</title>
         <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-        
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
         <link rel="stylesheet" href="../assets/css/style.css"/>
         <style>
             #status {
@@ -25,36 +25,7 @@
                 border: 1px solid rgba(0,0,0,.84);
             }
         </style>
-        <script>
-            function handleChange(permissionName, newState) {
-                var timeBadge = new Date().toTimeString().split(' ')[0];
-                var newStateInfo = document.createElement('p');
-                newStateInfo.innerHTML = '<span class="badge">' + timeBadge + '</span> State of <b>' + permissionName + '</b> permission status changed to <b>' + newState + '</b>.';
-                document.getElementById('log').appendChild(newStateInfo);
-            }
-            function requestGeolocation() {
-                navigator.geolocation.getCurrentPosition(function(){});
-            }
-            function checkPermission(permissionName, descriptor) {
-                try {
-                    navigator.permissions.query(Object.assign({name: permissionName}, descriptor))
-                    .then(function (permission) {
-                        document.getElementById(permissionName + '-status').innerHTML = permission.state;
-                        permission.addEventListener('change', function (e) {
-                            document.getElementById(permissionName + '-status').innerHTML = permission.state;
-                            handleChange(permissionName, permission.state);
-                        });
-                    });
-                } catch (e) {
-                }
-            }
-
-            if (navigator.permissions) {
-                checkPermission('geolocation');
-            } else {
-                document.getElementById('status').innerHTML = 'Permissions API not available';
-            }
-        </script>
+        
     </head>
     <body>
         <nav>
@@ -78,6 +49,35 @@
         <footer>
             <small>Based on demo from WhatWebCanDoToday.</small>
         </footer>
-        
+        <script>
+                function handleChange(permissionName, newState) {
+                    var timeBadge = new Date().toTimeString().split(' ')[0];
+                    var newStateInfo = document.createElement('p');
+                    newStateInfo.innerHTML = '<span class="badge">' + timeBadge + '</span> State of <b>' + permissionName + '</b> permission status changed to <b>' + newState + '</b>.';
+                    document.getElementById('log').appendChild(newStateInfo);
+                }
+                function requestGeolocation() {
+                    navigator.geolocation.getCurrentPosition(function(){});
+                }
+                function checkPermission(permissionName, descriptor) {
+                    try {
+                        navigator.permissions.query(Object.assign({name: permissionName}, descriptor))
+                        .then(function (permission) {
+                            document.getElementById(permissionName + '-status').innerHTML = permission.state;
+                            permission.addEventListener('change', function (e) {
+                                document.getElementById(permissionName + '-status').innerHTML = permission.state;
+                                handleChange(permissionName, permission.state);
+                            });
+                        });
+                    } catch (e) {
+                    }
+                }
+    
+                if (navigator.permissions) {
+                    checkPermission('geolocation');
+                } else {
+                    document.getElementById('status').innerHTML = 'Permissions API not available';
+                }
+            </script>
     </body>
 </html>

@@ -2,8 +2,8 @@
     <head>
         <title>Devoxx - PWA Showcase</title>
         <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-        
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
         <link rel="stylesheet" href="../assets/css/style.css"/>
         <script>
             function chooseFile(evt) {
@@ -36,7 +36,7 @@
         <div class="content">
             <h2>Mobile behavior - Native inputs</h2>
             <p>
-                Inputs are a native behavior on mobile devices.
+                Inputs have a native behavior on mobile devices.
             </p>
             <h3>Date - DateTime</h3>
             <div>
@@ -52,12 +52,23 @@
             <div>
                     Number : <input type="number" id="input-number" />
             </div>
+            <div>
+                    Search : <input type="search" id="input-search" results="10"/>
+            </div>
+            <div>
+                    Tel:  <input type="tel" id="input-tel" />
+            </div>
+            <h3>Color</h3>
+            <div>
+                Color : <input type="color" id="input-color" />
+            </div>
             <h3>File image</h3>
             <div>
                     File image : <input type="file" id="input-file" accept="image/*" onchange="chooseFile(event)"/>
                     <br>
                     <canvas width="300"></canvas>
             </div>
+            
         </div>
     </body>
 </html>

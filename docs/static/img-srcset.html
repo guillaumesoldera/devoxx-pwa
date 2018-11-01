@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            #status {
+                width: 100%;
+                font: bold 1em sans-serif;
+                padding: 0.5em;
+            }
+            #status img {
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+            }
+        </style>
+        
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Performance / Fast - Image Sizes</h2>
+            
+            <div id="status">
+                <img src="../assets/images/default.png" srcset="../assets/images/small.png 320w, ../assets/images/medium.png 640w, ../assets/images/large.png 1024w, ../assets/images/xl.png 1920w" alt="Test" />
+            </div>
+            
+        </div>
+        <footer>
+                <small>Based on demo from www.hteumeuleu.fr.</small>
+            </footer> 
+    </body>
+</html>

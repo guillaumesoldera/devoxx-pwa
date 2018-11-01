@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../assets/css/style.css"/>
+        <style>
+            .hide {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Mobile behavior - Native links</h2>
+            <p>
+                Some links have a native behavior on mobile devices.
+            </p>
+            <h3>Maps</h3>
+                <a class="android" href="geo:51.1681,4.4">Antwerpeen</a>
+                <a class="ios hide" href="http://maps.apple.com/?q=51.1681,4.4">Antwerpeen</a>
+            <h3>Mail</h3>
+                <a href="mailto:yo.devoxx@pwa-demo.com?subject=HTML%20is%20so%20cool&body=Sample%20body">New Mail</a>
+            <h3>Phone Call</h3>
+                <a href="tel:+330123456789">New Call</a>
+                <a id="facetime-call" class="ios hide" href="facetime:+330123456789">A Facetime Call</a>
+            <h3>SMS</h3>
+                <a href="sms:+330123456789">New SMS Message</a>
+        </div>
+        <script>
+            var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            window.addEventListener('load', function() {
+                if (iOS) {
+                    
+                    [].forEach.call(document.getElementsByClassName('ios'), function(elem) {
+                        elem.classList.remove("hide")
+                    });
+                    [].forEach.call(document.getElementsByClassName('android'), function(elem) {
+                        elem.classList.add("hide")
+                    })
+                }
+            })
+        </script>
+    </body>
+</html>
