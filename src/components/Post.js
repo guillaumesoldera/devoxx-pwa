@@ -9,22 +9,23 @@ export class Post extends Component {
 
     static propTypes = {
         linkToPost: PropTypes.bool.isRequired,
+        post: PropTypes.object.isRequired,
+        
     }
 
     static defaultProps = {
         linkToPost: false,
+        post:undefined
     }
 
     render() {
-
+        const {post}=this.props;
         let text = (
-            <p>
-                Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo
-            </p>
+            post && <p>{post.text} </p>
         );
-        if (this.props.linkToPost) {
+        if (post && this.props.linkToPost) {
             text = (
-                <NavLink to={'/authors/authorId/postId'}>
+                <NavLink to={`/post/${post.postId}`}>
                     {text}
                 </NavLink>
             )
@@ -33,23 +34,20 @@ export class Post extends Component {
         return (
             <UserContext.Consumer>
                 { ({user}) => (
-                <div className="post">
+                post && <div className="post">
                     <div className="post-metadata">
-                        <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
+                        <img src={post.author.profilePicture} className="post-author-avatar" />
                         <div className="post-infos">
-                            <NavLink to={'/authors/authorId'} className="post-author-name">Jack Vagabond</NavLink>
-                            <span className="post-location">Awesome Bar</span>
+                            <NavLink to={`/authors/${post.author.authorId}`} className="post-author-name">{post.author.fullName}</NavLink>
+                            <span className="post-location">{post.location}</span>
                         </div>
-                        <span className="post-date">11 oct.</span>
+                        <span className="post-date">{post.date}</span>
                     </div>
                     <div className="post-text">
                         {text}
                     </div>
                     <div className="post-picture-container">
-                        <img
-                            src="https://www.gannett-cdn.com/-mm-/89934f7b13e7717eb560f3babda84f20895abcd0/c=83-0-724-482/local/-/media/2018/07/17/DetroitFreeP/DetroitFreePress/636674313628993565-GettyImages-684133728.jpg?width=534&height=401&fit=crop"
-                            className="post-picture"
-                        />
+                        <img src={post.picture} className="post-picture"/>
                     </div>
                     <div className="post-actions-container">
                         <div className="post-votes">

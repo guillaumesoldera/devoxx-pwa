@@ -5,12 +5,20 @@ import { Post } from '../components/Post';
 import { NavLink, withRouter } from 'react-router-dom';
 import '../styles/Profile.scss';
 import { UserContext } from '../context/user';
+import { loadProfile } from '../services/profile';
 
 class _Profile extends Component {
 
-
     state = {
-        imageSrc: 'https://randomuser.me/api/portraits/men/3.jpg'
+        imageSrc: '',
+        porfile: undefined
+    }
+
+    async componentDidMount() {
+        console.log('this.context.user.id', this.context.user.id);
+        const profile = await loadProfile(this.context.user.id);
+        console.log('profile', profile);
+        this.setState({ profile, imageSrc: profile.author.profilePicture })
     }
 
     goBack = (e) => {
@@ -24,14 +32,14 @@ class _Profile extends Component {
         }
     }
 
-    logoutUser = (e, logoutMethod) => {
-        logoutMethod();
+    logoutUser = (e) => {
+        this.context.logout();
         this.goBack(e);
     }
 
     picChange = (evt) => {
         const fileInput = evt.target.files;
-        if(fileInput.length>0){
+        if (fileInput.length > 0) {
             this._picURL = URL.createObjectURL(fileInput[0]);
             const canvas = document.querySelector('canvas');
             const ctx = canvas.getContext('2d')
@@ -51,7 +59,7 @@ class _Profile extends Component {
                         URL.revokeObjectURL(this._picURL);
                     }
                 })
-              };
+            };
 
             photo.src = this._picURL;
         }
@@ -68,48 +76,41 @@ class _Profile extends Component {
     }
 
     render() {
+        const { profile, imageSrc } = this.state
+        if (!profile) {
+            return null;
+        }
         return (
-            <UserContext.Consumer>
-                {({user, logout}) => (
             <div className="profile-detail">
                 <BackHeader title={"Your profile"}>
                     <ul className="right">
                         <li>
-                            <a href="#" className="logout" onClick={(e) => this.logoutUser(e, logout)}>
+                            <a href="#" className="logout" onClick={(e) => this.logoutUser(e)}>
                                 <i className="fa fa-sign-out material-icons small"></i><span>&nbsp;Logout</span>
                             </a>
                         </li>
                     </ul>
                 </BackHeader>
-                <div className="profile-infos-container">
+                {profile.author && <div className="profile-infos-container">
                     <div className="profile-metadata">
-                        <img onClick={this.modifyAvatar} src={this.state.imageSrc} className="profile-avatar" />
-                        <input type="file" accept="image/*" onChange={this.picChange}/>
+                        {this.state.imageSrc
+                            ? <img onClick={this.modifyAvatar} src={imageSrc} className="profile-avatar" />
+                            : <div onClick={this.modifyAvatar} className="profile-avatar"><br />profile picture</div>}
+                        <input type="file" accept="image/*" onChange={this.picChange} />
                         <canvas width="100" height="100"></canvas>
                         <div className="profile-infos">
-                            <span className="profile-name">Jack Vagabond</span>
+                            <span className="profile-name">{profile.author.fullName}</span>
                         </div>
                     </div>
                     <div className="profile-bio">
-                        <p>
-                        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo
-                        </p>
+                        <p>{profile.author.bio}</p>
                     </div>
-                </div>
+                </div>}
                 <h3 className="posts-separator-title">All posts</h3>
-                <ul>
-                    <li>
-                        <Post linkToPost={true} />/>
-                    </li>
-                    <li>
-                        <Post linkToPost={true} />/>
-                    </li>
-                </ul>
+                {profile.posts && <ul>{profile.posts.map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>}
             </div>
-                )}
-            </UserContext.Consumer>
         );
     }
 }
-
+_Profile.contextType = UserContext;
 export const Profile = withRouter(_Profile);

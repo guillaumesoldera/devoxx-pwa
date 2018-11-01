@@ -13,8 +13,6 @@ import { UserContext } from './context/user';
 import { Login } from './pages/Login';
 import { Profile } from './pages/Profile';
 
-
-
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <UserContext.Consumer>
     { ({user}) => (
@@ -59,7 +57,7 @@ class App extends Component {
     this.setState({
       user: {
         name: 'Jobi Joba',
-        id: '12345-67890'
+        id: '1'
       }
     }, () => {
       localStorage.setItem('user', JSON.stringify(this.state.user))
@@ -89,7 +87,7 @@ class App extends Component {
                   <Route exact path="/favourites" component={Favourites} />
                   <PrivateRoute exact path="/comment/:postId" component={({match}) => <Comment postId={match.params.postId}/>} />
                   <Route exact path="/authors/:authorId" render={({match}) => <Author authorId={match.params.authorId}/>} />
-                  <Route exact path="/authors/:authorId/:postId" render={({match}) => <PostDetail postId={match.params.postId}/>} />
+                  <Route exact path="/post/:postId" render={({match}) => <PostDetail postId={match.params.postId}/>} />
                   <Route component={NoMatch} />
                 </Switch>
             </div>
