@@ -10,10 +10,7 @@
                 width: 100%;
                 padding: 0.5em;
             }
-            #exchange-rate{
-                display: flex;
-                flex-direction: column;
-            }
+            
             .new-exchange-container {
                 display: flex;
                 flex-direction: column;
@@ -24,10 +21,28 @@
             .container img {
                 width: 30%;
             }
-            .new-exchange {
+            .score-change {
                 background-color: yellow;
             }
-            
+            .ranking-change {
+                background-color: green;
+            }
+            .hide {
+                display: none;
+            }
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
         </style>
     </head>
     <body>
@@ -43,9 +58,17 @@
 
             </div>
             <div id="status">
-                <button class="btn" onclick="refreshExchangeRate()">Refresh exchange rate</button>
+                <div class="actions">
+                    <button id="refresh" class="btn" onclick="refreshData()">Fetch data</button>
+                    <button id="clear" class="btn hide" onclick="clean()">Clear</button>
+                    <button id="show-new" class="btn hide" onclick="updatePage()">Show new</button>
+                </div>
                 <div id="new"></div>
-                <div id="exchange-rate"></div>
+                <div id="container">
+                    <table id="subreddits">
+
+                    </table>
+                </div>
             </div>
             
             <div class="container">
@@ -55,9 +78,10 @@
         <script>
             var loaderContainer = document.getElementById('loader');
             var newContainer = document.getElementById('new');
-            var statusContainer = document.getElementById('exchange-rate');
-            var url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=EUR&apikey=AK9RPK8GOSQC5KP4'
-            
+            var statusContainer = document.getElementById('container');
+            var tableSubreddits = document.getElementById('subreddits');
+            //var url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=BTC&to_currency=EUR&apikey=AK9RPK8GOSQC5KP4'
+            var url = 'https://www.reddit.com/best/.json';
             function startSpinner() {
                 loaderContainer.innerHTML = '<span><i>Fetching...</i></span>'
             }
@@ -70,52 +94,81 @@
                 loaderContainer.innerHTML = '<span><b>Error during fetching</b></span>'
             }
 
-            function updatePageWithNew() {
-
+            function clean() {
+                tableSubreddits.innerHTML = '';
+                document.getElementById('clear').classList.add('hide');
             }
 
+            var subredditsSorted = []
             function updatePage(data) {
                 var newValueContainer = document.createElement('div');
                 if (!data) {
                     data = networkData;
-                    newContainer.innerHTML = '';
-                    newValueContainer.classList.add('new-exchange');
+                    document.getElementById('show-new').classList.add('hide');
+                    document.getElementById('clear').classList.remove('hide');
+                    //newContainer.innerHTML = '';
+                    //newValueContainer.classList.add('new-exchange');
                 }
-                if (data["Realtime Currency Exchange Rate"]) {
-                    var currencyExchangeRate = data["Realtime Currency Exchange Rate"];
-                    var fromCurrency = currencyExchangeRate["2. From_Currency Name"]
-                    var toCurrency = currencyExchangeRate["4. To_Currency Name"]
-                    var exchangeRate = currencyExchangeRate["5. Exchange Rate"]
-                    var lastRefreshed = currencyExchangeRate["6. Last Refreshed"]
-                    newValueContainer.classList.add('new-exchange-container');
-                    var fromCurrencyContainer = document.createElement('span');
-                    fromCurrencyContainer.innerHTML = 'From currency : ' + fromCurrency;
-                    var toCurrencyContainer = document.createElement('span');
-                    toCurrencyContainer.innerHTML = 'To currency : ' + toCurrency;
-                    var exchangeRateContainer = document.createElement('span');
-                    exchangeRateContainer.innerHTML = 'Exchange rate : ' + exchangeRate;
-                    var lastRefreshedContainer = document.createElement('span');
-                    lastRefreshedContainer.innerHTML = 'Last refreshed : ' + lastRefreshed;
-                    var separator = document.createElement('span');
-                    separator.innerHTML = '------------------------------<br>'
-                    newValueContainer.appendChild(fromCurrencyContainer);
-                    newValueContainer.appendChild(toCurrencyContainer);
-                    newValueContainer.appendChild(exchangeRateContainer);
-                    newValueContainer.appendChild(lastRefreshedContainer);
-                    newValueContainer.appendChild(separator);
-                    statusContainer.innerHTML = '';
+                if (data && data.data && data.data.children) {
+                    var scores = {}
+                    data.data.children.forEach(value => {
+                        scores[value.data.subreddit] = value.data.score;
+                    })
                     
-                    statusContainer.appendChild(newValueContainer)
+                    let idx = 0;
+                    var rows = []
+                    for (const subreddit in scores) {
+                        if (scores.hasOwnProperty(subreddit)) {
+                            const score = scores[subreddit];
+                            var existingRow = document.getElementById(subreddit);
+                            var rowAsRankingChanged = false;
+                            var rowAsScoreChanged = false;
+                            if (existingRow) {
+                                var previousScore = document.getElementById(subreddit + '-score').textContent;
+                                if (previousScore !== (''+score)) {
+                                    rowAsScoreChanged = true;
+                                }
+                                var previousIndex = subredditsSorted.indexOf(subreddit);
+                                if (previousIndex !== idx) {
+                                    rowAsRankingChanged = true;
+                                }
+                            }
+                            var row = document.createElement('tr');
+                            row.id = subreddit;
+                            if (existingRow === undefined) {
+                                row.classList.add('new-subreddit');
+                            }
+                            if (rowAsRankingChanged) {
+                                row.classList.add('ranking-change');
+                            }
+                            var subredditColumn = document.createElement('td');
+                            subredditColumn.innerHTML = subreddit;
+                            var scoreColumn = document.createElement('td');
+                            scoreColumn.innerHTML = score;
+                            scoreColumn.id = subreddit + '-score';
+                            if (rowAsScoreChanged) {
+                                scoreColumn.classList.add('score-change');
+                            }
+                            row.appendChild(subredditColumn);
+                            row.appendChild(scoreColumn);
+                            rows.push(row);
+                        }
+                        idx++
+                    }
+                    subredditsSorted = Object.keys(scores);
+                    tableSubreddits.innerHTML = '';
+                    rows.forEach(row => {
+                        tableSubreddits.appendChild(row);
+                    });
                     
-
                 }
             }
 
             function showNew() {
-                newContainer.innerHTML = '<button class="btn" onclick="updatePage()">Show new</button>'
+                document.getElementById('show-new').classList.remove('hide');
             }
 
-            function refreshExchangeRate() {
+            function refreshData() {
                 var networkDataReceived = false;
                 
                 startSpinner();
@@ -126,9 +179,8 @@
                     return response.json();
                 }).then(function(data) {
                     networkDataReceived = true;
-                    //updatePage(data);
-                    showNew();
                     networkData = data;
+                    showNew();
                 })
 
                 console.log('fetch cached data');
@@ -195,7 +247,7 @@
                     registerSW('./cache-then-network.js')
                     .then(function () {
                         initialLoad();
-                        refreshExchangeRate();
+                        refreshData();
                     });
                 });
             } else {
