@@ -2,18 +2,28 @@ import React, { Component } from 'react';
 import { Header } from '../components/Header';
 import { PostsList } from '../components/PostsList';
 import '../styles/Home.scss';
+import { UserContext } from '../context/user';
 import { allPostsWithAuthors } from '../services/posts';
-import { favorites, votes } from '../stores/indexedDb';
+import { authorById } from '../services/authors';
+import { favorites, votes, localPosts } from '../stores/indexedDb';
 
 export class Home extends Component {
 
     state = {
-        posts: []
+        posts: [],
+        unsyncedPosts: []
     }
+
+    static contextType = UserContext;
 
     async componentDidMount() {
         const posts = await allPostsWithAuthors();
-        await this.updatePostsWithFavoritesAndVotes(posts)
+        await this.updatePostsWithFavoritesAndVotes(posts);
+        const unsyncedPosts = await localPosts();
+        if (unsyncedPosts.length > 0 && this.context.user) {
+            const me = await authorById(this.context.user.id)
+            this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
+        }
     }
 
     updatePostsWithFavoritesAndVotes = async (posts) => {
@@ -22,9 +32,9 @@ export class Home extends Component {
         const postWithVotesAndFavs = posts.map(post => {
             const vote = postVotes.find(vote => vote.postId === post.postId) || {};
             return {
-                ...post, 
-                votedUp: vote.value > 0, 
-                votedDown: vote.value < 0, 
+                ...post,
+                votedUp: vote.value > 0,
+                votedDown: vote.value < 0,
                 favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
                 onFavorite: this.onFavorite,
                 onVote: this.onVote
@@ -64,12 +74,12 @@ export class Home extends Component {
 
 
     render() {
-        const { posts } = this.state;
+        const { posts, unsyncedPosts } = this.state;
         return (
             <div className="home">
                 <Header />
                 <div className="content-container">
-                    <PostsList posts={posts} />
+                    <PostsList posts={[...unsyncedPosts, ...posts]} />
                 </div>
             </div>
         );

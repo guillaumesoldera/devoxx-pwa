@@ -1,7 +1,11 @@
 import React, { Component, Fragment } from 'react';
-import { BackHeader } from '../components/Header';
+import { BackHeaderWithAction } from '../components/Header';
 import '../styles/NewPost.scss';
 import { classSet, isOnDesktop, isOnMediumScreen } from '../utils/utils';
+import { post } from '../stores/indexedDb';
+import { UserContext } from '../context/user';
+import moment from 'moment';
+moment.locale('fr')
 
 export class NewPost extends Component {
 
@@ -10,8 +14,12 @@ export class NewPost extends Component {
         openCamera: false,
         imageSrc: undefined,
         imgValidated: false,
-        mediaStream: undefined
+        mediaStream: undefined,
+        location: undefined,
+        text: ''
     }
+
+    static contextType = UserContext;
 
     componentDidMount() {
         this._input.focus();
@@ -19,23 +27,23 @@ export class NewPost extends Component {
 
     openCamera = (e) => {
         this._chooseFileSelected = false;
-        navigator.mediaDevices.getUserMedia({video: true})
-        .then(mediaStream => {
-            this.setState({
-                openCamera: true,
-                mediaStream,
-                imageSrc: undefined,
-            }, () => {
-                document.querySelector('video').srcObject = mediaStream;
-            });
-        })
-        .catch(err => {
-            this.setState({
-                openCamera: false,
-                cameraDisabled: true,
-                imageSrc: undefined,
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(mediaStream => {
+                this.setState({
+                    openCamera: true,
+                    mediaStream,
+                    imageSrc: undefined,
+                }, () => {
+                    document.querySelector('video').srcObject = mediaStream;
+                });
             })
-        })
+            .catch(err => {
+                this.setState({
+                    openCamera: false,
+                    cameraDisabled: true,
+                    imageSrc: undefined,
+                })
+            })
     }
 
     closeCamera = (e) => {
@@ -75,7 +83,7 @@ export class NewPost extends Component {
         } else {
             this.openCamera();
         }
-        
+
     }
 
     valid = (e) => {
@@ -89,7 +97,7 @@ export class NewPost extends Component {
 
     picChange = (evt) => {
         const fileInput = evt.target.files;
-        if(fileInput.length>0){
+        if (fileInput.length > 0) {
             this._picURL = URL.createObjectURL(fileInput[0]);
             const canvas = document.querySelector('canvas');
             const ctx = canvas.getContext('2d')
@@ -107,7 +115,7 @@ export class NewPost extends Component {
                     openCamera: false,
                     mediaStream: undefined,
                 })
-              };
+            };
 
             photo.src = this._picURL;
         }
@@ -124,7 +132,40 @@ export class NewPost extends Component {
         }
     }
 
-    
+    addPost = async () => {
+        const { location, text, imageSrc: picture } = this.state;
+        const { latitude, longitude } = location;
+        const newPost = {
+            text,
+            picture,
+            date: moment().format("ll"),
+            location: { latitude, longitude },
+            userId: this.context.user.id
+        }
+        await post(newPost);
+    }
+
+    setCurrentPostion = () => {
+        navigator.geolocation.getCurrentPosition(pos => {
+            this.setState({
+                location: pos.coords
+            })
+        }, err => {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            }
+        );
+    }
+
+    onChangeText = (e) => {
+        this.setState({
+            text: e.target.value
+        })
+    }
+
     render() {
         let width = 280;
         let height = 210;
@@ -138,25 +179,16 @@ export class NewPost extends Component {
         const takingPicture = this.state.openCamera || (this.state.imageSrc && !this.state.imgValidated)
         return (
             <div className="new-post-container">
-                <BackHeader iconClassName="fa fa-times close">
-                    {!takingPicture && (
-                        <ul className="right">
-                            <li>
-                                <button className="btn btn-rounded add-post">
-                                    <span>Add new post</span>
-                                </button>
-                            </li>
-                        </ul>
-                        )
-                    }
-                </BackHeader>
+                <BackHeaderWithAction hideAction={takingPicture} actionClass={"add-post"} actionLabel={'Add new post'} doAction={this.addPost} />
                 <div className="new-post-content">
                     {!takingPicture && (
                         <Fragment>
                             <textarea
                                 ref={(elem) => this._input = elem}
                                 onBlur={this.onKeyboardClose}
+                                value={this.state.text}
                                 onKeyDown={this.onKeyboardOpen}
+                                onChange={this.onChangeText}
                                 className="materialize-textarea post-text"
                                 placeholder="A new beer wasted ?">
                             </textarea>
@@ -178,22 +210,22 @@ export class NewPost extends Component {
                                 <button className="btn new-post-action" disabled={this.state.imgValidated} onClick={this.openChooseFile}>
                                     <i className="fa fa-image material-icons medium"></i>
                                 </button>
-                                <button className="btn new-post-action">
-                                <i className="fa fa-map-marker material-icons medium"></i>
+                                <button className="btn new-post-action" disabled={this.state.location} onClick={this.setCurrentPostion}>
+                                    <i className="fa fa-map-marker material-icons medium"></i>
                                 </button>
                             </div>
                         </Fragment>
                     )}
-                    <input type="file" accept="image/*" onChange={this.picChange}/>
-                    
-                    <div className={classSet({"picture-container": true, "hide": !(this.state.imageSrc && !this.state.imgValidated)})}>
+                    <input type="file" accept="image/*" onChange={this.picChange} />
+
+                    <div className={classSet({ "picture-container": true, "hide": !(this.state.imageSrc && !this.state.imgValidated) })}>
                         <canvas width={width} height={height}></canvas>
                         <div className="buttons-actions">
                             <button className="btn btn-rounded" onClick={this.valid}>Valid</button>
                             <button className="btn btn-rounded" onClick={this.retry}>Retry</button>
                         </div>
                     </div>
-                        
+
                     {this.state.openCamera && this.state.mediaStream && (
                         <div className="video-container">
                             <video width={width} height={height} autoPlay></video>

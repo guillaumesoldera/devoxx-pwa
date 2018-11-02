@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { classSet } from '../utils/utils';
 import '../styles/PostComment.scss'
 
 export class PostComment extends Component {
@@ -10,7 +11,7 @@ export class PostComment extends Component {
             return null;
         }
         return (
-            <div className="post-comment">
+            <div className={classSet({ "post-comment": true, "disabled": comment.unsynced })}>
                  <div className="post-comment-metadata">
                     <img src={comment.author.profilePicture} className="post-comment-author-avatar" />
                     <div className="post-comment-infos">

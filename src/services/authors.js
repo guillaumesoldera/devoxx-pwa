@@ -7,3 +7,7 @@ export const allAuthors = async () => {
     }])
 }
 
+export const authorById = async (id) => {
+    const authors = await allAuthors();
+    return authors.find(author => author.authorId === id);
+}

@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "font-awesome": "^4.7.0",
-    "node-sass": "^4.9.3",
     "dexie": "^2.0.4",
+    "font-awesome": "^4.7.0",
+    "moment": "^2.22.2",
+    "node-sass": "^4.9.3",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-router-dom": "^4.3.1",

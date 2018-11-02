@@ -4,7 +4,7 @@ import { BackHeader } from '../components/Header';
 import { Post } from '../components/Post';
 import { NavLink, withRouter } from 'react-router-dom';
 import '../styles/Profile.scss';
-import { favorites, votes } from '../stores/indexedDb';
+import { favorites, votes, localPosts } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
 import { loadProfile } from '../services/profile';
 
@@ -12,19 +12,23 @@ class _Profile extends Component {
 
     state = {
         imageSrc: '',
-        porfile: undefined
+        porfile: undefined,
+        unsyncedPosts : []
     }
+
+    static contextType = UserContext;
 
     async componentDidMount() {
         const profile = await loadProfile(this.context.user.id);
-        await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture)
+        await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
+        const unsyncedPosts = await localPosts();
+        this.setState({unsyncedPosts:  unsyncedPosts.map(post => ({ ...post, author: profile.author }))})
     }
 
     onFavorite = async () => {
         const { profile } = this.state;
         await this.updateProfile(profile);
     }
-
 
     updateProfileWithFavoritesAndVotes = async (profile, imageSrc) => {
         const postVotes = await votes();
@@ -57,8 +61,8 @@ class _Profile extends Component {
     }
 
     onVote = async () => {
-        const { posts } = this.state;
-        await this.updateProfileWithVotes(posts);
+        const { profile } = this.state;
+        await this.updateProfileWithVotes(profile);
     }
 
     updateProfileWithVotes = async (profile) => {
@@ -136,7 +140,7 @@ class _Profile extends Component {
     }
 
     render() {
-        const { profile, imageSrc } = this.state
+        const { profile, imageSrc, unsyncedPosts} = this.state
         if (!profile) {
             return null;
         }
@@ -167,10 +171,10 @@ class _Profile extends Component {
                     </div>
                 </div>}
                 <h3 className="posts-separator-title">All posts</h3>
-                {profile.posts && <ul>{profile.posts.map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>}
+                 <ul>{[...unsyncedPosts, ...profile.posts].map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>
             </div>
         );
     }
 }
-_Profile.contextType = UserContext;
+
 export const Profile = withRouter(_Profile);

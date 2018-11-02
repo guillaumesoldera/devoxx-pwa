@@ -4,8 +4,8 @@ const db = new Dexie("AirBeerNbeer");
 
 db.version(1).stores({
     favorites: "postId, userId, rank",
-    posts: "userId, date, location, text, picture",
-    comments: "postId, userId ,date, text",
+    posts: "++postId, userId, date, location, text, picture, unsynced",
+    comments: "++commentId, postId, userId, date, text, unsynced",
     votes: "postId, userId, value",
     notifications: "postId, userId, action"
 });
@@ -52,20 +52,29 @@ export const vote = (postId, userId, value) => {
 
 export const comment = (comment) => {
     console.log('commenting post  : ', comment);
-    return db.comments.add(comment)
+    return db.comments.add({...comment, unsynced:true})
         //.then(() => requestSync('comments_updated'))
         .then(() => db.comments.toArray());
 };
 
 export const post = (post) => {
     console.log('addind a new post  : ', post);
-    return db.posts.add(post)
+    return db.posts.add({...post, unsynced:true})
         //.then(() => requestSync('posts_updated'))
         .then(() => db.posts.toArray());
 };
 
 export const votes = () => {
     return db.votes.toArray();
+};
+
+export const localPosts = () => {
+    return db.posts.toArray();
+};
+
+export const localComments = (postId) => {
+    return db.comments.where('postId')
+    .equals(postId).toArray();
 };
 
 export const favorites = () => {

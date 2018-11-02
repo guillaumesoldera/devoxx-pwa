@@ -23,16 +23,20 @@ export class Post extends Component {
 
     favUnfav = async () => {
         const { post } = this.props;
-        const { user } = this.context
-        await favorite(post.postId, user.id)
-        post.onFavorite();
+        if (!post.unsynced) {
+            const { user } = this.context
+            await favorite(post.postId, user.id)
+            post.onFavorite();
+        }
     }
 
     voteUpDown = async (value) => {
         const { post } = this.props;
-        const { user } = this.context
-        await vote(post.postId, user.id, value)
-        post.onVote();
+        if (!post.unsynced) {
+            const { user } = this.context
+            await vote(post.postId, user.id, value)
+            post.onVote();
+        }
     }
 
     render() {
@@ -40,7 +44,7 @@ export class Post extends Component {
         let text = (
             post && <p>{post.text} </p>
         );
-        if (post && this.props.linkToPost) {
+        if (post && this.props.linkToPost && !post.unsynced) {
             text = (
                 <NavLink to={`/post/${post.postId}`}>
                     {text}
@@ -51,12 +55,12 @@ export class Post extends Component {
             return null;
         }
         const { user } = this.context
-        return (<div className="post">
+        return (<div className={classSet({ "post": true, "disabled": post.unsynced })}>
             <div className="post-metadata">
                 <img src={post.author.profilePicture} className="post-author-avatar" />
                 <div className="post-infos">
                     <NavLink to={`/authors/${post.author.authorId}`} className="post-author-name">{post.author.fullName}</NavLink>
-                    <span className="post-location">{post.location}</span>
+                    <span className="post-location">{!post.unsynced ? post.location : 'Your Location'}</span>
                 </div>
                 <span className="post-date">{post.date}</span>
             </div>
@@ -68,32 +72,35 @@ export class Post extends Component {
             </div>
             <div className="post-actions-container">
                 <div className="post-votes">
-                    {post.upVotes &&<span>+{post.upVotes}</span>}
+                    {post.upVotes && <span>+{post.upVotes}</span>}
                     <i className={classSet({
                         "fa fa-thumbs-o-up material-icons small": true,
                         "color-blue": post.votedUp,
-                        "disabled": user === undefined
-                    })} onClick={()=> this.voteUpDown(1)}></i>
-                    {post.downVotes &&<span>-{post.downVotes}</span>}
+                        "disabled": user === undefined || post.unsynced
+                    })} onClick={() => this.voteUpDown(1)}></i>
+                    {post.downVotes && <span>-{post.downVotes}</span>}
                     <i className={classSet({
                         "fa fa-thumbs-o-down material-icons small": true,
                         "color-blue": post.votedDown,
-                        "disabled": user === undefined
-                    })} onClick={()=> this.voteUpDown(-1)}></i>
+                        "disabled": user === undefined || post.unsynced
+                    })} onClick={() => this.voteUpDown(-1)}></i>
                 </div>
                 <div className="post-actions">
-                    <i className="fa fa-share-alt material-icons small"></i>
+                    <i className={classSet({
+                        "fa fa-share-alt material-icons small": true,
+                        "disabled": user === undefined || post.unsynced
+                    })}></i>
                     <a
                         className={classSet({
-                            "disabled": user === undefined
+                            "disabled": user === undefined || post.unsynced
                         })}
-                        href="/comment/id_post"><i className="fa fa-comment-o material-icons small"></i></a>
-                    {post.onFavorite && <i className={classSet({
+                        href={`/comment/${post.postId}`}><i className="fa fa-comment-o material-icons small"></i></a>
+                    {(post.onFavorite || post.unsynced )&& <i className={classSet({
                         "fa material-icons small": true,
                         "fa-heart-o": !post.favorited,
                         "color-red": post.favorited,
                         "fa-heart": post.favorited,
-                        "disabled": user === undefined
+                        "disabled": user === undefined || post.unsynced
                     })} onClick={this.favUnfav}></i>}
                 </div>
             </div>
