@@ -27,12 +27,14 @@
             
             window.addEventListener('load', function() {
                 var byteToMB = 0.00000095367432;
+                var container = document.getElementById('container')
                 if (navigator.storage && navigator.storage.estimate) {
-                    var container = document.getElementById('container')
                     navigator.storage.estimate()
                         .then(value => {
                             container.innerHTML = '<ul><li>Quota : ' + (value.quota * byteToMB) + ' MB</li><li>Usage : ' + (value.usage * byteToMB) + ' MB</li></ul>'
                         })
+                } else {
+                    container.innerHTML = 'Storage estimate not available'
                 }
             })
         </script>
