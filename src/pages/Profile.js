@@ -4,6 +4,7 @@ import { BackHeader } from '../components/Header';
 import { Post } from '../components/Post';
 import { NavLink, withRouter } from 'react-router-dom';
 import '../styles/Profile.scss';
+import { favorites, votes } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
 import { loadProfile } from '../services/profile';
 
@@ -15,10 +16,69 @@ class _Profile extends Component {
     }
 
     async componentDidMount() {
-        console.log('this.context.user.id', this.context.user.id);
         const profile = await loadProfile(this.context.user.id);
-        console.log('profile', profile);
-        this.setState({ profile, imageSrc: profile.author.profilePicture })
+        await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture)
+    }
+
+    onFavorite = async () => {
+        const { profile } = this.state;
+        await this.updateProfile(profile);
+    }
+
+
+    updateProfileWithFavoritesAndVotes = async (profile, imageSrc) => {
+        const postVotes = await votes();
+        const favoritesPosts = await favorites();
+        const postWithVotesAndFavs = profile.posts.map(post => {
+            const vote = postVotes.find(vote => vote.postId === post.postId) || {};
+            return {
+                ...post, 
+                votedUp: vote.value > 0, 
+                votedDown: vote.value < 0, 
+                favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
+                onFavorite: this.onFavorite,
+                onVote: this.onVote
+            }
+        });
+        this.setState({ profile: { ...profile, posts: postWithVotesAndFavs }, imageSrc });
+    }
+
+    onFavorite = async () => {
+        const { profile } = this.state;
+        await this.updateProfileWithFavorites(profile);
+    }
+
+    updateProfileWithFavorites = async (profile) => {
+        const favoritesPosts = await favorites();
+        const postWithFavs = profile.posts.map(post => ({
+            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
+        }));
+        this.setState({ profile: { ...profile, posts: postWithFavs }})
+    }
+
+    onVote = async () => {
+        const { posts } = this.state;
+        await this.updateProfileWithVotes(posts);
+    }
+
+    updateProfileWithVotes = async (profile) => {
+        const postVotes = await votes();
+        const postWithVotes = profile.posts.map(post => {
+            const vote = postVotes.find(vote => vote.postId === post.postId) || {};
+            return {
+                ...post, votedUp: vote.value > 0, votedDown: vote.value < 0
+            }
+        });
+        this.setState({ profile: { ...profile, posts: postWithVotes }})
+    }
+
+    updateProfile = async (profile, imageSrc) => {
+        const _imageSrc = imageSrc || this.state.imageSrc
+        const favoritesPosts = await favorites();
+        const postWithFavs = profile.posts.map(post => ({
+            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId)>-1, onFavorite: this.onFavorite
+        }));
+        this.setState({ profile: { ...profile, posts: postWithFavs }, imageSrc: _imageSrc });
     }
 
     goBack = (e) => {

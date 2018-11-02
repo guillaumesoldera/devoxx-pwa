@@ -4,6 +4,7 @@ import { Post } from '../components/Post';
 import '../styles/PostDetail.scss'
 import { PostComment } from '../components/PostComment';
 import { postDetails } from '../services/posts';
+import { favorites, votes } from '../stores/indexedDb';
 
 export class PostDetail extends Component {
     state = {
@@ -11,10 +12,64 @@ export class PostDetail extends Component {
     }
 
     async componentDidMount() {
-        console.log('this.props.postId', this.props.postId)
         const postDetail = await postDetails(this.props.postId);
-        console.log('post', postDetail)
-        this.setState({ postDetail })
+        await this.updatePostWithFavoritesAndVotes(postDetail);
+    }
+
+    updatePostWithFavoritesAndVotes = async (postDetail) => {
+        const postVotes = await votes();
+        const favoritesPosts = await favorites();
+        const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
+        this.setState({
+            postDetail: {
+                ...postDetail,
+                post: {
+                    ...postDetail.post,
+                    favorited: favoritesPosts.findIndex(fav => fav.postId === postDetail.post.postId) > -1,
+                    votedUp: vote.value > 0,
+                    votedDown: vote.value < 0,
+                    onFavorite: this.onFavorite,
+                    onVote: this.onVote
+                }
+            }
+        });
+    }
+
+    onVote = async () => {
+        const { postDetail } = this.state;
+        await this.updatePostWithVotes(postDetail);
+    }
+
+    onFavorite = async () => {
+        const { postDetail } = this.state;
+        await this.updatePostWithFavorites(postDetail);
+    }
+
+    updatePostWithVotes = async (postDetail) => {
+        const postVotes = await votes();
+        const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
+        this.setState({
+            postDetail: {
+                ...postDetail,
+                post: {
+                    ...postDetail.post,
+                    votedUp: vote.value > 0, votedDown: vote.value < 0
+                }
+            }
+        });
+    }
+
+    updatePostWithFavorites = async (postDetail) => {
+        const favoritesPosts = await favorites();
+        this.setState({
+            postDetail: {
+                ...postDetail,
+                post: {
+                    ...postDetail.post,
+                    favorited: favoritesPosts.findIndex(fav => fav.postId === postDetail.post.postId) > -1,
+                }
+            }
+        });
     }
 
     render() {

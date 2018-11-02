@@ -70,6 +70,9 @@
                 opacity: 0.3;
                 pointer-events: none
             }
+            .color-blue {
+                color: #2196f3;
+            }
         }
         .post-actions {
             display: flex;
@@ -78,6 +81,9 @@
             align-items: center;
             i {
                 color: #000;
+            }
+            .color-red {
+                color: #d80000;
             }
             .disabled {
                 opacity: 0.3;
