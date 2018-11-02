@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../../assets/css/style.css"/>
+        <style>
+            .container {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Offline - Storage available</h2>
+            <div id="container">
+
+            </div>
+        </div>
+        <script>
+            
+            window.addEventListener('load', function() {
+                var byteToMB = 0.00000095367432;
+                if (navigator.storage && navigator.storage.estimate) {
+                    var container = document.getElementById('container')
+                    navigator.storage.estimate()
+                        .then(value => {
+                            container.innerHTML = '<ul><li>Quota : ' + (value.quota * byteToMB) + ' MB</li><li>Usage : ' + (value.usage * byteToMB) + ' MB</li></ul>'
+                        })
+                }
+            })
+        </script>
+    </body>
+</html>
