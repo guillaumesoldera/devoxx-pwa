@@ -18,11 +18,15 @@ export class Home extends Component {
 
     async componentDidMount() {
         const posts = await allPostsWithAuthors();
-        await this.updatePostsWithFavoritesAndVotes(posts);
-        const unsyncedPosts = await localPosts();
-        if (unsyncedPosts.length > 0 && this.context.user) {
-            const me = await authorById(this.context.user.id)
-            this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
+        if(this.context.user){
+            await this.updatePostsWithFavoritesAndVotes(posts);
+            const unsyncedPosts = await localPosts();
+            if (unsyncedPosts.length > 0 ) {
+                const me = await authorById(this.context.user.id)
+                this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
+            }
+        } else{
+           this.setState({posts})
         }
     }
 
@@ -51,7 +55,7 @@ export class Home extends Component {
     updatePostsWithFavorites = async (posts) => {
         const favoritesPosts = await favorites();
         const postWithFavs = posts.map(post => ({
-            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
+            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1
         }));
         this.setState({ posts: postWithFavs });
     }

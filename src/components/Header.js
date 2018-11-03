@@ -20,7 +20,14 @@ export class Header extends Component {
                                 </ul>
                                 <ul className="left navigation">
                                     <li><NavLink to={"/"} exact={true} className="tab"><i className="fa fa-beer small left" aria-hidden="true"></i><span>Beers</span></NavLink></li>
-                                    <li><NavLink to={"/favourites"} className="tab"><i className="fa fa-heart small left" aria-hidden="true"></i><span>Favourites</span></NavLink></li>
+                                    <li><NavLink to={"/favourites"}
+                                        className={classSet({
+                                            "tab": true,
+                                            "disabled": user === undefined
+                                        })}>
+                                        <i className="fa fa-heart small left" aria-hidden="true"></i>
+                                        <span>Favourites</span></NavLink>
+                                    </li>
                                     <li>
                                         <NavLink
                                             to={"/notifications"}
