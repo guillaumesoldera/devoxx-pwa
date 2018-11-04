@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink, withRouter } from "react-router-dom";
-import '../styles/Header.scss'
+import '../styles/Header.css'
 import { classSet, getDevice, Devices } from '../utils/utils';
 import { UserContext } from '../context/user';
 

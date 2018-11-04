@@ -1,0 +1,35 @@
+@media only screen and (min-width: 601px) {
+  .comment-post-container {
+    width: 65%;
+    margin: 0 auto; } }
+
+.comment-post-container nav {
+  background: transparent;
+  box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.14); }
+  @media only screen and (min-width: 601px) {
+    .comment-post-container nav {
+      width: 65%; } }
+  .comment-post-container nav .close {
+    color: #000; }
+  .comment-post-container nav .comment-post span {
+    color: #000;
+    display: block;
+    font-weight: 400; }
+
+.comment-post-container .comment-post-content {
+  padding: 10px;
+  height: calc(100vh - 56px - 10px);
+  margin: 0 8px; }
+  @media only screen and (min-width: 601px) {
+    .comment-post-container .comment-post-content {
+      height: calc(100vh - 64px - 10px); } }
+  .comment-post-container .comment-post-content .user-avatar {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #924a11;
+    border-radius: 5px; }
+  .comment-post-container .comment-post-content .post-comment-text {
+    height: 100%; }
+    .comment-post-container .comment-post-content .post-comment-text:focus {
+      border-bottom: none;
+      box-shadow: none; }

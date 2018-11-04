@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { BackHeader } from '../components/Header';
 import { Post } from '../components/Post';
 import { NavLink } from 'react-router-dom';
-import '../styles/Author.scss';
+import '../styles/Author.css';
 import { loadProfile } from '../services/profile';
+
 export class Author extends Component {
 
     static propTypes = {

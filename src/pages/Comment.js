@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { BackHeaderWithAction } from '../components/Header';
-import '../styles/Comment.scss';
+import '../styles/Comment.css';
 import { comment } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
 import moment from 'moment';
-moment.locale('fr')
+moment.locale('fr');
 
 export class Comment extends Component {
 

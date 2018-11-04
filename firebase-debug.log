@@ -1,0 +1,33 @@
+[debug] [2018-11-03T11:25:13.692Z] ----------------------------------------------------------------------
+[debug] [2018-11-03T11:25:13.694Z] Command:       /Users/fedy/.nvm/versions/node/v9.10.1/bin/node /Users/fedy/.nvm/versions/node/v9.10.1/bin/firebase serve --only functions,hosting
+[debug] [2018-11-03T11:25:13.694Z] CLI Version:   5.0.1
+[debug] [2018-11-03T11:25:13.694Z] Platform:      darwin
+[debug] [2018-11-03T11:25:13.694Z] Node Version:  v9.10.1
+[debug] [2018-11-03T11:25:13.694Z] Time:          Sat Nov 03 2018 12:25:13 GMT+0100 (CET)
+[debug] [2018-11-03T11:25:13.694Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-11-03T11:25:13.704Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-11-03T11:25:13.704Z] > authorizing via signed-in user
+[debug] [2018-11-03T11:25:13.704Z] [iam] checking project airbeerandbeer for permissions ["firebase.projects.get"]
+[debug] [2018-11-03T11:25:13.706Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/airbeerandbeer:testIamPermissions  
+
+[debug] [2018-11-03T11:25:14.546Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-03T11:25:14.547Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/airbeerandbeer  
+ 
+[debug] [2018-11-03T11:25:15.330Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/Users/fedy/Serli/Workspaces/firebase-projects/devoxx-pwa'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-11-03T11:25:15.770Z] Fetching environment
+[debug] [2018-11-03T11:25:15.772Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/380005342522:getServerAppConfig  
+ 
+[debug] [2018-11-03T11:25:15.773Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/380005342522/clients/_:getWebAppConfig  
+ 
+[debug] [2018-11-03T11:25:16.011Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-03T11:25:16.011Z] Starting @google-cloud/functions-emulator
+[debug] [2018-11-03T11:25:16.102Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+[debug] [2018-11-03T11:25:17.054Z] Parsing function triggers
+[info] ✔  functions: app: http://localhost:5001/airbeerandbeer/us-central1/app

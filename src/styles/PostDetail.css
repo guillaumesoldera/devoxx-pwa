@@ -1,0 +1,26 @@
+@media only screen and (min-width: 601px) and (max-width: 992px) {
+  .post-detail .post {
+    width: 55%;
+    margin: 5px auto; } }
+
+@media only screen and (min-width: 993px) {
+  .post-detail .post {
+    width: 45%;
+    margin: 5px auto; } }
+
+@media only screen and (max-width: 600px) {
+  .post-detail .post {
+    margin: 10px; } }
+
+.post-detail .post .post-text {
+  line-height: 18px; }
+
+.post-detail .post .post-picture-container {
+  text-align: center;
+  margin-bottom: 10px; }
+  .post-detail .post .post-picture-container .post-picture {
+    width: 100%;
+    height: auto; }
+    @media only screen and (min-width: 601px) {
+      .post-detail .post .post-picture-container .post-picture {
+        width: 60%; } }

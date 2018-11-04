@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { BackHeader } from '../components/Header';
 import { Post } from '../components/Post';
 import { NavLink, withRouter } from 'react-router-dom';
-import '../styles/Profile.scss';
+import '../styles/Profile.css';
 import { favorites, votes, localPosts } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
 import { loadProfile } from '../services/profile';

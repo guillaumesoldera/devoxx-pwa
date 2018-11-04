@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './styles/App.scss';
+import './styles/App.css';
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Home } from './pages/Home';
 import { Favourites } from './pages/Favourites';

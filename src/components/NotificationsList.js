@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {NavLink, withRouter} from "react-router-dom";
-import '../styles/NotificationsList.scss'
+import '../styles/NotificationsList.css'
 
 class Notification extends Component {
 

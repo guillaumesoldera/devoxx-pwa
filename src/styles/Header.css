@@ -1,0 +1,85 @@
+nav {
+  padding: 0 10px; }
+  nav h1 {
+    margin: 0;
+    line-height: inherit;
+    font-size: 2.2rem; }
+    @media only screen and (max-width: 600px) {
+      nav h1 {
+        font-size: 1.5rem; } }
+  nav li a.active {
+    background-color: rgba(0, 0, 0, 0.1); }
+    @media only screen and (max-width: 600px) {
+      nav li a.active {
+        height: 56px; } }
+  @media only screen and (max-width: 992px) {
+    nav .navigation {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #924a11;
+      display: flex;
+      justify-content: space-evenly; } }
+  @media only screen and (max-width: 600px) {
+    nav .navigation .tab {
+      padding: 0 25px; } }
+  nav .navigation .tab.disabled {
+    opacity: 0.3;
+    pointer-events: none; }
+  nav .fa {
+    display: none; }
+    @media only screen and (max-width: 992px) {
+      nav .fa {
+        display: inline-block;
+        line-height: inherit; } }
+    @media only screen and (max-width: 600px) {
+      nav .fa {
+        margin-right: 0; } }
+  nav .profile .fa {
+    display: inline-block; }
+  @media only screen and (max-width: 600px) {
+    nav .brand-logo {
+      font-size: 1.4rem; } }
+  @media only screen and (max-width: 600px) {
+    nav .newpost {
+      margin-right: -15px; } }
+  nav .newpost a {
+    color: #000;
+    border: 1px solid #000; }
+    @media only screen and (max-width: 600px) {
+      nav .newpost a {
+        box-shadow: none; } }
+    @media only screen and (max-width: 600px) {
+      nav .newpost a.android {
+        position: fixed;
+        right: 5px;
+        bottom: 70px;
+        width: 59px;
+        height: 56px;
+        border-radius: 50px; }
+        nav .newpost a.android .fa {
+          line-height: 56px; } }
+  @media only screen and (max-width: 600px) {
+    nav span {
+      display: none; } }
+
+.connection-message {
+  opacity: 0;
+  position: absolute;
+  top: 56px;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  background-color: #7bc34e;
+  -webkit-transition: opacity 1s;
+  /* Safari */
+  transition: opacity 1s; }
+  @media only screen and (min-width: 601px) {
+    .connection-message {
+      top: 64px; } }
+  .connection-message.offline {
+    background-color: #fbca04; }
+  .connection-message.show {
+    opacity: 1 !important; }

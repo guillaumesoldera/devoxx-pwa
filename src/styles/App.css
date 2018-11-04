@@ -1,0 +1,62 @@
+.App {
+  text-align: center; }
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px; }
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white; }
+
+.App-title {
+  font-size: 1.5em; }
+
+.App-intro {
+  font-size: large; }
+
+.collection-header {
+  padding-left: 31px !important; }
+
+.content {
+  height: 100%;
+  padding-top: 56px;
+  padding-bottom: 30px; }
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(360deg); } }
+
+.talk-detail .collection.with-header {
+  display: none; }
+  @media only screen and (min-width: 601px) {
+    .talk-detail .collection.with-header {
+      display: block; } }
+
+.talk-detail .program-container {
+  display: none; }
+  @media only screen and (min-width: 601px) {
+    .talk-detail .program-container {
+      display: block; } }
+
+.talk-detail .row {
+  padding-bottom: 40px; }
+
+.speaker-detail .collection.with-header {
+  display: none; }
+  @media only screen and (min-width: 601px) {
+    .speaker-detail .collection.with-header {
+      display: block; } }
+
+.speaker-detail .speakers-container {
+  display: none; }
+  @media only screen and (min-width: 601px) {
+    .speaker-detail .speakers-container {
+      display: block; } }
+
+.btn-rounded {
+  border-radius: 25px; }

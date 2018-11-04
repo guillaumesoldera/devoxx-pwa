@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import '../styles/Post.scss'
+import '../styles/Post.css'
 import { classSet } from '../utils/utils';
 import { UserContext } from '../context/user';
 import { favorite, vote } from '../stores/indexedDb';

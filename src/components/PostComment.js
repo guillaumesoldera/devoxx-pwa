@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { classSet } from '../utils/utils';
-import '../styles/PostComment.scss'
+import '../styles/PostComment.css'
 
 export class PostComment extends Component {
     

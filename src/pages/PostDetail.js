@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BackHeader } from '../components/Header';
 import { Post } from '../components/Post';
-import '../styles/PostDetail.scss'
+import '../styles/PostDetail.css'
 import { UserContext } from '../context/user';
 import { PostComment } from '../components/PostComment';
 import { postDetails } from '../services/posts';

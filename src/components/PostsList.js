@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Post } from './Post';
-import '../styles/PostsList.scss';
+import '../styles/PostsList.css';
 
 export class PostsList extends Component {
 

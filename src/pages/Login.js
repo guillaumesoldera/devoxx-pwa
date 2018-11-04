@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BackHeader } from '../components/Header';
 import {withRouter, Redirect} from 'react-router-dom';
-import '../styles/Login.scss';
+import '../styles/Login.css';
 import { UserContext } from '../context/user';
 import { classSet } from '../utils/utils';
 
@@ -35,7 +35,8 @@ class _Login extends Component {
     }
 
     logUser = (e, loginMethod) => {
-        loginMethod();
+        const {email, password} = this.state;
+        loginMethod(email, password);
         this.setState({
             redirectToReferrer: true,
         })

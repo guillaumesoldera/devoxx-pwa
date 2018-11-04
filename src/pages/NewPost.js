@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { BackHeaderWithAction } from '../components/Header';
-import '../styles/NewPost.scss';
+import '../styles/NewPost.css';
 import { classSet, isOnDesktop, isOnMediumScreen } from '../utils/utils';
 import { post } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
@@ -70,7 +70,6 @@ export class NewPost extends Component {
             openCamera: false,
             mediaStream: undefined,
         })
-
     }
 
     retry = (e) => {
@@ -86,7 +85,7 @@ export class NewPost extends Component {
 
     }
 
-    valid = (e) => {
+    validate = (e) => {
         if (this._picURL) {
             URL.revokeObjectURL(this._picURL);
         }
@@ -185,6 +184,8 @@ export class NewPost extends Component {
                         <Fragment>
                             <textarea
                                 ref={(elem) => this._input = elem}
+                                value={this.state.description}
+                                onChange={this.changeDescription}
                                 onBlur={this.onKeyboardClose}
                                 value={this.state.text}
                                 onKeyDown={this.onKeyboardOpen}
@@ -221,7 +222,7 @@ export class NewPost extends Component {
                     <div className={classSet({ "picture-container": true, "hide": !(this.state.imageSrc && !this.state.imgValidated) })}>
                         <canvas width={width} height={height}></canvas>
                         <div className="buttons-actions">
-                            <button className="btn btn-rounded" onClick={this.valid}>Valid</button>
+                            <button className="btn btn-rounded" onClick={this.validate}>Validate</button>
                             <button className="btn btn-rounded" onClick={this.retry}>Retry</button>
                         </div>
                     </div>

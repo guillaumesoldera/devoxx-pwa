@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Header } from '../components/Header';
 import { PostsList } from '../components/PostsList';
-import '../styles/Home.scss';
+import '../styles/Home.css';
 import { UserContext } from '../context/user';
 import { allPostsWithAuthors } from '../services/posts';
 import { authorById } from '../services/authors';

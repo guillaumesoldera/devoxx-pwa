@@ -1,0 +1,10 @@
+.content-container {
+  padding: 10px;
+  height: calc(100vh - 56px - 56px);
+  overflow-y: auto; }
+  @media only screen and (min-width: 601px) and (max-width: 992px) {
+    .content-container {
+      height: calc(100vh - 64px - 64px); } }
+  @media only screen and (min-width: 993px) {
+    .content-container {
+      height: calc(100vh - 64px); } }
