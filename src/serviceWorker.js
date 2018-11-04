@@ -6,7 +6,7 @@ export function register(config) {
   }
 }
 
-function registerSW(swUrl) {
+function registerSW(swUrl, config) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {

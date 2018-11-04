@@ -1,64 +1,45 @@
 importScripts('https://unpkg.com/dexie@2.0.4/dist/dexie.min.js');
 
-const db = new Dexie("JugSummercampDatabase");
+const db = new Dexie("AirBeerNbeer");
 
 db.version(1).stores({
-    favorites: "id,title,author,type,room,time,description,rank",
-    ratings: "id,rate"
+    favorites: "postId, userId, rank",
+    posts: "++postId, userId, date, location, text, picture, unsynced",
+    comments: "++commentId, postId, userId, date, text, unsynced",
+    votes: "postId, userId, value",
+    notifications: "postId, userId, action"
 });
 
 self.addEventListener('sync', function (event) {
     console.log("sync Recieved... !!!!!");
-
-    if (event.tag == 'favorites_updated') {
-        event.waitUntil(serverFavoritesSync());
+    if (event.tag == 'posts_updated') {
+        event.waitUntil(postsSync());
     }
-    if (event.tag == 'ratings_updated') {
-        event.waitUntil(serverRatingsSync());
-    }
+    // if (event.tag == 'comments_updated') {
+    //     event.waitUntil(serverFavoritesSync());
+    // }
+    // if (event.tag == 'favorites_updated') {
+    //     event.waitUntil(serverFavoritesSync());
+    // }
+    // if (event.tag == 'votes_updated') {
+    //     event.waitUntil(serverRatingsSync());
+    // }
 });
 
-function serverFavoritesSync() {
-    return db.favorites.toArray()
-        .then(favorites => {
-            console.log('favorites', favorites);
-            return self.registration.pushManager.getSubscription()
-                .then(subscription => {
-                    if (subscription) {
-                        return fetch("/api/syncFavorites", {
-                            method: "POST",
-                            body: JSON.stringify({subscription, talks: favorites}),
-                            headers: {
-                                "content-type": "application/json"
-                            }
-                        }).then(() => {
-                            console.log("Favorites Synced...");
-                            return Promise.resolve({});
-                        })
-                        .catch(err => {
-                            console.error('error', err);
-                            return Promise.resolve({});
-                        });
-                    }
-                    return Promise.resolve({});
-                })
-        })
-}
-
-
-function serverRatingsSync() {
-    return db.ratings.toArray()
-        .then(ratings => {
-            console.log('ratings', ratings);
-            return fetch("/api/syncRatings", {
+function postsSync() {
+    return db.posts.toArray()
+        .then(posts => {
+            console.log('posts', posts);
+            return fetch('/api/syncPosts', {
                 method: "POST",
-                body: JSON.stringify({ratings}),
-                headers: {
-                    "content-type": "application/json"
-                }
-            }).then(() => {
-                console.log("Ratings Synced...");
-                return Promise.resolve({});
-            });
-        })
+                body: JSON.stringify({ posts }),
+                headers: { 'content-type': 'application/json' }
+            })
+        }).then(posts => {
+            return clients.matchAll().then(clients => {
+                clients.forEach(client => {
+                    client.postMessage({message:'postsAfterSync', posts});
+                })
+            })
+        }).then(() =>  db.posts.delete());
 }

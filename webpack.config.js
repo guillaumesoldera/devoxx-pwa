@@ -71,7 +71,6 @@ let plugins = [
                 urlPattern: /\/api\/talks/,
                 handler: 'cacheFirst'
             }],
-            //importScripts: ['../../push-support.js']
             importScripts: ['../../push-support.js','../../sync-support.js']
         }),
 ];

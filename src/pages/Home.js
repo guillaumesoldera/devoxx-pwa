@@ -17,16 +17,23 @@ export class Home extends Component {
     static contextType = UserContext;
 
     async componentDidMount() {
+        navigator.serviceWorker.addEventListener('message', function (event) {
+            console.log("Client 1 Received Message: " + event.data);
+            if (event.data.name === 'loadPosts') {
+                this.setState({ posts: event.data.posts })
+            }
+        });
+
         const posts = await allPostsWithAuthors();
-        if(this.context.user){
+        if (this.context.user) {
             await this.updatePostsWithFavoritesAndVotes(posts);
             const unsyncedPosts = await localPosts();
-            if (unsyncedPosts.length > 0 ) {
+            if (unsyncedPosts.length > 0) {
                 const me = await authorById(this.context.user.id)
                 this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
             }
-        } else{
-           this.setState({posts})
+        } else {
+            this.setState({ posts })
         }
     }
 

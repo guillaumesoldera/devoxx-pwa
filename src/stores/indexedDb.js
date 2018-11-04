@@ -60,7 +60,7 @@ export const comment = (comment) => {
 export const post = (post) => {
     console.log('addind a new post  : ', post);
     return db.posts.add({...post, unsynced:true})
-        //.then(() => requestSync('posts_updated'))
+        .then(() => requestSync('posts_updated'))
         .then(() => db.posts.toArray());
 };
 

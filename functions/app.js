@@ -46,6 +46,17 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.post('/api/syncPosts', async (req, res) => {
+    const postsToSync = req.body;
+    await Promise.all(postsToSync.map(post => {
+        // to calculate address
+        console.log('syncing post ', post)
+        return addPost({...post, location:'not calcutaled'});
+    }))
+    const posts = await allPosts();
+    res.json(posts);
+});
+
 app.get('/api/authors', async (req, res) => {
     const authors = await allAuthors();
     res.json(authors);
