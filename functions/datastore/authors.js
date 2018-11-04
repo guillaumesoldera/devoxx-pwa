@@ -8,7 +8,7 @@ const addAuthor = async (email, password) => {
         email,
         password
     });
-    return { authorId: newAuthor.id, fullName: '', bio: '' }
+    return { id: newAuthor.id, fullName: '', bio: '' }
 }
 
 const updateAuthor = async (authorId, fullName, bio, profilePicture) => {
