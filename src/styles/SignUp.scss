@@ -1,6 +1,6 @@
 @import "components/variables";
 
-.login-container {
+.signup-container {
     color: #000;
     @media #{$medium-and-up} {
         width: 45%;
@@ -19,16 +19,13 @@
             color: #000;
         }
     }
-    .login-content {
+    .signup-content {
         text-align: center;
         padding: 10px;
         height: calc(100vh - 56px - 10px); // nav bar and padding 
         margin: 0 8px;
         @media #{$medium-and-up} { 
             height: calc(100vh - 64px - 10px); // nav bar and padding
-        }
-        .devider{
-           padding: 20px  
         }
         input {
             &:focus {

@@ -1,33 +1,31 @@
-.login-container {
+.signup-container {
   color: #000; }
   @media only screen and (min-width: 601px) {
-    .login-container {
+    .signup-container {
       width: 45%;
       margin: 0 auto; } }
-  .login-container nav {
+  .signup-container nav {
     background: transparent;
     box-shadow: none; }
     @media only screen and (min-width: 601px) {
-      .login-container nav {
+      .signup-container nav {
         width: 45%; } }
-    .login-container nav .close {
+    .signup-container nav .close {
       color: #000; }
-    .login-container nav .brand-logo {
+    .signup-container nav .brand-logo {
       color: #000; }
-  .login-container .login-content {
+  .signup-container .signup-content {
     text-align: center;
     padding: 10px;
     height: calc(100vh - 56px - 10px);
     margin: 0 8px; }
     @media only screen and (min-width: 601px) {
-      .login-container .login-content {
+      .signup-container .signup-content {
         height: calc(100vh - 64px - 10px); } }
-    .login-container .login-content .devider {
-      padding: 20px; }
-    .login-container .login-content input:focus {
+    .signup-container .signup-content input:focus {
       border-bottom: 1px solid #924a11 !important;
       box-shadow: 0 1px 0 0 #924a11 !important; }
-      .login-container .login-content input:focus + label {
+      .signup-container .signup-content input:focus + label {
         color: #924a11 !important; }
-    .login-container .login-content button {
+    .signup-container .signup-content button {
       background-color: #924a11; }

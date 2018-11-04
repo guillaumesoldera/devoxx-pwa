@@ -11,7 +11,9 @@ import { NewPost } from './pages/NewPost';
 import { Comment } from './pages/Comment';
 import { UserContext } from './context/user';
 import { Login } from './pages/Login';
+import { SignUp } from './pages/SignUp';
 import { Profile } from './pages/Profile';
+import {signup, login} from './services/authors';
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <UserContext.Consumer>
@@ -35,8 +37,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   </UserContext.Consumer>
 );
 
-
-
 class App extends Component {
 
   state = {
@@ -53,18 +53,28 @@ class App extends Component {
     }
   }
 
-  login = () => {
+  loginUser = async (email, password) => {
+    const user = await login(email, password);
+    // fix setSetae in unmounted component
     this.setState({
-      user: {
-        name: 'Jobi Joba',
-        id: '1'
-      }
+      user
     }, () => {
-      localStorage.setItem('user', JSON.stringify(this.state.user))
+      this.state.user && localStorage.setItem('user', JSON.stringify(this.state.user))
+    })
+    return user;
+  }
+
+  signupUser = async (email, password) => {
+    const user = await signup(email, password);
+    console.log('user added', user);
+    this.setState({
+      user
+    }, () => {
+      this.state.user && localStorage.setItem('user', JSON.stringify(this.state.user))
     })
   }
 
-  logout = () => {
+  logoutUser = () => {
     // TODO clean storage and db (to avoid to sync elements from a previous user)
     this.setState({
       user: undefined
@@ -75,11 +85,12 @@ class App extends Component {
 
   render() {
     return (
-      <UserContext.Provider value={{user: this.state.user, login: this.login, logout: this.logout}}>
+      <UserContext.Provider value={{user: this.state.user, login: this.loginUser, logout: this.logoutUser, signup: this.signupUser}}>
         <BrowserRouter basename='/'>
             <div>
                 <Switch>
                   <Route exact path="/" component={Home} />
+                  <Route exact path="/signup" component={SignUp} />
                   <Route exact path="/login" component={Login} />
                   <PrivateRoute exact path="/profile" component={Profile}/>
                   <PrivateRoute exact path="/new" component={NewPost} />

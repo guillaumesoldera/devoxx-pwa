@@ -2,24 +2,11 @@ import { allAuthors } from './authors';
 import { allComments } from './comments';
 
 export const allPosts = async () => {
-    return await Promise.resolve([{
-        postId: "1",
-        authorId: "1",
-        date: '19 Oct',
-        location: 'Awesome Bar',
-        upVotes: 1,
-        downVotes: 1,
-        text: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo',
-        picture: 'https://www.gannett-cdn.com/-mm-/89934f7b13e7717eb560f3babda84f20895abcd0/c=83-0-724-482/local/-/media/2018/07/17/DetroitFreeP/DetroitFreePress/636674313628993565-GettyImages-684133728.jpg?width=534&height=401&fit=crop'
-    },
-    {
-        postId: "2",
-        authorId: "1",
-        date: '20 Oct',
-        location: 'Awesome Bar',
-        text: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo',
-        picture: 'https://www.gannett-cdn.com/-mm-/89934f7b13e7717eb560f3babda84f20895abcd0/c=83-0-724-482/local/-/media/2018/07/17/DetroitFreeP/DetroitFreePress/636674313628993565-GettyImages-684133728.jpg?width=534&height=401&fit=crop'
-    }])
+    const postsResponse = await fetch('/api/posts', {
+        method: 'GET',
+        headers: { 'content-type': 'application/json' },
+    })
+    return postsResponse.json();
 }
 
 export const allPostsWithAuthors = async () => {

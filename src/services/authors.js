@@ -1,13 +1,43 @@
+import { Promise } from "core-js";
+
 export const allAuthors = async () => {
-    return Promise.resolve([{
-        authorId: "1",
-        fullName: 'Jack Vagabond',
-        bio: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo',
-        profilePicture: 'https://randomuser.me/api/portraits/men/3.jpg'
-    }])
+    const authorsResponse = await fetch('/api/authors', {
+        method: 'GET',
+        headers: { 'content-type': 'application/json' },
+    })
+    return authorsResponse.json();
 }
 
 export const authorById = async (id) => {
     const authors = await allAuthors();
     return authors.find(author => author.authorId === id);
 }
+
+export const signup = async (email, password) => {
+    const signupResponse = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+            email,
+            password
+        })
+    })
+    return signupResponse.json();
+}
+
+export const login = async (email, password) => {
+    const loginResponse = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+            email,
+            password
+        })
+    })
+    if (loginResponse.status === 200) {
+        return loginResponse.json();
+    } else {
+        return Promise.resolve(undefined)
+    }
+}
+
