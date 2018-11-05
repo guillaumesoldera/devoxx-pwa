@@ -3,7 +3,6 @@
 var CACHE = 'airbeernbeer-precache';
 var precacheFiles =
   ["/css/bundle/devoxxapp.css",
-    "/images/favicon.png",
     "/images/icons/icon-128x128.png",
     "/images/icons/icon-144x144.png",
     "/images/icons/icon-152x152.png",
@@ -12,6 +11,7 @@ var precacheFiles =
     "/images/icons/icon-512x512.png",
     "/images/icons/icon-72x72.png",
     "/images/icons/icon-96x96.png",
+    "/images/favicon.png",
     "/images/logo.png",
     "/index.html",
     "/javascripts/bundle/devoxxapp.js",
@@ -87,7 +87,7 @@ self.addEventListener('notificationclick', function (event) {
       type: "window"
     }).then(function () {
       if (clients.openWindow) {
-        return clients.openWindow(`https://pwn-demo-app.firebaseapp.com/program/${event.notification.data.talkId}`);
+        return clients.openWindow(`http://localhost:5000/notifications`);
       }
     })
   );
@@ -96,25 +96,38 @@ self.addEventListener('notificationclick', function (event) {
 self.addEventListener("push", e => {
   const data = e.data.json();
   console.log("Push Recieved... !n", data);
+  db.notifications.add({
+    postId: data.postId,
+    authorId: data.authorId,
+    action: data.action,
+    date: data.date,
+    seen: 'false',
+  }).then(() => {
+    clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage(JSON.stringify({ message: 'gotNotification' }));
+      })
+    })
+  });
+
+
   self.registration.showNotification(data.title, {
     body: data.body,
     icon: data.icon,
-    data: data.data,
   });
 });
-
 
 importScripts('https://unpkg.com/dexie@2.0.4/dist/dexie.min.js');
 
 const db = new Dexie("AirBeerNbeer");
-
 db.version(1).stores({
   favorites: "postId, authorId, unsynced",
   posts: "++postId, authorId, date, location, text, picture, unsynced",
   comments: "++commentId, postId, authorId, date, text, unsynced",
   votes: "postId, authorId, value, unsynced",
-  notifications: "postId, authorId, action, seen"
+  notifications: "++id, postId, authorId, action, date ,seen"
 });
+
 
 self.addEventListener('sync', function (event) {
   console.log("sync Recieved... !!!!!");
@@ -126,15 +139,15 @@ self.addEventListener('sync', function (event) {
     syncComments();
   }
   else if (event.tag == 'favorites_updated') {
-    event.waitUntil(syncFavorites());
+    syncFavorites();
   }
   else if (event.tag == 'votes_updated') {
-    event.waitUntil(syncVotes());
+    syncVotes();
   }
 });
 
 function syncFavorites() {
-  return db.favorites.where('unsynced').equals(true).toArray()
+  return db.favorites.where('unsynced').equals('true').toArray()
     .then(favorites => {
       return fetch('/api/syncfavorites', {
         method: 'POST',
@@ -143,7 +156,7 @@ function syncFavorites() {
       })
         .then((response) => {
           if (response.status === 200) {
-            return Promise.all(favorites.map(fav => db.favorites.update(fav.postId, { unsynced: true })))
+            return Promise.all(favorites.map(fav => db.favorites.update(fav.postId, { unsynced: 'false' })))
           } else {
             return Promise.reject('an error occurred while syncing favorites')
           }
@@ -152,7 +165,7 @@ function syncFavorites() {
 }
 
 function syncVotes() {
-  return db.votes.where('unsynced').equals(true).toArray()
+  return db.votes.where('unsynced').equals('true').toArray()
     .then(votes => {
       return fetch('/api/syncvotes', {
         method: 'POST',
@@ -174,7 +187,7 @@ function syncVotes() {
         }
       }).then(response => {
         if (response.status === 200) {
-          return Promise.all(votes.map(vote => db.votes.update(vote.postId, { unsynced: true })))
+          return Promise.all(votes.map(vote => db.votes.update(vote.postId, { unsynced: 'false' })))
         } else {
           return Promise.reject('an error occurred while syncing votes')
         }

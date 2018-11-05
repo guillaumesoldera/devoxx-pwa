@@ -63,6 +63,9 @@ nav {
   @media only screen and (max-width: 600px) {
     nav span {
       display: none; } }
+  nav span.badge {
+    min-width: 21px;
+    border-radius: 12px; }
 
 .connection-message {
   opacity: 0;

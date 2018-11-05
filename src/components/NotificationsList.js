@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {NavLink, withRouter} from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import '../styles/NotificationsList.css'
+import { notifications, markAllNotifactionAsSeen } from '../stores/indexedDb';
+import { allAuthors } from '../services/authors';
+import moment from 'moment';
+moment.locale('fr');
 
 class Notification extends Component {
 
@@ -30,15 +34,16 @@ class Notification extends Component {
 
 class FavouriteNotification extends Component {
     render() {
+        const { notif } = this.props;
         return (
             <Notification type={<i className="fa fa-heart material-icons small"></i>}>
-                <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
+                <img src={notif.author.profilePicture} className="post-author-avatar" />
                 <div className="notification-post-infos">
-                    <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                    <NavLink to={`/authors/${notif.authorId}`} className="post-author-name">{notif.author.fullName}</NavLink>
                     &nbsp;favourites&nbsp;
-                    <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
+                    <NavLink to={`/posts/${notif.postId}`} className="post-title">Your post</NavLink>
                 </div>
-                <span className="notification-post-date">11 oct.</span>
+                <span className="notification-post-date">{moment(notif.date * 1000).format('ll')}</span>
             </Notification>
         )
     }
@@ -46,15 +51,16 @@ class FavouriteNotification extends Component {
 
 class VoteUpNotification extends Component {
     render() {
+        const { notif } = this.props;
         return (
             <Notification type={<i className="fa fa-thumbs-up material-icons small"></i>}>
-                <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
+                <img src={notif.author.profilePicture} className="post-author-avatar" />
                 <div className="notification-post-infos">
-                    <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                    <NavLink to={`/authors/${notif.authorId}`} className="post-author-name">{notif.author.fullName}</NavLink>
                     &nbsp;votes up&nbsp;
-                    <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
+                    <NavLink to={`/posts/${notif.postId}`} className="post-title">Your post</NavLink>
                 </div>
-                <span className="notification-post-date">11 oct.</span>
+                <span className="notification-post-date">{moment(notif.date * 1000).format('ll')}</span>
             </Notification>
         )
     }
@@ -62,15 +68,16 @@ class VoteUpNotification extends Component {
 
 class VoteDownNotification extends Component {
     render() {
+        const { notif } = this.props;
         return (
             <Notification type={<i className="fa fa-thumbs-down material-icons small"></i>}>
-                <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
+                <img src={notif.author.profilePicture} className="post-author-avatar" />
                 <div className="notification-post-infos">
-                    <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                    <NavLink to={`/authors/${notif.authorId}`} className="post-author-name">{notif.author.fullName}</NavLink>
                     &nbsp;votes down&nbsp;
-                    <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
+                    <NavLink to={`/posts/${notif.postId}`} className="post-title">Your post</NavLink>
                 </div>
-                <span className="notification-post-date">11 oct.</span>
+                <span className="notification-post-date">{moment(notif.date * 1000).format('ll')}</span>
             </Notification>
         )
     }
@@ -78,20 +85,18 @@ class VoteDownNotification extends Component {
 
 class CommentNotification extends Component {
     render() {
+        const { notif } = this.props;
         return (
             <Notification className="comment" type={<i className="fa fa-comment material-icons small"></i>}>
                 <div className="notification-content-comment">
-                    <img src="https://randomuser.me/api/portraits/men/3.jpg" className="post-author-avatar" />
+                    <img src={notif.author.profilePicture} className="post-author-avatar" />
                     <div className="notification-post-infos">
-                        <NavLink to={"/authors/authorId"} className="post-author-name">Jack Vagabond</NavLink>
+                        <NavLink to={`/authors/${notif.authorId}`} className="post-author-name">{notif.author.fullName}</NavLink>
                         &nbsp;comments on&nbsp;
-                        <NavLink to={"/authors/authorId/postId"} className="post-title">Post title</NavLink>
+                        <NavLink to={`/posts/${notif.postId}`} className="post-title">Your post</NavLink>
                     </div>
-                    <span className="notification-post-date">11 oct.</span>
+                    <span className="notification-post-date">{moment(notif.date * 1000).format('ll')}</span>
                 </div>
-                <p className="notification-post-comment">
-                    Quibus ita sceleste patratis Paulus cruore perfusus reversusque ad principis castra multos coopertos paene catenis adduxit in squalorem deiectos atque maestitiam, quorum adventu intendebantur eculei uncosque parabat carnifex et tormenta
-                </p>
             </Notification>
         )
     }
@@ -99,29 +104,65 @@ class CommentNotification extends Component {
 
 
 export class NotificationsList extends Component {
+
+    state = {
+        notifs: []
+    }
+
+    async componentDidMount() {
+        await markAllNotifactionAsSeen();
+        let notifs = await notifications();
+        if (notifs.length > 0) {
+            const authors = await allAuthors();
+            notifs = notifs.map(notif => ({
+                ...notif,
+                author: authors.find(author => author.authorId === notif.authorId),
+            }));
+        }
+        this.setState({
+            notifs
+        })
+    }
+
     render() {
+        if (this.state.notifs.length === 0) {
+            return (
+                <div className="notification-list-container">
+                    No new notifications
+                </div>
+            );
+        }
         return (
             <div className="notification-list-container">
-                <div className="row">
-                    <div className="col s12">
-                        <FavouriteNotification />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col s12">
-                        <VoteUpNotification />
-                    </div>
-                </div>
-                <div className="row">   
-                    <div className="col s12">
-                        <VoteDownNotification />
-                    </div>
-                </div>
-                <div className="row">   
-                    <div className="col s12">
-                        <CommentNotification />
-                    </div>
-                </div>
+                {this.state.notifs.map((notif, index) => {
+                    switch (notif.action) {
+                        case 'favorite':
+                            return <div key={`notif-${index}`} className="row">
+                                <div className="col s12">
+                                    <FavouriteNotification notif={notif} />
+                                </div>
+                            </div>
+                        case 'voteUp':
+                            return <div key={`notif-${index}`} className="row">
+                                <div className="col s12">
+                                    <VoteUpNotification notif={notif} />
+                                </div>
+                            </div>
+
+                        case 'voteDown':
+                            return <div key={`notif-${index}`} className="row">
+                                <div className="col s12">
+                                    <VoteDownNotification notif={notif} />
+                                </div>
+                            </div>
+                        case 'comment':
+                            return <div key={`notif-${index}`} className="row">
+                                <div className="col s12">
+                                    <CommentNotification notif={notif} />
+                                </div>
+                            </div>
+                    }
+                })}
             </div>
         );
     }

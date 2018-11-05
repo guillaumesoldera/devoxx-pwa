@@ -67,7 +67,7 @@ class App extends Component {
 
   signupUser = async (email, password) => {
     const user = await signup(email, password);
-    this.registerForNotifications(user);
+   this.registerForNotifications(user);
     console.log('user added', user);
     this.setState({
       user
@@ -86,7 +86,7 @@ class App extends Component {
   }
 
   registerForNotifications = async (user) => {
-    const registration = await navigator.serviceWorker.getRegistration();
+    const registration  = await navigator.serviceWorker.ready;
     console.log("Registering Push for user with id ", user.id);
     registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -131,7 +131,7 @@ class App extends Component {
               <Route exact path="/favourites" component={Favourites} />
               <PrivateRoute exact path="/comment/:postId" component={({ match }) => <Comment postId={match.params.postId} />} />
               <Route exact path="/authors/:authorId" render={({ match }) => <Author authorId={match.params.authorId} />} />
-              <Route exact path="/post/:postId" render={({ match }) => <PostDetail postId={match.params.postId} />} />
+              <Route exact path="/posts/:postId" render={({ match }) => <PostDetail postId={match.params.postId} />} />
               <Route component={NoMatch} />
             </Switch>
           </div>

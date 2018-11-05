@@ -7,23 +7,24 @@ moment.locale('fr');
 const expressValidator = require('express-validator');
 const compression = require('compression');
 
-const { 
-    addAuthor, 
-    logAuthor, 
-    allAuthors, 
-    updateAuthor, 
-    updateAuthorSubscription 
+const {
+    addAuthor,
+    logAuthor,
+    authorById,
+    allAuthors,
+    updateAuthor,
+    updateAuthorSubscription
 } = require('./datastore/authors');
 
-const { 
-    addPost, 
-    updatePost, 
-    allPosts 
+const {
+    addPost,
+    updatePost,
+    allPosts
 } = require('./datastore/posts');
 
-const { 
-    addComment, 
-    allComments 
+const {
+    addComment,
+    allComments
 } = require('./datastore/comments');
 
 const app = express();
@@ -42,7 +43,7 @@ app.use(expressValidator());
 
 
 app.post('/api/subscribe', async (req, res) => {
-    const {subscription, id} = req.body;
+    const { subscription, id } = req.body;
     console.log(`/api/subscribe/`, subscription)
     await updateAuthorSubscription(id, subscription);
     res.json({});
@@ -70,7 +71,7 @@ app.post('/api/syncposts', async (req, res) => {
     console.log('postsToAdd', postsToAdd.length);
     await Promise.all(postsToAdd.map(post => {
         // to calculate address
-        return addPost( {...post, location:'Not Calcutaled'});
+        return addPost({ ...post, location: 'Not Calcutaled' });
     }))
     const posts = await allPosts();
     return res.json(posts)
@@ -86,6 +87,29 @@ app.post('/api/synccomments', async (req, res) => {
     return res.json(posts)
 });
 
+app.post('/api/syncfavorites', async (req, res) => {
+    const favorites = req.body.favorites;
+    console.log('syncfavorites', favorites.length);
+    await Promise.all(favorites.map(async favorite => {
+        const postId = favorite.postId;
+        const authorId = favorite.authorId;
+        const author = await authorById(authorId);
+        const payload = JSON.stringify({
+            title: 'Your post has been favotited',
+            body: `${author.fullName} has favorited your post`,
+            icon: '/images/favicon.png',
+            postId,
+            authorId,
+            action: 'favorite',
+            date: moment().unix(),
+        });
+        return webpush.sendNotification(JSON.parse(author.subscription), payload)
+            .catch(err => console.error('err', err))
+            .then(() => res.json({}))
+    }))
+    return res.json({})
+});
+
 app.get('/api/authors', async (req, res) => {
     const authors = await allAuthors();
     res.json(authors);
@@ -99,6 +123,27 @@ app.get('/api/posts', async (req, res) => {
 app.get('/api/comments', async (req, res) => {
     const comments = await allComments();
     res.json(comments);
+});
+
+
+app.post('/api/notify', async (req, res) => {
+    const postId = req.body.postId;
+    const authorId = req.body.authorId;
+    const author = await authorById(authorId);
+
+    const payload = JSON.stringify({
+        title: 'Your post has been favotited',
+        body: `${author.fullName} has favorited your post`,
+        icon: '/images/favicon.png',
+        postId,
+        authorId,
+        action: 'favorite',
+        date: moment().unix(),
+    });
+
+    return webpush.sendNotification(JSON.parse(author.subscription), payload)
+        .catch(err => console.error('err', err))
+        .then(() => res.json({}))
 });
 
 app.get('/api/mocks', async (req, res) => {

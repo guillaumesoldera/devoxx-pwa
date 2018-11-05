@@ -41,10 +41,24 @@ const logAuthor = async (email, password) => {
             authorId: doc.id,
             ...data
         })
-        console.log(doc.id, '=>', doc.data());
+        console.log(doc.id);
     })
     const author = authors.find(_author => _author.email == email && _author.password == password);
     return author && { id: author.authorId, fullName: author.fullName, bio: author.bio }
+}
+
+const authorById = async (authorId) => {
+    const snapshot = await db.collection('authors').get();
+    const authors = [];
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        authors.push({
+            authorId: doc.id,
+            ...data
+        })
+       
+    })
+    return authors.find(_author => _author.authorId == authorId);
 }
 
 const allAuthors = async () => {
@@ -68,6 +82,7 @@ const allAuthors = async () => {
 module.exports = {
     addAuthor,
     logAuthor,
+    authorById,
     allAuthors,
     updateAuthor,
     updateAuthorSubscription

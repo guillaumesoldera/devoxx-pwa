@@ -4,8 +4,31 @@ import { NavLink, withRouter } from "react-router-dom";
 import '../styles/Header.css'
 import { classSet, getDevice, Devices } from '../utils/utils';
 import { UserContext } from '../context/user';
+import { unseenNotifications } from '../stores/indexedDb';
 
 export class Header extends Component {
+
+    state = {
+        notifications: 0
+    }
+
+    async componentDidMount() {
+        navigator.serviceWorker.addEventListener('message', async (event) => {
+            const eventPayload = JSON.parse(event.data);
+            if (eventPayload.message === 'gotNotification') {
+                console.log('gotNotification')
+                const allNotifications = await unseenNotifications();
+                this.setState({
+                    notifications: allNotifications.length
+                })
+            }
+        });
+        const allNotifications = await unseenNotifications();
+        this.setState({
+            notifications: allNotifications.length
+        })
+    }
+
     render() {
         return (
             <UserContext.Consumer>
@@ -36,6 +59,7 @@ export class Header extends Component {
                                                 "disabled": user === undefined
                                             })}>
                                             <i className="fa fa-bell small left" aria-hidden="true"></i>
+                                            {this.state.notifications>0 && <span className="new badge" data-badge-caption="">{this.state.notifications}</span>}
                                             <span>Notifications</span>
                                         </NavLink>
                                     </li>

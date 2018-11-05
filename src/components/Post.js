@@ -48,7 +48,7 @@ export class Post extends Component {
         );
         if (post && this.props.linkToPost && !post.unsynced) {
             text = (
-                <NavLink to={`/post/${post.postId}`}>
+                <NavLink to={`/posts/${post.postId}`}>
                     {text}
                 </NavLink>
             )

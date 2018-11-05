@@ -7,7 +7,7 @@ db.version(1).stores({
     posts: "++postId, authorId, date, location, text, picture, unsynced",
     comments: "++commentId, postId, authorId, date, text, unsynced",
     votes: "postId, authorId, value, unsynced",
-    notifications: "postId, authorId, action, seen"
+    notifications: "++id, postId, authorId, action, date, seen"
 });
 
 export const favorite = (postId, authorId) => {
@@ -17,14 +17,15 @@ export const favorite = (postId, authorId) => {
         .count()
         .then(count => {
             if (count == 0) {
-                return db.favorites.add({ postId, authorId, unsynced: true })
-                    //.then(() => requestSync('favorites_updated'))
-                    .then(() => db.favorites.toArray())
+                return db.favorites.add({ postId, authorId, unsynced: 'true' })
+                    .then(() => {
+                        requestSync('favorites_updated')
+                        return db.favorites.toArray();
+                    })
             } else {
                 return db.favorites.where('postId')
                     .equals(postId)
                     .delete()
-                    //.then(() => requestSync('favorites_updated'))
                     .then(() => db.favorites.toArray())
             }
         });
@@ -37,7 +38,7 @@ export const vote = (postId, authorId, value) => {
         .count()
         .then(count => {
             if (count == 0) {
-                return db.votes.add({ postId, authorId, value, unsynced: true })
+                return db.votes.add({ postId, authorId, value, unsynced: 'true' })
                     //  .then(() => requestSync('favorites_updated'))
                     .then(() => db.votes.toArray())
             } else {
@@ -54,7 +55,6 @@ export const comment = (comment) => {
     console.log('commenting post  : ', comment);
     return db.comments.add({ ...comment, unsynced: true })
         .then(() => {
-            //  dont't wait for sync
             requestSync('comments_updated')
             return db.comments.toArray();
         })
@@ -64,7 +64,6 @@ export const post = (post) => {
     console.log('addind a new post  : ', post);
     return db.posts.add({ ...post, unsynced: true })
         .then(() => {
-            //  dont't wait for sync
             requestSync('posts_updated')
             return db.posts.toArray();
         })
@@ -91,8 +90,17 @@ export const notifications = () => {
     return db.notifications.toArray()
 };
 
-const requestSync = (evt) => navigator.serviceWorker.ready
-    .then(swRegistration => {
-        console.log('requesting ', evt)
-        swRegistration.sync.register(evt)
+export const unseenNotifications = () => {
+    return db.notifications.where('seen').equals('false').toArray()
+};
+
+export const markAllNotifactionAsSeen = () => {
+    return db.notifications.where('seen').equals('false').modify({ seen: 'true' })
+};
+
+const requestSync = (evt) => {
+    return navigator.serviceWorker.ready.then(function (swRegistration) {
+        console.log('register ', evt)
+        return swRegistration.sync.register(evt);
     });
+};
