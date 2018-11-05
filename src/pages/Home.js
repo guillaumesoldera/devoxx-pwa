@@ -17,13 +17,14 @@ export class Home extends Component {
     static contextType = UserContext;
 
     async componentDidMount() {
-        navigator.serviceWorker.addEventListener('message', function (event) {
-            console.log("Client 1 Received Message: " + event.data);
-            if (event.data.name === 'loadPosts') {
-                this.setState({ posts: event.data.posts })
+        navigator.serviceWorker.addEventListener('message', async (event) => {
+            const eventPayload = JSON.parse(event.data);
+            if (eventPayload.message === 'reloadPosts') {
+                console.log('reloadPosts')
+                const posts = await allPostsWithAuthors();
+                this.setState({ posts, unsyncedPosts:[] })
             }
         });
-
         const posts = await allPostsWithAuthors();
         if (this.context.user) {
             await this.updatePostsWithFavoritesAndVotes(posts);
@@ -83,14 +84,15 @@ export class Home extends Component {
         this.setState({ posts: postWithVotes });
     }
 
-
     render() {
         const { posts, unsyncedPosts } = this.state;
+        const allPosts = [...unsyncedPosts, ...posts];
+        allPosts.sort((p1, p2) => p2.date - p1.date);
         return (
             <div className="home">
                 <Header />
                 <div className="content-container">
-                    <PostsList posts={[...unsyncedPosts, ...posts]} />
+                    <PostsList posts={allPosts} />
                 </div>
             </div>
         );

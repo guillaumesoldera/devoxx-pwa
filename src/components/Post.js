@@ -5,6 +5,8 @@ import '../styles/Post.css'
 import { classSet } from '../utils/utils';
 import { UserContext } from '../context/user';
 import { favorite, vote } from '../stores/indexedDb';
+import moment from 'moment';
+moment.locale('fr');
 
 export class Post extends Component {
 
@@ -62,7 +64,7 @@ export class Post extends Component {
                     <NavLink to={`/authors/${post.author.authorId}`} className="post-author-name">{post.author.fullName}</NavLink>
                     <span className="post-location">{!post.unsynced ? post.location : 'Your Location'}</span>
                 </div>
-                <span className="post-date">{post.date}</span>
+                <span className="post-date">{moment(post.date*1000).format('ll')}</span>
             </div>
             <div className="post-text">
                 {text}
@@ -90,11 +92,9 @@ export class Post extends Component {
                         "fa fa-share-alt material-icons small": true,
                         "disabled": user === undefined || post.unsynced
                     })}></i>
-                    <a
-                        className={classSet({
+                        <NavLink to={`/comment/${post.postId}`}className={classSet({
                             "disabled": user === undefined || post.unsynced
-                        })}
-                        href={`/comment/${post.postId}`}><i className="fa fa-comment-o material-icons small"></i></a>
+                        })}><i className="fa fa-comment-o material-icons small"></i></NavLink>
                     {(post.onFavorite || post.unsynced )&& <i className={classSet({
                         "fa material-icons small": true,
                         "fa-heart-o": !post.favorited,

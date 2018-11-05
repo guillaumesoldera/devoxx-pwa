@@ -22,8 +22,8 @@ export class Comment extends Component {
         const { text } = this.state;
         const newComment = {
             text,
-            date: moment().format("ll"),
-            userId: this.context.user.id,
+            date: moment().unix(),
+            authorId: this.context.user.id,
             postId: this.props.postId
         }
         await comment(newComment);

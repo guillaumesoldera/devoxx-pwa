@@ -39,40 +39,40 @@ let plugins = [
             MODE: isProd ? JSON.stringify('PROD') : JSON.stringify('DEV')
         }
     }),
-    new SWPrecacheWebpackPlugin({
-            // By default, a cache-busting query parameter is appended to requests
-            // used to populate the caches, to ensure the responses are fresh.
-            // If a URL is already hashed by Webpack, then there is no concern
-            // about it being stale, and the cache-busting can be skipped.
-            cacheId: 'the-magic-cache',
-            filepath: resolve(__dirname, './public/service-worker.js'),
-            minify: false,
-            // For unknown URLs, fallback to the index page
-            navigateFallback: '/',
-            mergeStaticsConfig: true,
-            stripPrefixMulti: {
-                [resolve(__dirname, './public/')]: '',
-            },
-            staticFileGlobs: [
-                resolve(__dirname, './public/index.html'),
-                resolve(__dirname, './public/images/*.png'),
-                resolve(__dirname, './public/images/icons/**.*'),
-                resolve(__dirname, './public/javascripts/*.js'),
-                resolve(__dirname, './public/javascripts/bundle/*.js'),
-                resolve(__dirname, './public/javascripts/bundle/media/**.*'),
-                resolve(__dirname, './public/css/*.css'),
-                resolve(__dirname, './public/css/bundle/*.css'),
-            ],
-            // offline support
-            runtimeCaching: [{
-                urlPattern: /\/api\/speakers/,
-                handler: 'cacheFirst'
-            }, {
-                urlPattern: /\/api\/talks/,
-                handler: 'cacheFirst'
-            }],
-            importScripts: ['../../push-support.js','../../sync-support.js']
-        }),
+    // new SWPrecacheWebpackPlugin({
+    //         // By default, a cache-busting query parameter is appended to requests
+    //         // used to populate the caches, to ensure the responses are fresh.
+    //         // If a URL is already hashed by Webpack, then there is no concern
+    //         // about it being stale, and the cache-busting can be skipped.
+    //         cacheId: 'the-magic-cache',
+    //         filepath: resolve(__dirname, './public/service-worker.js'),
+    //         minify: false,
+    //         // For unknown URLs, fallback to the index page
+    //         navigateFallback: '/',
+    //         mergeStaticsConfig: true,
+    //         stripPrefixMulti: {
+    //             [resolve(__dirname, './public/')]: '',
+    //         },
+    //         staticFileGlobs: [
+    //             resolve(__dirname, './public/index.html'),
+    //             resolve(__dirname, './public/images/*.png'),
+    //             resolve(__dirname, './public/images/icons/**.*'),
+    //             resolve(__dirname, './public/javascripts/*.js'),
+    //             resolve(__dirname, './public/javascripts/bundle/*.js'),
+    //             resolve(__dirname, './public/javascripts/bundle/media/**.*'),
+    //             resolve(__dirname, './public/css/*.css'),
+    //             resolve(__dirname, './public/css/bundle/*.css'),
+    //         ],
+    //         // offline support
+    //         runtimeCaching: [{
+    //             urlPattern: /\/api\/speakers/,
+    //             handler: 'networkFirst'
+    //         }, {
+    //             urlPattern: /\/api\/talks/,
+    //             handler: 'networkFirst'
+    //         }],
+    //         importScripts: ['../../push-support.js','../../sync-support.js']
+    //     }),
 ];
 
 module.exports = {
@@ -139,7 +139,8 @@ module.exports = {
         test: /\.(ttf|eot|svg|png)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'file-loader' ,
         options: {
-            outputPath: 'media/'
+            outputPath: 'media/',
+            name: '[name].[ext]',
           }
       },
         ]

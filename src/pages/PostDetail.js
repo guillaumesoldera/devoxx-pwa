@@ -11,26 +11,38 @@ import { favorites, votes, localComments } from '../stores/indexedDb';
 export class PostDetail extends Component {
     state = {
         postDetail: undefined,
-        unsyncedComments:[]
+        unsyncedComments: []
     }
 
     static contextType = UserContext;
 
     async componentDidMount() {
+        navigator.serviceWorker.addEventListener('message', async (event) => {
+            const eventPayload = JSON.parse(event.data);
+            if (eventPayload.message === 'reloadComments') {
+                console.log('reloadComments')
+                const postDetail = await postDetails(this.props.postId);
+                await this.updatePostWithFavoritesAndVotes(postDetail, []);
+            }
+        });
+
         const postDetail = await postDetails(this.props.postId);
-        await this.updatePostWithFavoritesAndVotes(postDetail);
-        const unsyncedComments = await localComments(this.props.postId);
-        if (unsyncedComments.length > 0 && this.context.user) {
+        const _unsyncedComments = await localComments(this.props.postId);
+        let unsyncedComments=[];
+        if (_unsyncedComments.length > 0 && this.context.user) {
             const me = await authorById(this.context.user.id)
-            this.setState({ unsyncedComments: unsyncedComments.map(comment => ({ ...comment, author: me })) })
+            unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me })) 
         }
+        await this.updatePostWithFavoritesAndVotes(postDetail, unsyncedComments);
+
     }
 
-    updatePostWithFavoritesAndVotes = async (postDetail) => {
+    updatePostWithFavoritesAndVotes = async (postDetail, unsyncedComments) => {
         const postVotes = await votes();
         const favoritesPosts = await favorites();
         const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
         this.setState({
+            unsyncedComments,
             postDetail: {
                 ...postDetail,
                 post: {
@@ -87,12 +99,14 @@ export class PostDetail extends Component {
         if (!postDetail) {
             return null;
         }
+        const allComments = [...unsyncedComments, ...postDetail.comments]
+        allComments.sort((c1, c2) => c2.date - c1.date)
         return (
             <div className="post-detail">
                 <BackHeader title={"Post detail"} />
                 {postDetail.post && <Post post={postDetail.post} />}
                 <ul className="post-comments">
-                    {[...unsyncedComments, ...postDetail.comments ].map((comment, i) => <li key={`post-${i}`}><PostComment comment={comment} /></li>)}
+                    {allComments.map((comment, i) => <li key={`post-${i}`}><PostComment comment={comment} /></li>)}
                 </ul>
             </div>
         );

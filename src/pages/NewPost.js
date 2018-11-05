@@ -137,9 +137,9 @@ export class NewPost extends Component {
         const newPost = {
             text,
             picture,
-            date: moment().format("ll"),
+            date: moment().unix(),
             location: { latitude, longitude },
-            userId: this.context.user.id
+            authorId: this.context.user.id
         }
         await post(newPost);
     }

@@ -2,11 +2,12 @@ const db = require('./firestore');
 
 const addAuthor = async (email, password) => {
     const newAuthor = await db.collection('authors').add({
-        fullName: '',
-        bio: '',
-        profilePicture: '',
+        fullName: 'Guest',
+        bio: 'An AirBeerNBeer guest ',
+        profilePicture: 'https://static.licdn.com/scds/common/u/images/themes/katy/ghosts/person/ghost_person_200x200_v1.png',
         email,
-        password
+        password,
+        subscription:''
     });
     return { id: newAuthor.id, fullName: '', bio: '' }
 }
@@ -19,6 +20,15 @@ const updateAuthor = async (authorId, fullName, bio, profilePicture) => {
         profilePicture,
     });
     return { authorId, fullName, bio, profilePicture }
+}
+
+const updateAuthorSubscription = async (authorId, subscription) => {
+    console.log('updating subscription for user ', authorId)
+    const authorRef = db.collection('authors').doc(authorId);
+    await authorRef.update({
+        subscription: JSON.stringify(subscription),
+    });
+    return { authorId, subscription }
 }
 
 const logAuthor = async (email, password) => {
@@ -46,7 +56,6 @@ const allAuthors = async () => {
             authorId: doc.id,
             ...data
         })
-        console.log(doc.id, '=>', doc.data());
     })
     return authors.map(_author => ({
         authorId: _author.authorId,
@@ -61,4 +70,5 @@ module.exports = {
     logAuthor,
     allAuthors,
     updateAuthor,
+    updateAuthorSubscription
 }

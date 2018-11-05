@@ -13,7 +13,7 @@ class _Profile extends Component {
     state = {
         imageSrc: '',
         porfile: undefined,
-        unsyncedPosts : []
+        unsyncedPosts: []
     }
 
     static contextType = UserContext;
@@ -22,7 +22,7 @@ class _Profile extends Component {
         const profile = await loadProfile(this.context.user.id);
         await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
         const unsyncedPosts = await localPosts();
-        this.setState({unsyncedPosts:  unsyncedPosts.map(post => ({ ...post, author: profile.author }))})
+        this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: profile.author })) })
     }
 
     onFavorite = async () => {
@@ -36,9 +36,9 @@ class _Profile extends Component {
         const postWithVotesAndFavs = profile.posts.map(post => {
             const vote = postVotes.find(vote => vote.postId === post.postId) || {};
             return {
-                ...post, 
-                votedUp: vote.value > 0, 
-                votedDown: vote.value < 0, 
+                ...post,
+                votedUp: vote.value > 0,
+                votedDown: vote.value < 0,
                 favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
                 onFavorite: this.onFavorite,
                 onVote: this.onVote
@@ -57,7 +57,7 @@ class _Profile extends Component {
         const postWithFavs = profile.posts.map(post => ({
             ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
         }));
-        this.setState({ profile: { ...profile, posts: postWithFavs }})
+        this.setState({ profile: { ...profile, posts: postWithFavs } })
     }
 
     onVote = async () => {
@@ -73,14 +73,14 @@ class _Profile extends Component {
                 ...post, votedUp: vote.value > 0, votedDown: vote.value < 0
             }
         });
-        this.setState({ profile: { ...profile, posts: postWithVotes }})
+        this.setState({ profile: { ...profile, posts: postWithVotes } })
     }
 
     updateProfile = async (profile, imageSrc) => {
         const _imageSrc = imageSrc || this.state.imageSrc
         const favoritesPosts = await favorites();
         const postWithFavs = profile.posts.map(post => ({
-            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId)>-1, onFavorite: this.onFavorite
+            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1, onFavorite: this.onFavorite
         }));
         this.setState({ profile: { ...profile, posts: postWithFavs }, imageSrc: _imageSrc });
     }
@@ -140,10 +140,12 @@ class _Profile extends Component {
     }
 
     render() {
-        const { profile, imageSrc, unsyncedPosts} = this.state
+        const { profile, imageSrc, unsyncedPosts } = this.state
         if (!profile) {
             return null;
         }
+        const allPosts = [...unsyncedPosts, ...profile.posts]
+        allPosts.sort((p1, p2) => p2.date - p1.date);
         return (
             <div className="profile-detail">
                 <BackHeader title={"Your profile"}>
@@ -171,7 +173,7 @@ class _Profile extends Component {
                     </div>
                 </div>}
                 <h3 className="posts-separator-title">All posts</h3>
-                 <ul>{[...unsyncedPosts, ...profile.posts].map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>
+                <ul>{allPosts.map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>
             </div>
         );
     }

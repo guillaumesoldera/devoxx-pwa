@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { classSet } from '../utils/utils';
-import '../styles/PostComment.css'
+import '../styles/PostComment.css';
+import moment from 'moment';
+moment.locale('fr');
 
 export class PostComment extends Component {
     
@@ -17,7 +19,7 @@ export class PostComment extends Component {
                     <div className="post-comment-infos">
                         <NavLink to={`/authors/${comment.author.authorId}`} className="post-comment-author-name">{comment.author.fullName}</NavLink>
                     </div>
-                    <span className="post-comment-date">{comment.date}</span>
+                    <span className="post-comment-date">{moment(comment.date*1000).format('ll')}</span>
                 </div>
                 <div className="post-comment-text">
                     <p>{comment.text}</p>

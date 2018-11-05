@@ -46,7 +46,7 @@ const allPosts = async () => {
             postId: doc.id,
             ...data
         })
-        console.log(doc.id, '=>', doc.data());
+        console.log(doc.id);
     })
     return posts
 }
