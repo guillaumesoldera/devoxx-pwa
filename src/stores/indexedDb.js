@@ -83,10 +83,9 @@ export const localPosts = (authorId) => {
 };
 
 export const localComments = (authorId, postId) => {
-    return db.comments.where('authorId')
-        .equals(authorId)
-        .where('postId')
-        .equals(postId).toArray();
+    return db.comments
+        .where({ 'authorId': authorId, 'postId': postId })
+        .toArray();
 };
 
 export const favorites = (authorId) => {
@@ -108,7 +107,9 @@ export const unseenNotifications = (authorId) => {
 };
 
 export const markAllNotifactionAsSeen = () => {
-    return db.notifications.where('seen').equals('false').modify({ seen: 'true' })
+    return db.notifications.where('seen')
+        .equals('false')
+        .modify({ seen: 'true' })
 };
 
 const requestSync = (evt) => {

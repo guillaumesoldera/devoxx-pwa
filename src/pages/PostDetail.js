@@ -40,7 +40,16 @@ export class PostDetail extends Component {
             }
             await this.updatePostWithFavoritesAndVotes(postDetail, unsyncedComments);
         } else {
-            this.setState({ postDetail })
+            this.setState({
+                postDetail: {
+                    ...postDetail,
+                    post: {
+                        ...postDetail.post,
+                        votedUp: false,
+                        votedDown: false,
+                    }
+                }
+            });
         }
     }
 
