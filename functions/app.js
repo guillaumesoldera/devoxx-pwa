@@ -72,11 +72,13 @@ app.post('/api/syncposts', async (req, res) => {
     const postsToAdd = req.body.posts;
     console.log('postsToAdd', postsToAdd.length);
     await Promise.all(postsToAdd.map(async post => {
-        location = 'Unknown Address';
+        let location = 'Unknown Address';
         try {
             const locationResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${post.location.latitude},${post.location.longitude}&key=AIzaSyCYcxCXRuOQT1eX_yjAMD4IqXSZYVLslDQ`)
             const locationJs = await locationResponse.json();
-            let location = locationJs.results && locationJs.results.length > 0 && locationJs.results[0].formatted_address || location;
+            console.log(locationJs);            
+            location = locationJs.results 
+            && locationJs.results.length > 0 && locationJs.results[0].formatted_address || location;
         } catch (error) {
             console.log(error)
         }
