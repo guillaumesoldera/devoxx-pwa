@@ -56,7 +56,9 @@ class App extends Component {
   loginUser = async (email, password) => {
     const user = await login(email, password);
     // fix setSetae in unmounted component
-    this.registerForNotifications(user);
+    if (window.PushManager) {
+      this.registerForNotifications(user);
+    }
     this.setState({
       user
     }, () => {
@@ -67,7 +69,9 @@ class App extends Component {
 
   signupUser = async (email, password) => {
     const user = await signup(email, password);
-   this.registerForNotifications(user);
+    if (window.PushManager) {
+      this.registerForNotifications(user);
+    }
     console.log('user added', user);
     this.setState({
       user
@@ -86,7 +90,7 @@ class App extends Component {
   }
 
   registerForNotifications = async (user) => {
-    const registration  = await navigator.serviceWorker.ready;
+    const registration = await navigator.serviceWorker.ready;
     console.log("Registering Push for user with id ", user.id);
     registration.pushManager.subscribe({
       userVisibleOnly: true,
@@ -95,8 +99,8 @@ class App extends Component {
       console.log("Subscribing to push...");
       return fetch(`/api/subscribe`, {
         method: 'POST',
-        body: JSON.stringify({id: user.id, subscription}),
-        headers: {'content-type': 'application/json' }
+        body: JSON.stringify({ id: user.id, subscription }),
+        headers: { 'content-type': 'application/json' }
       }).then(() => {
         console.log("Push Sent...");
       });

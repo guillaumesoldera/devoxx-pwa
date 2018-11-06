@@ -76,9 +76,9 @@ app.post('/api/syncposts', async (req, res) => {
         try {
             const locationResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${post.location.latitude},${post.location.longitude}&key=AIzaSyCYcxCXRuOQT1eX_yjAMD4IqXSZYVLslDQ`)
             const locationJs = await locationResponse.json();
-            console.log(locationJs);            
-            location = locationJs.results 
-            && locationJs.results.length > 0 && locationJs.results[0].formatted_address || location;
+            console.log(locationJs);
+            location = locationJs.results
+                && locationJs.results.length > 0 && locationJs.results[0].formatted_address || location;
         } catch (error) {
             console.log(error)
         }
@@ -95,19 +95,23 @@ app.post('/api/synccomments', async (req, res) => {
         const postId = comment.postId;
         const authorId = comment.authorId;
         const author = await authorById(authorId);
-        const payload = JSON.stringify({
-            title: 'Your post has been commented',
-            body: `${author.fullName} has commented your post`,
-            icon: '/images/favicon.png',
-            postId,
-            authorId,
-            action: 'comment',
-            date: moment().unix(),
-        });
-        await addComment(comment);
-        return webpush.sendNotification(JSON.parse(author.subscription), payload)
-            .catch(err => console.error('err', err))
-            .then(() => res.json({}))
+        const post = await postById(postId);
+        const postAuthor = await authorById(post.authorId);
+        if (postAuthor.subscription) {
+            const payload = JSON.stringify({
+                title: 'Your post has been commented',
+                body: `${author.fullName} has commented your post`,
+                icon: '/images/favicon.png',
+                postId,
+                authorId,
+                action: 'comment',
+                date: moment().unix(),
+            });
+            await addComment(comment);
+            return webpush.sendNotification(JSON.parse(postAuthor.subscription), payload)
+                .catch(err => console.error('err', err))
+        }
+        return Promise.resolve({});
     }))
     const posts = await allPosts();
     return res.json(posts)
@@ -120,18 +124,23 @@ app.post('/api/syncfavorites', async (req, res) => {
         const postId = favorite.postId;
         const authorId = favorite.authorId;
         const author = await authorById(authorId);
-        const payload = JSON.stringify({
-            title: 'Your post has been favotited',
-            body: `${author.fullName} has favorited your post`,
-            icon: '/images/favicon.png',
-            postId,
-            authorId,
-            action: 'favorite',
-            date: moment().unix(),
-        });
-        return webpush.sendNotification(JSON.parse(author.subscription), payload)
-            .catch(err => console.error('err', err))
-            .then(() => res.json({}))
+        const post = await postById(postId);
+        const postAuthor = await authorById(post.authorId);
+        if (postAuthor.subscription) {
+            const payload = JSON.stringify({
+                title: 'Your post has been favotited',
+                body: `${author.fullName} has favorited your post`,
+                icon: '/images/favicon.png',
+                postId,
+                authorId,
+                action: 'favorite',
+                date: moment().unix(),
+            });
+            return webpush.sendNotification(JSON.parse(postAuthor.subscription), payload)
+                .catch(err => console.error('err', err))
+                .then(() => res.json({}))
+        }
+        return Promise.resolve({});
     }))
     return res.json({})
 });
@@ -145,6 +154,7 @@ app.post('/api/syncvotes', async (req, res) => {
         const value = vote.value;
         const author = await authorById(authorId);
         const post = await postById(postId);
+        const postAuthor = await authorById(post.authorId);
         let downVotes = post.downVotes;
         let upVotes = post.upVotes;
         if (value > 0) {
@@ -153,18 +163,21 @@ app.post('/api/syncvotes', async (req, res) => {
             downVotes = downVotes + 1
         }
         await updatePost(postId, upVotes, downVotes)
-        const payload = JSON.stringify({
-            title: `Your post has been ${value > 0 ? 'voted up' : 'voted down'}`,
-            body: `${author.fullName} has ${value > 0 ? 'voted up' : 'voted down'} your post`,
-            icon: '/images/favicon.png',
-            postId,
-            authorId,
-            action: value > 0 ? 'voteUp' : 'voteDown',
-            date: moment().unix(),
-        });
-        return webpush.sendNotification(JSON.parse(author.subscription), payload)
-            .catch(err => console.error('err', err))
-            .then(() => res.json({}))
+        if (postAuthor.subscription) {
+            const payload = JSON.stringify({
+                title: `Your post has been ${value > 0 ? 'voted up' : 'voted down'}`,
+                body: `${author.fullName} has ${value > 0 ? 'voted up' : 'voted down'} your post`,
+                icon: '/images/favicon.png',
+                postId,
+                authorId,
+                action: value > 0 ? 'voteUp' : 'voteDown',
+                date: moment().unix(),
+            });
+            return webpush.sendNotification(JSON.parse(postAuthor.subscription), payload)
+                .catch(err => console.error('err', err))
+        } else {
+            return Promise.resolve({});
+        }
     }))
     const posts = await allPosts();
     return res.json(posts)

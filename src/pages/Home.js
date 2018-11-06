@@ -23,13 +23,13 @@ export class Home extends Component {
                 console.log('reloadPosts')
                 const posts = await allPostsWithAuthors();
                 await this.updatePostsWithFavoritesAndVotes(posts);
-                this.setState({ unsyncedPosts:[] })
+                this.setState({ unsyncedPosts: [] })
             }
         });
         const posts = await allPostsWithAuthors();
         if (this.context.user) {
             await this.updatePostsWithFavoritesAndVotes(posts);
-            const unsyncedPosts = await localPosts();
+            const unsyncedPosts = await localPosts(this.context.user.id);
             if (unsyncedPosts.length > 0) {
                 const me = await authorById(this.context.user.id)
                 this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
@@ -40,20 +40,22 @@ export class Home extends Component {
     }
 
     updatePostsWithFavoritesAndVotes = async (posts) => {
-        const postVotes = await votes();
-        const favoritesPosts = await favorites();
-        const postWithVotesAndFavs = posts.map(post => {
-            const vote = postVotes.find(vote => vote.postId === post.postId) || {};
-            return {
-                ...post,
-                votedUp: vote.value > 0,
-                votedDown: vote.value < 0,
-                favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
-                onFavorite: this.onFavorite,
-                onVote: this.onVote
-            }
-        });
-        this.setState({ posts: postWithVotesAndFavs });
+        if (this.context.user) {
+            const postVotes = await votes(this.context.user.id);
+            const favoritesPosts = await favorites(this.context.user.id);
+            const postWithVotesAndFavs = posts.map(post => {
+                const vote = postVotes.find(vote => vote.postId === post.postId) || {};
+                return {
+                    ...post,
+                    votedUp: vote.value > 0,
+                    votedDown: vote.value < 0,
+                    favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
+                    onFavorite: this.onFavorite,
+                    onVote: this.onVote
+                }
+            });
+            this.setState({ posts: postWithVotesAndFavs });
+        }
     }
 
     onFavorite = async () => {
@@ -62,11 +64,13 @@ export class Home extends Component {
     }
 
     updatePostsWithFavorites = async (posts) => {
-        const favoritesPosts = await favorites();
-        const postWithFavs = posts.map(post => ({
-            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1
-        }));
-        this.setState({ posts: postWithFavs });
+        if (this.context.user) {
+            const favoritesPosts = await favorites(this.context.user.id);
+            const postWithFavs = posts.map(post => ({
+                ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1
+            }));
+            this.setState({ posts: postWithFavs });
+        }
     }
 
     onVote = async () => {
@@ -75,14 +79,16 @@ export class Home extends Component {
     }
 
     updatePostsWithVotes = async (posts) => {
-        const postVotes = await votes();
-        const postWithVotes = posts.map(post => {
-            const vote = postVotes.find(vote => vote.postId === post.postId) || {};
-            return {
-                ...post, votedUp: vote.value > 0, votedDown: vote.value < 0
-            }
-        });
-        this.setState({ posts: postWithVotes });
+        if (this.context.user) {
+            const postVotes = await votes(this.context.user.id);
+            const postWithVotes = posts.map(post => {
+                const vote = postVotes.find(vote => vote.postId === post.postId) || {};
+                return {
+                    ...post, votedUp: vote.value > 0, votedDown: vote.value < 0
+                }
+            });
+            this.setState({ posts: postWithVotes });
+        }
     }
 
     render() {

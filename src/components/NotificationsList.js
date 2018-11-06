@@ -4,6 +4,7 @@ import { NavLink, withRouter } from "react-router-dom";
 import '../styles/NotificationsList.css'
 import { notifications, markAllNotifactionAsSeen } from '../stores/indexedDb';
 import { allAuthors } from '../services/authors';
+import { UserContext } from '../context/user';
 import moment from 'moment';
 moment.locale('fr');
 
@@ -108,20 +109,24 @@ export class NotificationsList extends Component {
     state = {
         notifs: []
     }
+    static contextType = UserContext;
 
     async componentDidMount() {
-        await markAllNotifactionAsSeen();
-        let notifs = await notifications();
-        if (notifs.length > 0) {
-            const authors = await allAuthors();
-            notifs = notifs.map(notif => ({
-                ...notif,
-                author: authors.find(author => author.authorId === notif.authorId),
-            }));
+        const { user } = this.context;
+        if (user) {
+            await markAllNotifactionAsSeen(user.id);
+            let notifs = await notifications(user.id);
+            if (notifs.length > 0) {
+                const authors = await allAuthors(user.id);
+                notifs = notifs.map(notif => ({
+                    ...notif,
+                    author: authors.find(author => author.authorId === notif.authorId),
+                }));
+            }
+            this.setState({
+                notifs
+            })
         }
-        this.setState({
-            notifs
-        })
     }
 
     render() {

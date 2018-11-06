@@ -20,7 +20,6 @@ var precacheFiles =
     "/javascripts/bundle/media/fontawesome-webfont.ttf"
   ];
 
-
 self.addEventListener('install', function (event) {
   console.log('The service worker is being installed.');
   event.waitUntil(
@@ -138,23 +137,30 @@ db.version(1).stores({
   notifications: "++id, postId, authorId, action, date ,seen"
 });
 
+self.addEventListener('message', function (event) {
+  console.log("SW Received Message: " + event.data);
+  launchSync(event.data);
+});
 
 self.addEventListener('sync', function (event) {
-  console.log("sync Recieved... !!");
-  console.log("event.tag", event.tag)
-  if (event.tag == 'posts_updated') {
+  console.log("sync Recieved: "+ event.tag);
+  launchSync(event.tag);
+});
+
+function launchSync(tag) {
+  if (tag == 'posts_updated') {
     syncPosts();
   }
-  else if (event.tag == 'comments_updated') {
+  else if (tag == 'comments_updated') {
     syncComments();
   }
-  else if (event.tag == 'favorites_updated') {
+  else if (tag == 'favorites_updated') {
     syncFavorites();
   }
-  else if (event.tag == 'votes_updated') {
+  else if (tag == 'votes_updated') {
     syncVotes();
   }
-});
+}
 
 function syncFavorites() {
   return db.favorites.where('unsynced').equals('true').toArray()

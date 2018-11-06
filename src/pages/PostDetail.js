@@ -30,36 +30,40 @@ export class PostDetail extends Component {
                 await this.updatePostWithFavoritesAndVotes(postDetail, this.state.unsyncedComments);
             }
         });
-
         const postDetail = await postDetails(this.props.postId);
-        const _unsyncedComments = await localComments(this.props.postId);
-        let unsyncedComments = [];
-        if (_unsyncedComments.length > 0 && this.context.user) {
-            const me = await authorById(this.context.user.id)
-            unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me }))
+        if (this.context.user) {
+            const _unsyncedComments = await localComments(this.props.postId);
+            let unsyncedComments = [];
+            if (_unsyncedComments.length > 0) {
+                const me = await authorById(this.context.user.id)
+                unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me }))
+            }
+            await this.updatePostWithFavoritesAndVotes(postDetail, unsyncedComments);
+        } else {
+            this.setState({ postDetail })
         }
-        await this.updatePostWithFavoritesAndVotes(postDetail, unsyncedComments);
-
     }
 
     updatePostWithFavoritesAndVotes = async (postDetail, unsyncedComments) => {
-        const postVotes = await votes();
-        const favoritesPosts = await favorites();
-        const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
-        this.setState({
-            unsyncedComments,
-            postDetail: {
-                ...postDetail,
-                post: {
-                    ...postDetail.post,
-                    favorited: favoritesPosts.findIndex(fav => fav.postId === postDetail.post.postId) > -1,
-                    votedUp: vote.value > 0,
-                    votedDown: vote.value < 0,
-                    onFavorite: this.onFavorite,
-                    onVote: this.onVote
+        if (this.context.user) {
+            const postVotes = await votes(this.context.user.id);
+            const favoritesPosts = await favorites(this.context.user.id);
+            const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
+            this.setState({
+                unsyncedComments,
+                postDetail: {
+                    ...postDetail,
+                    post: {
+                        ...postDetail.post,
+                        favorited: favoritesPosts.findIndex(fav => fav.postId === postDetail.post.postId) > -1,
+                        votedUp: vote.value > 0,
+                        votedDown: vote.value < 0,
+                        onFavorite: this.onFavorite,
+                        onVote: this.onVote
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     onVote = async () => {
@@ -73,30 +77,34 @@ export class PostDetail extends Component {
     }
 
     updatePostWithVotes = async (postDetail) => {
-        const postVotes = await votes();
-        const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
-        this.setState({
-            postDetail: {
-                ...postDetail,
-                post: {
-                    ...postDetail.post,
-                    votedUp: vote.value > 0, votedDown: vote.value < 0
+        if (this.context.user) {
+            const postVotes = await votes(this.context.user.id);
+            const vote = postVotes.find(vote => vote.postId === postDetail.post.postId) || {};
+            this.setState({
+                postDetail: {
+                    ...postDetail,
+                    post: {
+                        ...postDetail.post,
+                        votedUp: vote.value > 0, votedDown: vote.value < 0
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     updatePostWithFavorites = async (postDetail) => {
-        const favoritesPosts = await favorites();
-        this.setState({
-            postDetail: {
-                ...postDetail,
-                post: {
-                    ...postDetail.post,
-                    favorited: favoritesPosts.findIndex(fav => fav.postId === postDetail.post.postId) > -1,
+        if (this.context.user) {
+            const favoritesPosts = await favorites(this.context.user.id);
+            this.setState({
+                postDetail: {
+                    ...postDetail,
+                    post: {
+                        ...postDetail.post,
+                        favorited: favoritesPosts.findIndex(fav => fav.postId === postDetail.post.postId) > -1,
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     render() {

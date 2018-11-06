@@ -70,29 +70,41 @@ export const post = (post) => {
         })
 };
 
-export const votes = () => {
-    return db.votes.toArray();
+export const votes = (authorId) => {
+    return db.votes.where('authorId')
+        .equals(authorId)
+        .toArray();
 };
 
-export const localPosts = () => {
-    return db.posts.toArray();
+export const localPosts = (authorId) => {
+    return db.posts.where('authorId')
+        .equals(authorId)
+        .toArray();
 };
 
-export const localComments = (postId) => {
-    return db.comments.where('postId')
+export const localComments = (authorId, postId) => {
+    return db.comments.where('authorId')
+        .equals(authorId)
+        .where('postId')
         .equals(postId).toArray();
 };
 
-export const favorites = () => {
-    return db.favorites.toArray()
+export const favorites = (authorId) => {
+    return db.favorites.where('authorId')
+        .equals(authorId)
+        .toArray()
 };
 
-export const notifications = () => {
-    return db.notifications.toArray()
+export const notifications = (authorId) => {
+    return db.notifications.where('authorId')
+        .equals(authorId)
+        .toArray()
 };
 
-export const unseenNotifications = () => {
-    return db.notifications.where('seen').equals('false').toArray()
+export const unseenNotifications = (authorId) => {
+    return db.notifications
+        .where({ 'authorId': authorId, 'seen': 'false' })
+        .toArray()
 };
 
 export const markAllNotifactionAsSeen = () => {
@@ -102,6 +114,12 @@ export const markAllNotifactionAsSeen = () => {
 const requestSync = (evt) => {
     return navigator.serviceWorker.ready.then(function (swRegistration) {
         console.log('register ', evt)
-        return swRegistration.sync.register(evt);
+        if (window.SyncManager) {
+            return swRegistration.sync.register(evt)
+        } else {
+            navigator.serviceWorker.controller.postMessage(evt);
+            return Promise.resolve({});
+
+        }
     });
 };
