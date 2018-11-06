@@ -125,16 +125,19 @@ export class NotificationsList extends Component {
     }
 
     render() {
-        if (this.state.notifs.length === 0) {
+        const { notifs } = this.state;
+        if (notifs.length === 0) {
             return (
                 <div className="notification-list-container">
                     No new notifications
                 </div>
             );
         }
+        const allNotifs = [...notifs];
+        allNotifs.sort((n1, n2) => n2.date - n1.date);
         return (
             <div className="notification-list-container">
-                {this.state.notifs.map((notif, index) => {
+                {allNotifs.map((notif, index) => {
                     switch (notif.action) {
                         case 'favorite':
                             return <div key={`notif-${index}`} className="row">

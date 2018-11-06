@@ -19,15 +19,18 @@ class _Profile extends Component {
     static contextType = UserContext;
 
     async componentDidMount() {
+        navigator.serviceWorker.addEventListener('message', async (event) => {
+            const eventPayload = JSON.parse(event.data);
+            if (eventPayload.message === 'reloadPosts') {
+                console.log('reloadPosts')
+                const profile = await loadProfile(this.props.postId);
+                await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
+            }
+        });
         const profile = await loadProfile(this.context.user.id);
         await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
         const unsyncedPosts = await localPosts();
         this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: profile.author })) })
-    }
-
-    onFavorite = async () => {
-        const { profile } = this.state;
-        await this.updateProfile(profile);
     }
 
     updateProfileWithFavoritesAndVotes = async (profile, imageSrc) => {
@@ -52,14 +55,6 @@ class _Profile extends Component {
         await this.updateProfileWithFavorites(profile);
     }
 
-    updateProfileWithFavorites = async (profile) => {
-        const favoritesPosts = await favorites();
-        const postWithFavs = profile.posts.map(post => ({
-            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
-        }));
-        this.setState({ profile: { ...profile, posts: postWithFavs } })
-    }
-
     onVote = async () => {
         const { profile } = this.state;
         await this.updateProfileWithVotes(profile);
@@ -76,7 +71,7 @@ class _Profile extends Component {
         this.setState({ profile: { ...profile, posts: postWithVotes } })
     }
 
-    updateProfile = async (profile, imageSrc) => {
+    updateProfileWithFavorites = async (profile, imageSrc) => {
         const _imageSrc = imageSrc || this.state.imageSrc
         const favoritesPosts = await favorites();
         const postWithFavs = profile.posts.map(post => ({
@@ -141,10 +136,8 @@ class _Profile extends Component {
 
     render() {
         const { profile, imageSrc, unsyncedPosts } = this.state
-        if (!profile) {
-            return null;
-        }
-        const allPosts = [...unsyncedPosts, ...profile.posts]
+        const posts =  (profile && profile.posts)||[];
+        const allPosts = [...unsyncedPosts, ...posts]
         allPosts.sort((p1, p2) => p2.date - p1.date);
         return (
             <div className="profile-detail">
@@ -157,7 +150,7 @@ class _Profile extends Component {
                         </li>
                     </ul>
                 </BackHeader>
-                {profile.author && <div className="profile-infos-container">
+                {profile && profile.author && <div className="profile-infos-container">
                     <div className="profile-metadata">
                         {this.state.imageSrc
                             ? <img onClick={this.modifyAvatar} src={imageSrc} className="profile-avatar" />

@@ -130,7 +130,7 @@ db.version(1).stores({
 
 
 self.addEventListener('sync', function (event) {
-  console.log("sync Recieved... !!!!!");
+  console.log("sync Recieved... !!");
   console.log("event.tag", event.tag)
   if (event.tag == 'posts_updated') {
     syncPosts();
@@ -185,12 +185,8 @@ function syncVotes() {
         } else {
           return Promise.reject('an error occurred while syncing posts')
         }
-      }).then(response => {
-        if (response.status === 200) {
-          return Promise.all(votes.map(vote => db.votes.update(vote.postId, { unsynced: 'false' })))
-        } else {
-          return Promise.reject('an error occurred while syncing votes')
-        }
+      }).then(() => {
+          return  db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
       })
     })
 }

@@ -22,7 +22,8 @@ export class Home extends Component {
             if (eventPayload.message === 'reloadPosts') {
                 console.log('reloadPosts')
                 const posts = await allPostsWithAuthors();
-                this.setState({ posts, unsyncedPosts:[] })
+                await this.updatePostsWithFavoritesAndVotes(posts);
+                this.setState({ unsyncedPosts:[] })
             }
         });
         const posts = await allPostsWithAuthors();

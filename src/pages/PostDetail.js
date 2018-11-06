@@ -24,14 +24,19 @@ export class PostDetail extends Component {
                 const postDetail = await postDetails(this.props.postId);
                 await this.updatePostWithFavoritesAndVotes(postDetail, []);
             }
+            if (eventPayload.message === 'reloadPosts') {
+                console.log('reloadPosts')
+                const postDetail = await postDetails(this.props.postId);
+                await this.updatePostWithFavoritesAndVotes(postDetail, this.state.unsyncedComments);
+            }
         });
 
         const postDetail = await postDetails(this.props.postId);
         const _unsyncedComments = await localComments(this.props.postId);
-        let unsyncedComments=[];
+        let unsyncedComments = [];
         if (_unsyncedComments.length > 0 && this.context.user) {
             const me = await authorById(this.context.user.id)
-            unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me })) 
+            unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me }))
         }
         await this.updatePostWithFavoritesAndVotes(postDetail, unsyncedComments);
 

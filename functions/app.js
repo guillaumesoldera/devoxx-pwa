@@ -6,6 +6,7 @@ const moment = require('moment');
 moment.locale('fr');
 const expressValidator = require('express-validator');
 const compression = require('compression');
+const fetch = require('node-fetch');
 
 const {
     addAuthor,
@@ -19,6 +20,7 @@ const {
 const {
     addPost,
     updatePost,
+    postById,
     allPosts
 } = require('./datastore/posts');
 
@@ -69,9 +71,12 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/syncposts', async (req, res) => {
     const postsToAdd = req.body.posts;
     console.log('postsToAdd', postsToAdd.length);
-    await Promise.all(postsToAdd.map(post => {
-        // to calculate address
-        return addPost({ ...post, location: 'Not Calcutaled' });
+    await Promise.all(postsToAdd.map(async post => {
+        const locationResponse = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${post.location.latitude}+${post.location.longitude}&key=ee992c73d386424a82240bb0e08f5391`)
+        const locationJs = await locationResponse.json();
+        let location = locationJs.results && locationJs.results.length >0 && locationJs.results[0].formatted;
+        location = location || 'Unknown Address';
+        return addPost({ ...post, location});
     }))
     const posts = await allPosts();
     return res.json(posts)
@@ -80,8 +85,23 @@ app.post('/api/syncposts', async (req, res) => {
 app.post('/api/synccomments', async (req, res) => {
     const commentsToAdd = req.body.comments;
     console.log('commentsToAdd', commentsToAdd.length);
-    await Promise.all(commentsToAdd.map(comment => {
-        return addComment(comment);
+    await Promise.all(commentsToAdd.map(async comment => {
+        const postId = comment.postId;
+        const authorId = comment.authorId;
+        const author = await authorById(authorId);
+        const payload = JSON.stringify({
+            title: 'Your post has been commented',
+            body: `${author.fullName} has commented your post`,
+            icon: '/images/favicon.png',
+            postId,
+            authorId,
+            action: 'comment',
+            date: moment().unix(),
+        });
+        await addComment(comment);
+        return webpush.sendNotification(JSON.parse(author.subscription), payload)
+            .catch(err => console.error('err', err))
+            .then(() => res.json({}))
     }))
     const posts = await allPosts();
     return res.json(posts)
@@ -108,6 +128,40 @@ app.post('/api/syncfavorites', async (req, res) => {
             .then(() => res.json({}))
     }))
     return res.json({})
+});
+
+app.post('/api/syncvotes', async (req, res) => {
+    const votes = req.body.votes;
+    console.log('syncvotes', votes.length);
+    await Promise.all(votes.map(async vote => {
+        const postId = vote.postId;
+        const authorId = vote.authorId;
+        const value = vote.value;
+        const author = await authorById(authorId);
+        const post = await postById(postId);
+        let downVotes = post.downVotes;
+        let upVotes = post.upVotes;
+        if (value > 0) {
+            upVotes = upVotes + 1
+        } else {
+            downVotes = downVotes + 1
+        }
+        await updatePost(postId, upVotes, downVotes)
+        const payload = JSON.stringify({
+            title: `Your post has been ${value > 0 ? 'voted up' : 'voted down'}`,
+            body: `${author.fullName} has ${value > 0 ? 'voted up' : 'voted down'} your post`,
+            icon: '/images/favicon.png',
+            postId,
+            authorId,
+            action: value > 0 ? 'voteUp' : 'voteDown',
+            date: moment().unix(),
+        });
+        return webpush.sendNotification(JSON.parse(author.subscription), payload)
+            .catch(err => console.error('err', err))
+            .then(() => res.json({}))
+    }))
+    const posts = await allPosts();
+    return res.json(posts)
 });
 
 app.get('/api/authors', async (req, res) => {

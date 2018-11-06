@@ -20,11 +20,12 @@ const addPost = async (post) => {
 
 const updatePost = async (postId, upVotes, downVotes) => {
     const authorRef = db.collection('posts').doc(postId);
-    const updatedPostDoc = await await authorRef.update({
+    await authorRef.update({
         upVotes,
         downVotes,
     });
-    const updatedPost = updatedPostDoc.data();
+    const updatedPromise = await db.collection('posts').doc(postId).get()
+    const updatedPost = updatedPromise.data();
     return {
         postId,
         authorId: updatedPost.authorId,
@@ -51,8 +52,23 @@ const allPosts = async () => {
     return posts
 }
 
+const postById = async (postId) => {
+    const snapshot = await db.collection('posts').get();
+    const posts = [];
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+        posts.push({
+            postId: doc.id,
+            ...data
+        })
+       
+    })
+    return posts.find(_post => _post.postId == postId);
+}
+
 module.exports = {
     addPost,
     updatePost,
     allPosts,
+    postById
 }

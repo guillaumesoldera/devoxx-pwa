@@ -10,6 +10,14 @@ export class Favourites extends Component {
     }
 
     async componentDidMount() {
+        navigator.serviceWorker.addEventListener('message', async (event) => {
+            const eventPayload = JSON.parse(event.data);
+            if (eventPayload.message === 'reloadPosts') {
+                console.log('reloadPosts')
+                const posts = await allPostsWithAuthors();
+                this.setState({ posts })
+            }
+        });
         const posts = await allPostsWithAuthors();
         const allFavorites = await favorites();
         const favoritesPosts = posts.filter(post => allFavorites.find(fav => fav.postId === post.postId))

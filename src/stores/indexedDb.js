@@ -39,13 +39,14 @@ export const vote = (postId, authorId, value) => {
         .then(count => {
             if (count == 0) {
                 return db.votes.add({ postId, authorId, value, unsynced: 'true' })
-                    //  .then(() => requestSync('favorites_updated'))
-                    .then(() => db.votes.toArray())
+                    .then(() => {
+                        requestSync('votes_updated')
+                        return db.votes.toArray();
+                    })
             } else {
                 return db.votes.where('postId')
                     .equals(postId)
                     .delete()
-                    //.then(() => requestSync('favorites_updated'))
                     .then(() => db.votes.toArray())
             }
         });
