@@ -1,0 +1,41 @@
+.post-comment {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #000; }
+  .post-comment.disabled {
+    opacity: 0.3; }
+  @media only screen and (min-width: 601px) and (max-width: 992px) {
+    .post-comment {
+      width: 55%;
+      margin: 5px auto; } }
+  @media only screen and (min-width: 993px) {
+    .post-comment {
+      width: 45%;
+      margin: 5px auto; } }
+  @media only screen and (max-width: 600px) {
+    .post-comment {
+      margin: 10px; } }
+  .post-comment .post-comment-metadata {
+    display: flex;
+    position: relative; }
+    .post-comment .post-comment-metadata .post-comment-author-avatar {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #924a11;
+      border-radius: 5px; }
+    .post-comment .post-comment-metadata .post-comment-infos {
+      display: flex;
+      flex-direction: column;
+      margin-left: 5px;
+      justify-content: start; }
+      .post-comment .post-comment-metadata .post-comment-infos .post-comment-author-name {
+        color: #000;
+        font-weight: 600; }
+    .post-comment .post-comment-metadata .post-comment-date {
+      position: absolute;
+      right: 5px;
+      font-style: italic; }
+  .post-comment .post-comment-text {
+    line-height: 18px; }

@@ -1,0 +1,74 @@
+@media only screen and (min-width: 601px) {
+  .new-post-container {
+    width: 65%;
+    margin: 0 auto; } }
+
+.new-post-container nav {
+  background: transparent;
+  box-shadow: none; }
+  @media only screen and (min-width: 601px) {
+    .new-post-container nav {
+      width: 65%; } }
+  .new-post-container nav .close {
+    color: #000; }
+  .new-post-container nav .add-post span {
+    color: #000;
+    display: block;
+    font-weight: 400; }
+
+.new-post-container .new-post-content {
+  padding: 10px;
+  height: calc(100vh - 56px - 10px);
+  margin: 0 8px; }
+  @media only screen and (min-width: 601px) {
+    .new-post-container .new-post-content {
+      height: calc(100vh - 64px - 10px); } }
+  .new-post-container .new-post-content .video-container, .new-post-container .new-post-content .picture-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: center; }
+  .new-post-container .new-post-content input[type="file"] {
+    display: none; }
+  .new-post-container .new-post-content .buttons-actions {
+    color: #000;
+    position: absolute;
+    bottom: 10px;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    display: flex; }
+    .new-post-container .new-post-content .buttons-actions button {
+      margin: 0 5px; }
+  .new-post-container .new-post-content .pictures-validated-container {
+    position: absolute;
+    bottom: 95px; }
+    .new-post-container .new-post-content .pictures-validated-container img {
+      width: 100px;
+      height: 75px; }
+  .new-post-container .new-post-content .user-avatar {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #924a11;
+    border-radius: 5px; }
+  .new-post-container .new-post-content .post-text {
+    height: calc(100% - 80px); }
+    .new-post-container .new-post-content .post-text:focus {
+      border-bottom: none;
+      box-shadow: none; }
+  .new-post-container .new-post-content .new-post-more {
+    display: flex;
+    justify-content: space-around; }
+    @media only screen and (max-width: 992px) {
+      .new-post-container .new-post-content .new-post-more .camera {
+        display: none; } }
+    .new-post-container .new-post-content .new-post-more .new-post-action {
+      color: #000;
+      padding: 8px;
+      border: 1px solid #f8dbc3;
+      border-radius: 5px;
+      width: 80px;
+      background: transparent;
+      height: 78px; }
+      .new-post-container .new-post-content .new-post-more .new-post-action i {
+        line-height: initial;
+        font-size: 4rem; }

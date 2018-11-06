@@ -1,0 +1,27 @@
+.posts-list-container .post-text p {
+  position: relative;
+  height: 3.6em;
+  /* exactly three lines */
+  overflow: hidden; }
+  .posts-list-container .post-text p:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 1.2em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), #FFFAF0 80%); }
+  @supports (-webkit-line-clamp: 3) {
+    .posts-list-container .post-text p {
+      line-height: 1.2em;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      /* autoprefixer: off */
+      -webkit-box-orient: vertical;
+      /* autoprefixer: on */
+      height: auto;
+      overflow: hidden;
+      text-overflow: ellipsis; }
+      .posts-list-container .post-text p:after {
+        display: none; } }

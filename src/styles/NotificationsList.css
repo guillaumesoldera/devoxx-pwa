@@ -1,0 +1,49 @@
+.notification-list-container {
+  width: 100%;
+  margin: 0 auto; }
+  @media only screen and (min-width: 601px) and (max-width: 992px) {
+    .notification-list-container {
+      width: 70%; } }
+  @media only screen and (min-width: 993px) {
+    .notification-list-container {
+      width: 55%; } }
+  .notification-list-container .notification {
+    display: flex;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #000;
+    position: relative; }
+    .notification-list-container .notification .notification-content, .notification-list-container .notification .notification-content-comment {
+      display: flex;
+      flex-direction: column;
+      margin-left: 8px; }
+      @media only screen and (min-width: 601px) {
+        .notification-list-container .notification .notification-content, .notification-list-container .notification .notification-content-comment {
+          flex-direction: row;
+          margin-left: 15px; } }
+      .notification-list-container .notification .notification-content .post-author-avatar, .notification-list-container .notification .notification-content-comment .post-author-avatar {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #924a11;
+        border-radius: 5px; }
+        @media only screen and (min-width: 601px) {
+          .notification-list-container .notification .notification-content .post-author-avatar, .notification-list-container .notification .notification-content-comment .post-author-avatar {
+            width: 50px;
+            height: 50px;
+            margin-right: 8px; } }
+      .notification-list-container .notification .notification-content .notification-post-infos, .notification-list-container .notification .notification-content-comment .notification-post-infos {
+        margin-top: 5px; }
+        .notification-list-container .notification .notification-content .notification-post-infos .post-author-name, .notification-list-container .notification .notification-content .notification-post-infos .post-title, .notification-list-container .notification .notification-content-comment .notification-post-infos .post-author-name, .notification-list-container .notification .notification-content-comment .notification-post-infos .post-title {
+          color: #000;
+          font-weight: 600; }
+      .notification-list-container .notification .notification-content .notification-post-date, .notification-list-container .notification .notification-content-comment .notification-post-date {
+        position: absolute;
+        right: 5px;
+        font-style: italic; }
+    .notification-list-container .notification.comment .notification-content {
+      display: flex;
+      flex-direction: column; }
+      .notification-list-container .notification.comment .notification-content .notification-content-comment {
+        margin-left: 0; }
+      .notification-list-container .notification.comment .notification-content .notification-post-comment {
+        margin-top: 10px;
+        margin-bottom: 0; }

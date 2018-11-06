@@ -87,6 +87,10 @@ nav {
             display: none;
         }
     }
+    span.badge {
+        min-width: 21px;
+        border-radius: 12px;
+    }
 }
 .connection-message {
     opacity: 0;

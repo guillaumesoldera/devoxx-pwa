@@ -27,6 +27,9 @@
         @media #{$medium-and-up} { 
             height: calc(100vh - 64px - 10px); // nav bar and padding
         }
+        .devider{
+           padding: 20px  
+        }
         input {
             &:focus {
                 border-bottom: 1px solid $primary-color !important;

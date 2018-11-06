@@ -3,14 +3,81 @@ import PropTypes from 'prop-types';
 import { BackHeader } from '../components/Header';
 import { Post } from '../components/Post';
 import { NavLink, withRouter } from 'react-router-dom';
-import '../styles/Profile.scss';
+import '../styles/Profile.css';
+import { favorites, votes, localPosts } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
+import { loadProfile } from '../services/profile';
 
 class _Profile extends Component {
 
-
     state = {
-        imageSrc: 'https://randomuser.me/api/portraits/men/3.jpg'
+        imageSrc: '',
+        porfile: undefined,
+        unsyncedPosts: []
+    }
+
+    static contextType = UserContext;
+
+    async componentDidMount() {
+        navigator.serviceWorker.addEventListener('message', async (event) => {
+            const eventPayload = JSON.parse(event.data);
+            if (eventPayload.message === 'reloadPosts') {
+                console.log('reloadPosts')
+                const profile = await loadProfile(this.props.postId);
+                await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
+            }
+        });
+        const profile = await loadProfile(this.context.user.id);
+        await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
+        const unsyncedPosts = await localPosts();
+        this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: profile.author })) })
+    }
+
+    updateProfileWithFavoritesAndVotes = async (profile, imageSrc) => {
+        const postVotes = await votes();
+        const favoritesPosts = await favorites();
+        const postWithVotesAndFavs = profile.posts.map(post => {
+            const vote = postVotes.find(vote => vote.postId === post.postId) || {};
+            return {
+                ...post,
+                votedUp: vote.value > 0,
+                votedDown: vote.value < 0,
+                favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1,
+                onFavorite: this.onFavorite,
+                onVote: this.onVote
+            }
+        });
+        this.setState({ profile: { ...profile, posts: postWithVotesAndFavs }, imageSrc });
+    }
+
+    onFavorite = async () => {
+        const { profile } = this.state;
+        await this.updateProfileWithFavorites(profile);
+    }
+
+    onVote = async () => {
+        const { profile } = this.state;
+        await this.updateProfileWithVotes(profile);
+    }
+
+    updateProfileWithVotes = async (profile) => {
+        const postVotes = await votes();
+        const postWithVotes = profile.posts.map(post => {
+            const vote = postVotes.find(vote => vote.postId === post.postId) || {};
+            return {
+                ...post, votedUp: vote.value > 0, votedDown: vote.value < 0
+            }
+        });
+        this.setState({ profile: { ...profile, posts: postWithVotes } })
+    }
+
+    updateProfileWithFavorites = async (profile, imageSrc) => {
+        const _imageSrc = imageSrc || this.state.imageSrc
+        const favoritesPosts = await favorites();
+        const postWithFavs = profile.posts.map(post => ({
+            ...post, favorited: favoritesPosts.findIndex(fav => fav.postId === post.postId) > -1, onFavorite: this.onFavorite
+        }));
+        this.setState({ profile: { ...profile, posts: postWithFavs }, imageSrc: _imageSrc });
     }
 
     goBack = (e) => {
@@ -24,14 +91,14 @@ class _Profile extends Component {
         }
     }
 
-    logoutUser = (e, logoutMethod) => {
-        logoutMethod();
+    logoutUser = (e) => {
+        this.context.logout();
         this.goBack(e);
     }
 
     picChange = (evt) => {
         const fileInput = evt.target.files;
-        if(fileInput.length>0){
+        if (fileInput.length > 0) {
             this._picURL = URL.createObjectURL(fileInput[0]);
             const canvas = document.querySelector('canvas');
             const ctx = canvas.getContext('2d')
@@ -51,7 +118,7 @@ class _Profile extends Component {
                         URL.revokeObjectURL(this._picURL);
                     }
                 })
-              };
+            };
 
             photo.src = this._picURL;
         }
@@ -68,46 +135,39 @@ class _Profile extends Component {
     }
 
     render() {
+        const { profile, imageSrc, unsyncedPosts } = this.state
+        const posts =  (profile && profile.posts)||[];
+        const allPosts = [...unsyncedPosts, ...posts]
+        allPosts.sort((p1, p2) => p2.date - p1.date);
         return (
-            <UserContext.Consumer>
-                {({user, logout}) => (
             <div className="profile-detail">
                 <BackHeader title={"Your profile"}>
                     <ul className="right">
                         <li>
-                            <a href="#" className="logout" onClick={(e) => this.logoutUser(e, logout)}>
+                            <a href="#" className="logout" onClick={(e) => this.logoutUser(e)}>
                                 <i className="fa fa-sign-out material-icons small"></i><span>&nbsp;Logout</span>
                             </a>
                         </li>
                     </ul>
                 </BackHeader>
-                <div className="profile-infos-container">
+                {profile && profile.author && <div className="profile-infos-container">
                     <div className="profile-metadata">
-                        <img onClick={this.modifyAvatar} src={this.state.imageSrc} className="profile-avatar" />
-                        <input type="file" accept="image/*" onChange={this.picChange}/>
+                        {this.state.imageSrc
+                            ? <img onClick={this.modifyAvatar} src={imageSrc} className="profile-avatar" />
+                            : <div onClick={this.modifyAvatar} className="profile-avatar"><br />profile picture</div>}
+                        <input type="file" accept="image/*" onChange={this.picChange} />
                         <canvas width="100" height="100"></canvas>
                         <div className="profile-infos">
-                            <span className="profile-name">Jack Vagabond</span>
+                            <span className="profile-name">{profile.author.fullName}</span>
                         </div>
                     </div>
                     <div className="profile-bio">
-                        <p>
-                        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo
-                        </p>
+                        <p>{profile.author.bio}</p>
                     </div>
-                </div>
+                </div>}
                 <h3 className="posts-separator-title">All posts</h3>
-                <ul>
-                    <li>
-                        <Post linkToPost={true} />/>
-                    </li>
-                    <li>
-                        <Post linkToPost={true} />/>
-                    </li>
-                </ul>
+                <ul>{allPosts.map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>
             </div>
-                )}
-            </UserContext.Consumer>
         );
     }
 }

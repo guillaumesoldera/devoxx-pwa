@@ -1,0 +1,76 @@
+.post {
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #000; }
+  @media only screen and (max-width: 600px) {
+    .post {
+      margin-left: -0.75rem;
+      margin-right: -0.75rem;
+      margin-bottom: 10px; } }
+  .post.disabled {
+    opacity: 0.3; }
+  .post .post-metadata {
+    display: flex;
+    position: relative; }
+    .post .post-metadata .post-author-avatar {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #924a11;
+      border-radius: 5px; }
+    .post .post-metadata .post-infos {
+      display: flex;
+      flex-direction: column;
+      margin-left: 5px;
+      justify-content: space-around; }
+      .post .post-metadata .post-infos .post-author-name {
+        color: #000;
+        font-weight: 600; }
+      .post .post-metadata .post-infos .post-location {
+        color: #888a8a;
+        font-weight: 100; }
+        .post .post-metadata .post-infos .post-location::before {
+          font-family: FontAwesome;
+          display: inline-block;
+          content: "\f041";
+          margin-right: 3px; }
+    .post .post-metadata .post-date {
+      position: absolute;
+      right: 5px;
+      font-style: italic; }
+  .post .post-text {
+    line-height: 18px; }
+    .post .post-text p {
+      color: #000;
+      min-height: 110px; }
+  .post .post-picture {
+    width: 100%;
+    height: auto; }
+  .post .post-actions-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between; }
+    .post .post-actions-container .post-votes {
+      display: flex;
+      width: 40%;
+      justify-content: space-around;
+      align-items: center; }
+      .post .post-actions-container .post-votes .disabled {
+        opacity: 0.3;
+        pointer-events: none; }
+      .post .post-actions-container .post-votes .color-blue {
+        color: #2196f3; }
+    .post .post-actions-container .post-actions {
+      display: flex;
+      width: 40%;
+      justify-content: space-around;
+      align-items: center; }
+      .post .post-actions-container .post-actions i {
+        color: #000; }
+      .post .post-actions-container .post-actions .color-red {
+        color: #d80000; }
+      .post .post-actions-container .post-actions .disabled {
+        opacity: 0.3;
+        pointer-events: none; }

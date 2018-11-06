@@ -12,6 +12,9 @@
         margin-right: -0.75rem;
         margin-bottom: 10px;
     }
+    &.disabled{
+        opacity: 0.3;
+    }
     .post-metadata {
         display: flex;
         position: relative;
@@ -51,6 +54,7 @@
         line-height: 18px;
         p {
             color: #000;
+            min-height: 110px;
         }
     }
     .post-picture {
@@ -70,6 +74,9 @@
                 opacity: 0.3;
                 pointer-events: none
             }
+            .color-blue {
+                color: #2196f3;
+            }
         }
         .post-actions {
             display: flex;
@@ -78,6 +85,9 @@
             align-items: center;
             i {
                 color: #000;
+            }
+            .color-red {
+                color: #d80000;
             }
             .disabled {
                 opacity: 0.3;

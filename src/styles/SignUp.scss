@@ -1,0 +1,43 @@
+@import "components/variables";
+
+.signup-container {
+    color: #000;
+    @media #{$medium-and-up} {
+        width: 45%;
+        margin: 0 auto;
+    }
+    nav {
+        background: transparent;
+        box-shadow: none;
+        @media #{$medium-and-up} {
+            width: 45%;
+        }
+        .close {
+            color: #000;
+        }
+        .brand-logo {
+            color: #000;
+        }
+    }
+    .signup-content {
+        text-align: center;
+        padding: 10px;
+        height: calc(100vh - 56px - 10px); // nav bar and padding 
+        margin: 0 8px;
+        @media #{$medium-and-up} { 
+            height: calc(100vh - 64px - 10px); // nav bar and padding
+        }
+        input {
+            &:focus {
+                border-bottom: 1px solid $primary-color !important;
+                box-shadow: 0 1px 0 0 $primary-color !important;
+                & + label {
+                    color: $primary-color !important;
+                }
+            }
+        }
+        button {
+            background-color: $primary-color;
+        }
+    }
+}
