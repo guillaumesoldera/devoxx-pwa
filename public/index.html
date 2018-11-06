@@ -14,18 +14,111 @@
     <link rel="manifest" href="/manifest.json">
 
     <title>AirBeerN'Beer</title>
-    <link href="/css/bundle/devoxxapp.css" rel="stylesheet">
+    
     <style media="screen">
         * {
         -webkit-overflow-scrolling: touch;
         }
+        html {
+            background-color: #fffaf0;
+            height: 100%;
+            font-family: Trebuchet MS,Helvetica,sans-serif;
+        }
+        @keyframes loadingAnimation {
+            0%   { opacity:1; }
+            50%  { opacity:0; }
+            100% { opacity:1; }
+        }
+        @-o-keyframes loadingAnimation{
+            0%   { opacity:1; }
+            50%  { opacity:0; }
+            100% { opacity:1; }
+        }
+        @-moz-keyframes loadingAnimation{
+            0%   { opacity:1; }
+            50%  { opacity:0; }
+            100% { opacity:1; }
+        }
+        @-webkit-keyframes loadingAnimation{
+            0%   { opacity:1; }
+            50%  { opacity:0; }
+            100% { opacity:1; }
+        }
+        .loader {
+            position: absolute;
+            top: 200px;
+            left: calc(50% - 50px);
+            opacity:1;  
+            -webkit-animation: loadingAnimation 2.5s infinite;
+            -moz-animation: loadingAnimation 2.5s infinite;
+            -o-animation: loadingAnimation 2.5s infinite;
+            animation: loadingAnimation 2.5s infinite;
+            background: url('./images/icons/icon-128x128.png') no-repeat;
+            background-size: contain;
+            width: 100px;
+            height: 100px;
+        }
+        .loader img {
+            width: 100px;
+            height: auto;
+        }
+        #shell h1.title{
+            position: absolute;
+            padding: 0;
+            margin: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.1rem;
+            text-align: center;
+            line-height: inherit;
+            font-weight: 400
+        }
+        #shell .shell-header {
+            position: fixed;
+            z-index: 10;
+            height: 64px;
+            line-height: 64px;
+            color: #fff;
+            background-color: #924a11;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+        @media screen and (max-width: 600px) {
+            #shell .shell-header {
+                height: 56px;
+                line-height: 56px;
+            }
+            #shell h1.title{
+                font-size: 1.5rem;
+                
+            }
+        }
       </style>
 </head>
 <body>
-<noscript>You need to enable JavaScript to run this app.</noscript>
+<noscript>
+    <link href="/css/bundle/devoxxapp.css" rel="stylesheet">
+    You need to enable JavaScript to run this app.
+</noscript>
 <div id="root">
+    <div id="shell">
+        <div class="shell-header"style="">
+            <h1 class="title">AirBeerN'Beer</h1>
+        </div>
+        <div class="loader">
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript" src="/javascripts/bundle/devoxxapp.js" async></script>
+<script type="text/javascript">
+    var cssLinkNode = document.createElement('link');
+    cssLinkNode.rel = 'stylesheet';
+    cssLinkNode.href = '/css/bundle/devoxxapp.css';
+    cssLinkNode.type = 'text/css';
+    var firstLinkNode = document.getElementsByTagName('link')[0];
+    firstLinkNode.parentNode.insertBefore(cssLinkNode, firstLinkNode);    
+    </script>
 </body>
 </html>
