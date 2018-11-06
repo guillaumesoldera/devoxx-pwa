@@ -97,7 +97,7 @@ self.addEventListener('notificationclick', function (event) {
       type: "window"
     }).then(function () {
       if (clients.openWindow) {
-        return clients.openWindow(`http://localhost:5000/notifications`);
+        return clients.openWindow(`https://airbeerandbeer.firebaseapp.com/notifications`);
       }
     })
   );
