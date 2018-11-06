@@ -72,11 +72,15 @@ app.post('/api/syncposts', async (req, res) => {
     const postsToAdd = req.body.posts;
     console.log('postsToAdd', postsToAdd.length);
     await Promise.all(postsToAdd.map(async post => {
-        const locationResponse = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${post.location.latitude}+${post.location.longitude}&key=ee992c73d386424a82240bb0e08f5391`)
-        const locationJs = await locationResponse.json();
-        let location = locationJs.results && locationJs.results.length >0 && locationJs.results[0].formatted;
-        location = location || 'Unknown Address';
-        return addPost({ ...post, location});
+        location = 'Unknown Address';
+        try {
+            const locationResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${post.location.latitude},${post.location.longitude}&key=AIzaSyCYcxCXRuOQT1eX_yjAMD4IqXSZYVLslDQ`)
+            const locationJs = await locationResponse.json();
+            let location = locationJs.results && locationJs.results.length > 0 && locationJs.results[0].formatted_address || location;
+        } catch (error) {
+            console.log(error)
+        }
+        return addPost({ ...post, location });
     }))
     const posts = await allPosts();
     return res.json(posts)

@@ -21,9 +21,9 @@ var precacheFiles =
   ];
 
 
-self.addEventListener('install', function (evt) {
+self.addEventListener('install', function (event) {
   console.log('The service worker is being installed.');
-  evt.waitUntil(
+  event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       return cache.addAll(precacheFiles);
     }).then(function () {
@@ -51,15 +51,25 @@ self.addEventListener('fetch', function (event) {
   console.log('fetch event listener', event.request);
   if (event.request.method === 'GET' && 0 === event.request.url.indexOf("http")) {
     console.log('The service worker is serving ' + event.request.url);
+    if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
     event.respondWith(
       caches.open(CACHE).then(function (cache) {
-        return fetch(event.request).then(function (response) {
-          //file to use the next time we show view
-          cache.put(event.request, response.clone());
-          return response;
-        }).catch(function () {
-          return caches.match(event.request);
-        });
+        return caches.match(event.request)
+          .then(function (matching) {
+            if (matching) {
+              fetch(event.request).then(function (response) {
+                //file to use the next time we show view
+                cache.put(event.request, response.clone());
+              })
+              return matching;
+            } else {
+              return fetch(event.request).then(function (response) {
+                //file to use the next time we show view
+                cache.put(event.request, response.clone());
+                return response;
+              })
+            }
+          });
       })
     );
   }
@@ -186,7 +196,7 @@ function syncVotes() {
           return Promise.reject('an error occurred while syncing posts')
         }
       }).then(() => {
-          return  db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
+        return db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
       })
     })
 }
