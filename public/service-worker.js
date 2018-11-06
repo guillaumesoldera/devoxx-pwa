@@ -80,7 +80,7 @@ function updateCache(urlPattern, response) {
       .then(function (requests) {
         const request = requests.find(_request => _request.url.endsWith(urlPattern));
         if (request) {
-          console.log('updating cache fro pattern', urlPattern);
+          console.log('updating cache from pattern', urlPattern);
           return cache.put(request, response);
         }
         return Promise.resolve();
@@ -104,7 +104,7 @@ self.addEventListener('notificationclick', function (event) {
 
 self.addEventListener("push", e => {
   const data = e.data.json();
-  console.log("Push Recieved... !n", data);
+  console.log("Push Received... !n", data);
   db.notifications.add({
     postId: data.postId,
     authorId: data.authorId,
@@ -143,7 +143,7 @@ self.addEventListener('message', function (event) {
 });
 
 self.addEventListener('sync', function (event) {
-  console.log("sync Recieved: "+ event.tag);
+  console.log("sync Received: "+ event.tag);
   launchSync(event.tag);
 });
 
