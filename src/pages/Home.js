@@ -11,7 +11,9 @@ export class Home extends Component {
 
     state = {
         posts: [],
-        unsyncedPosts: []
+        unsyncedPosts: [],
+        fetching: true,
+        newPostsAvailable: false,
     }
 
     static contextType = UserContext;
@@ -25,6 +27,12 @@ export class Home extends Component {
                 await this.updatePostsWithFavoritesAndVotes(posts);
                 this.setState({ unsyncedPosts: [] })
             }
+            else if (eventPayload.message === 'newPostsAvailable') {
+                console.log('newPostsAvailable');
+                this.setState({
+                    newPostsAvailable: true
+                })
+            }
         });
         const posts = await allPostsWithAuthors();
         if (this.context.user) {
@@ -32,10 +40,10 @@ export class Home extends Component {
             const unsyncedPosts = await localPosts(this.context.user.id);
             if (unsyncedPosts.length > 0) {
                 const me = await authorById(this.context.user.id)
-                this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
+                this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })), fetching: false })
             }
         } else {
-            this.setState({ posts })
+            this.setState({ posts, fetching: false })
         }
     }
 
@@ -54,7 +62,7 @@ export class Home extends Component {
                     onVote: this.onVote
                 }
             });
-            this.setState({ posts: postWithVotesAndFavs });
+            this.setState({ posts: postWithVotesAndFavs, newPostsAvailable: false, fetching: false });
         }
     }
 
@@ -91,6 +99,17 @@ export class Home extends Component {
         }
     }
 
+    loadNewPosts = () => {
+        allPostsWithAuthors()
+        .then(posts => {
+            if (this.context.user) {
+                this.updatePostsWithFavoritesAndVotes(posts);
+            } else {
+                this.setState({ posts, newPostsAvailable: false })
+            }
+        })
+    }
+
     render() {
         const { posts, unsyncedPosts } = this.state;
         const allPosts = [...unsyncedPosts, ...posts];
@@ -99,7 +118,13 @@ export class Home extends Component {
             <div className="home">
                 <Header />
                 <div className="content-container">
-                    <PostsList posts={allPosts} />
+                    {this.state.newPostsAvailable && (
+                        <button className="btn-floating new-posts-available" onClick={this.loadNewPosts}>New Posts</button>
+                    )}
+                    {this.state.fetching && (
+                        <div className="loader"></div>
+                    )}
+                    <PostsList posts={allPosts} fetching={this.state.fetching} />
                 </div>
             </div>
         );

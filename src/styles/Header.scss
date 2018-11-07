@@ -47,6 +47,19 @@ nav {
             margin-right: 0;
         }
     }
+    #new-version {
+        .tab {
+            display: flex;
+        }
+        .fa {
+            display: inline-block;
+        }
+        span.badge {
+            margin-left: -5px;
+            margin-top: 5px;
+            display: block;
+        }
+    }
     .profile {
         .fa {
             display: inline-block;

@@ -2,6 +2,14 @@
 @import 'mixins/mixins.scss';
 
 .posts-list-container {
+    width: 100%;
+    margin: 0 auto;
+    @media #{$medium-only} {
+        width: 70%;
+    }
+    @media #{$large-and-up} {
+        width: 45%;
+    }
     .post-text {
         p {
             @include lineclamp;

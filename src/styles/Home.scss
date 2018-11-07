@@ -10,4 +10,18 @@
     @media #{$large-and-up} {
         height: calc(100vh - 64px);
     }
+    .new-posts-available {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        line-height: 32px;
+        height: 60px;
+        width: 150px;
+        background-color: #934a01;
+        border-radius: 20px;
+        color: #fff;
+        font-weight: 800;
+        z-index: 20;
+        border: 1px solid #fff;
+    }
 }

@@ -8,6 +8,21 @@ import { favorite, vote } from '../stores/indexedDb';
 import moment from 'moment';
 moment.locale('fr');
 
+
+export class FakePost extends Component {
+    render() {
+        return (
+            <div className="post fake">
+                 <div className="post-metadata"></div>
+                 <div className="post-text"></div>
+                 <div className="post-picture-container">
+                    <div className="fake-picture"></div>
+                 </div>
+            </div>
+        )
+    }
+}
+
 export class Post extends Component {
 
     static propTypes = {
@@ -38,6 +53,17 @@ export class Post extends Component {
             const { user } = this.context
             await vote(post.postId, user.id, value)
             post.onVote();
+        }
+    }
+
+    share = () => {
+        if (navigator.share) {
+            const { post } = this.props;
+            navigator.share({
+                title: 'Look this post',
+                text: post.text,
+                url: `${window.location.origin}/posts/${post.postId}`,
+            })
         }
     }
 
@@ -90,8 +116,9 @@ export class Post extends Component {
                 <div className="post-actions">
                     <i className={classSet({
                         "fa fa-share-alt material-icons small": true,
-                        "disabled": user === undefined || post.unsynced
-                    })}></i>
+                        "disabled": user === undefined || post.unsynced,
+                        "hide": !navigator.share
+                    })} onClick={this.share}></i>
                         <NavLink to={`/comment/${post.postId}`}className={classSet({
                             "disabled": user === undefined || post.unsynced
                         })}><i className="fa fa-comment-o material-icons small"></i></NavLink>

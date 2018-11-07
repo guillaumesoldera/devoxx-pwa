@@ -1,5 +1,6 @@
 'use strict';
 
+
 var CACHE = 'airbeernbeer-precache';
 var precacheFiles =
   ["/css/bundle/devoxxapp.css",
@@ -11,6 +12,7 @@ var precacheFiles =
     "/images/icons/icon-512x512.png",
     "/images/icons/icon-72x72.png",
     "/images/icons/icon-96x96.png",
+    "/images/icons/fake-picture.png",
     "/images/favicon.png",
     "/images/logo.png",
     "/index.html",
@@ -19,6 +21,13 @@ var precacheFiles =
     "/javascripts/bundle/media/fontawesome-webfont.svg",
     "/javascripts/bundle/media/fontawesome-webfont.ttf"
   ];
+var updatableURL = [
+  "/css/bundle/devoxxapp.css",
+  "/index.html",
+  "/javascripts/bundle/devoxxapp.js"
+].map(relativeUrl => {
+  return new URL(relativeUrl, self.location).toString();
+})
 
 self.addEventListener('install', function (event) {
   console.log('The service worker is being installed.');
@@ -32,11 +41,31 @@ self.addEventListener('install', function (event) {
 });
 
 self.addEventListener('activate', function (event) {
+
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
-        cacheNames.map(function (cacheName) {
-          return caches.delete(cacheName);
+        cacheNames.filter(function (cacheName) {
+          // only clean our cache
+          return cacheName === CACHE;
+        }).map(function (cacheName) {
+          return caches.open(cacheName).then(function (cache) {
+            return cache.keys().then(function (existingRequests) {
+              return Promise.all(
+                existingRequests.map(function (existingRequest) {
+                  // delete only css, html or js files
+                  if (updatableURL.indexOf(existingRequest.url) !== -1) {
+                    console.log('delete ' + existingRequest.url + ' from cache')
+                    return cache.delete(existingRequest);
+                  }
+                  //if (!existingRequest.url.endsWith("/api/posts") && !existingRequest.url.endsWith("/api/authors")) {
+                  //  // remove other value, especially precacheFiles (in case it would have changed)
+                  //  return cache.delete(existingRequest);
+                  //}
+                })
+              )
+            })
+          })
         })
       );
     }).then(function () {
@@ -56,10 +85,30 @@ self.addEventListener('fetch', function (event) {
         return caches.match(event.request)
           .then(function (matching) {
             if (matching) {
+              const matchingClone = matching.clone();
               fetch(event.request).then(function (response) {
                 //file to use the next time we show view
                 cache.put(event.request, response.clone());
+                return response;
               })
+                .then(value => {
+                  if (event.request.url.endsWith('/api/posts')) {
+                    value.json()
+                      .then(valueAsJson => {
+                        matchingClone.json()
+                          .then(matchingAsJson => {
+                            if (valueAsJson.length !== matchingAsJson.length) {
+                              // afficher un truc au client pour qu'il se rafraichisse si le cache a bougé
+                              clients.matchAll().then(clients => {
+                                clients.forEach(client => {
+                                  client.postMessage(JSON.stringify({ message: 'newPostsAvailable' }));
+                                })
+                              })
+                            }
+                          })
+                      })
+                  }
+                })
               return matching;
             } else {
               return fetch(event.request).then(function (response) {
@@ -80,7 +129,7 @@ function updateCache(urlPattern, response) {
       .then(function (requests) {
         const request = requests.find(_request => _request.url.endsWith(urlPattern));
         if (request) {
-          console.log('updating cache fro pattern', urlPattern);
+          console.log('updating cache from pattern', urlPattern);
           return cache.put(request, response);
         }
         return Promise.resolve();
@@ -104,7 +153,7 @@ self.addEventListener('notificationclick', function (event) {
 
 self.addEventListener("push", e => {
   const data = e.data.json();
-  console.log("Push Recieved... !n", data);
+  console.log("Push Received... !n", data);
   db.notifications.add({
     postId: data.postId,
     authorId: data.authorId,
@@ -143,7 +192,7 @@ self.addEventListener('message', function (event) {
 });
 
 self.addEventListener('sync', function (event) {
-  console.log("sync recieved: " + event.tag);
+  console.log("sync Received: " + event.tag);
   launchSync(event.tag);
 });
 
