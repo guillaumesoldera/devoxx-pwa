@@ -19,6 +19,7 @@ function registerSW(swUrl, config) {
               // the fresh content will have been added to the cache.
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
+              document.getElementById('new-version').style = "";
               console.log('New content is available; please refresh.');
 
               // Execute callback

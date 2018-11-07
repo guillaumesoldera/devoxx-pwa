@@ -34,6 +34,10 @@ export class Header extends Component {
         }
     }
 
+    reload = () => {
+        window.location.reload(true);
+    }
+
     render() {
         const { user } = this.context;
         return (
@@ -66,6 +70,12 @@ export class Header extends Component {
                                     {this.state.notifications > 0 && <span className="new badge" data-badge-caption="">{this.state.notifications}</span>}
                                     <span>Notifications</span>
                                 </NavLink>
+                            </li>
+                            <li id="new-version" style={{"display": "none"}}>
+                                <div className="tab" onClick={this.reload}>
+                                <i className="fa fa-repeat small"></i>
+                                <span className="new badge" data-badge-caption="">1</span>
+                                </div>
                             </li>
                         </ul>
                         {user &&

@@ -36,6 +36,14 @@ nav {
     @media only screen and (max-width: 600px) {
       nav .fa {
         margin-right: 0; } }
+  nav #new-version .tab {
+    display: flex; }
+  nav #new-version .fa {
+    display: inline-block; }
+  nav #new-version span.badge {
+    margin-left: -5px;
+    margin-top: 5px;
+    display: block; }
   nav .profile .fa {
     display: inline-block; }
   @media only screen and (max-width: 600px) {
