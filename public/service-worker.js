@@ -1,5 +1,6 @@
 'use strict';
 
+
 var CACHE = 'airbeernbeer-precache';
 var precacheFiles =
   ["/css/bundle/devoxxapp.css",
@@ -20,6 +21,13 @@ var precacheFiles =
     "/javascripts/bundle/media/fontawesome-webfont.svg",
     "/javascripts/bundle/media/fontawesome-webfont.ttf"
   ];
+var updatableURL = [
+  "/css/bundle/devoxxapp.css",
+  "/index.html",
+  "/javascripts/bundle/devoxxapp.js"
+].map(relativeUrl => {
+  return new URL(relativeUrl, self.location).toString();
+})
 
 self.addEventListener('install', function (event) {
   console.log('The service worker is being installed.');
@@ -37,14 +45,23 @@ self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
-        cacheNames.map(function (cacheName) {
+        cacheNames.filter(function(cacheName) {
+          // only clean our cache
+          return cacheName === CACHE;
+        }).map(function (cacheName) {
           return caches.open(cacheName).then(function(cache) {
             return cache.keys().then(function(existingRequests) {
               return Promise.all(
                 existingRequests.map(function(existingRequest) {
-                  if (!existingRequest.url.endsWith("/api/posts") && !existingRequest.url.endsWith("/api/authors")) {
+                  // delete only css, html or js files
+                  if (updatableURL.indexOf(existingRequest.url) !== -1) {
+                    console.log('delete ' + existingRequest.url + ' from cache')
                     return cache.delete(existingRequest);
                   }
+                  //if (!existingRequest.url.endsWith("/api/posts") && !existingRequest.url.endsWith("/api/authors")) {
+                  //  // remove other value, especially precacheFiles (in case it would have changed)
+                  //  return cache.delete(existingRequest);
+                  //}
                 })
               )
             })
