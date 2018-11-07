@@ -62,7 +62,7 @@ export class Home extends Component {
                     onVote: this.onVote
                 }
             });
-            this.setState({ posts: postWithVotesAndFavs, newPostsAvailable: false });
+            this.setState({ posts: postWithVotesAndFavs, newPostsAvailable: false, fetching: false });
         }
     }
 
