@@ -56,6 +56,17 @@ export class Post extends Component {
         }
     }
 
+    share = () => {
+        if (navigator.share) {
+            const { post } = this.props;
+            navigator.share({
+                title: 'Look this post',
+                text: post.text,
+                url: `${window.location.origin}/posts/${post.postId}`,
+            })
+        }
+    }
+
     render() {
         const { post } = this.props;
         let text = (
@@ -105,8 +116,9 @@ export class Post extends Component {
                 <div className="post-actions">
                     <i className={classSet({
                         "fa fa-share-alt material-icons small": true,
-                        "disabled": user === undefined || post.unsynced
-                    })}></i>
+                        "disabled": user === undefined || post.unsynced,
+                        "hide": !navigator.share
+                    })} onClick={this.share}></i>
                         <NavLink to={`/comment/${post.postId}`}className={classSet({
                             "disabled": user === undefined || post.unsynced
                         })}><i className="fa fa-comment-o material-icons small"></i></NavLink>
