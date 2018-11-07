@@ -8,6 +8,21 @@ import { favorite, vote } from '../stores/indexedDb';
 import moment from 'moment';
 moment.locale('fr');
 
+
+export class FakePost extends Component {
+    render() {
+        return (
+            <div className="post fake">
+                 <div className="post-metadata"></div>
+                 <div className="post-text"></div>
+                 <div className="post-picture-container">
+                    <div className="fake-picture"></div>
+                 </div>
+            </div>
+        )
+    }
+}
+
 export class Post extends Component {
 
     static propTypes = {

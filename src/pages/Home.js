@@ -11,7 +11,8 @@ export class Home extends Component {
 
     state = {
         posts: [],
-        unsyncedPosts: []
+        unsyncedPosts: [],
+        fetching: true,
     }
 
     static contextType = UserContext;
@@ -32,10 +33,10 @@ export class Home extends Component {
             const unsyncedPosts = await localPosts(this.context.user.id);
             if (unsyncedPosts.length > 0) {
                 const me = await authorById(this.context.user.id)
-                this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })) })
+                this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: me })), fetching: false })
             }
         } else {
-            this.setState({ posts })
+            this.setState({ posts, fetching: false })
         }
     }
 
@@ -99,7 +100,10 @@ export class Home extends Component {
             <div className="home">
                 <Header />
                 <div className="content-container">
-                    <PostsList posts={allPosts} />
+                    {this.state.fetching && (
+                        <div className="loader"></div>
+                    )}
+                    <PostsList posts={allPosts} fetching={this.state.fetching} />
                 </div>
             </div>
         );

@@ -12,6 +12,35 @@
         margin-right: -0.75rem;
         margin-bottom: 10px;
     }
+    &.fake {
+        .post-metadata {
+            height: 40px;
+            background-color: rgba(0,0,0,0.1);
+        }
+        .post-text {
+            background-color: rgba(0,0,0,0.1);
+            height: 100px;
+            margin: 10px 0;
+            @media #{$small-and-down} {
+                height: 80px;
+            }
+        }
+        .post-picture-container {
+            background-color: rgba(0,0,0,0.1);
+            
+            .fake-picture {
+                background: url('/images/icons/fake-picture.png') no-repeat;
+                background-size: contain;
+                margin: 0 auto;
+                height: 300px;
+                width: 300px;
+                @media #{$small-and-down} {
+                    height: 220px;
+                    width: 220px;
+                }
+            }
+        }
+    }
     &.disabled{
         opacity: 0.3;
     }
