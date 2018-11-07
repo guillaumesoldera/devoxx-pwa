@@ -113,8 +113,8 @@ app.post('/api/synccomments', async (req, res) => {
         }
         return Promise.resolve({});
     }))
-    const posts = await allPosts();
-    return res.json(posts)
+    const comments = await allComments();
+    return res.json(comments)
 });
 
 app.post('/api/syncfavorites', async (req, res) => {

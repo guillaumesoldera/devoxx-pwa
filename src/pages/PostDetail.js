@@ -32,8 +32,9 @@ export class PostDetail extends Component {
         });
         const postDetail = await postDetails(this.props.postId);
         if (this.context.user) {
-            const _unsyncedComments = await localComments(this.props.postId);
-            let unsyncedComments = [];
+            const _unsyncedComments = await localComments(this.context.user.id, this.props.postId);
+            console.log('_unsyncedComments length', _unsyncedComments.length)
+            let unsyncedComments = []; 
             if (_unsyncedComments.length > 0) {
                 const me = await authorById(this.context.user.id)
                 unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me }))

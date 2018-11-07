@@ -10,7 +10,7 @@ import { getDevice, Devices } from './utils/utils';
 import pullToRefresh from './utils/ui/pullToRefresh';
 import ptrAnimatesIos from './utils/ui/animate';
 
-console.log('getDevice() newww', getDevice())
+console.log('getDevice()', getDevice())
 
 class Root extends React.Component {
     componentDidMount() {

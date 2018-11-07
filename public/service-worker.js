@@ -138,12 +138,12 @@ db.version(1).stores({
 });
 
 self.addEventListener('message', function (event) {
-  console.log("SW Received Message: " + event.data);
+  console.log("SW received message: " + event.data);
   launchSync(event.data);
 });
 
 self.addEventListener('sync', function (event) {
-  console.log("sync Recieved: "+ event.tag);
+  console.log("sync recieved: " + event.tag);
   launchSync(event.tag);
 });
 
@@ -169,14 +169,13 @@ function syncFavorites() {
         method: 'POST',
         body: JSON.stringify({ favorites }),
         headers: { 'content-type': 'application/json' }
+      }).then((response) => {
+        if (response.status === 200) {
+          return Promise.all(favorites.map(fav => db.favorites.update(fav.postId, { unsynced: 'false' })))
+        } else {
+          return Promise.reject('an error occurred while syncing favorites')
+        }
       })
-        .then((response) => {
-          if (response.status === 200) {
-            return Promise.all(favorites.map(fav => db.favorites.update(fav.postId, { unsynced: 'false' })))
-          } else {
-            return Promise.reject('an error occurred while syncing favorites')
-          }
-        })
     })
 }
 
@@ -197,12 +196,13 @@ function syncVotes() {
                   client.postMessage(JSON.stringify({ message: 'reloadPosts' }));
                 })
               })
+            }).then(() => {
+              console.log('mark votes as synced');
+              return db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
             })
         } else {
           return Promise.reject('an error occurred while syncing posts')
         }
-      }).then(() => {
-        return db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
       })
     })
 }
@@ -225,11 +225,14 @@ function syncPosts() {
                 client.postMessage(JSON.stringify({ message: 'reloadPosts' }));
               })
             })
-          })
+          }).then(() => {
+            console.log('empty posts');
+            return db.posts.clear()
+          });
       } else {
         return Promise.reject('an error occurred while syncing posts')
       }
-    }).then(() => db.posts.clear());
+    })
 }
 
 function syncComments() {
@@ -250,11 +253,14 @@ function syncComments() {
                 client.postMessage(JSON.stringify({ message: 'reloadComments' }));
               })
             })
-          })
+          }).then(() => {
+            console.log('empty comments');
+            return db.comments.clear()
+          });
       } else {
         return Promise.reject('an error occurred while syncing comments')
       }
-    }).then(() => db.comments.clear());
+    })
 }
 
 
