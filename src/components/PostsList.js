@@ -21,7 +21,7 @@ export class PostsList extends Component {
                         </Fragment>
                     )}
                     {posts.map((post, i) =>
-                        <div key={`post-${i}`} className="col s12">
+                        <div key={`post-${post.postId}`} className="col s12">
                             <Post post={post} linkToPost={true} />
                         </div>)}
                 </div>

@@ -11,6 +11,7 @@ var precacheFiles =
     "/images/icons/icon-512x512.png",
     "/images/icons/icon-72x72.png",
     "/images/icons/icon-96x96.png",
+    "/images/icons/fake-picture.png",
     "/images/favicon.png",
     "/images/logo.png",
     "/index.html",
@@ -32,11 +33,22 @@ self.addEventListener('install', function (event) {
 });
 
 self.addEventListener('activate', function (event) {
+
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
         cacheNames.map(function (cacheName) {
-          return caches.delete(cacheName);
+          return caches.open(cacheName).then(function(cache) {
+            return cache.keys().then(function(existingRequests) {
+              return Promise.all(
+                existingRequests.map(function(existingRequest) {
+                  if (!existingRequest.url.endsWith("/api/posts") && !existingRequest.url.endsWith("/api/authors")) {
+                    return cache.delete(existingRequest);
+                  }
+                })
+              )
+            })
+          })
         })
       );
     }).then(function () {
@@ -56,9 +68,29 @@ self.addEventListener('fetch', function (event) {
         return caches.match(event.request)
           .then(function (matching) {
             if (matching) {
+              const matchingClone = matching.clone();
               fetch(event.request).then(function (response) {
                 //file to use the next time we show view
                 cache.put(event.request, response.clone());
+                return response;
+              })
+              .then(value => {
+                if (event.request.url.endsWith('/api/posts')) {
+                  value.json()
+                    .then(valueAsJson => {
+                      matchingClone.json()
+                        .then(matchingAsJson => {
+                          if (valueAsJson.length !== matchingAsJson.length) {
+                          // afficher un truc au client pour qu'il se rafraichisse si le cache a bougé
+                            clients.matchAll().then(clients => {
+                              clients.forEach(client => {
+                                client.postMessage(JSON.stringify({ message: 'newPostsAvailable' }));
+                              })
+                            })
+                          }
+                        })
+                    })
+                  }
               })
               return matching;
             } else {

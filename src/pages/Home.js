@@ -13,6 +13,7 @@ export class Home extends Component {
         posts: [],
         unsyncedPosts: [],
         fetching: true,
+        newPostsAvailable: false,
     }
 
     static contextType = UserContext;
@@ -25,6 +26,12 @@ export class Home extends Component {
                 const posts = await allPostsWithAuthors();
                 await this.updatePostsWithFavoritesAndVotes(posts);
                 this.setState({ unsyncedPosts: [] })
+            }
+            else if (eventPayload.message === 'newPostsAvailable') {
+                console.log('newPostsAvailable');
+                this.setState({
+                    newPostsAvailable: true
+                })
             }
         });
         const posts = await allPostsWithAuthors();
@@ -55,7 +62,7 @@ export class Home extends Component {
                     onVote: this.onVote
                 }
             });
-            this.setState({ posts: postWithVotesAndFavs });
+            this.setState({ posts: postWithVotesAndFavs, newPostsAvailable: false });
         }
     }
 
@@ -92,6 +99,17 @@ export class Home extends Component {
         }
     }
 
+    loadNewPosts = () => {
+        allPostsWithAuthors()
+        .then(posts => {
+            if (this.context.user) {
+                this.updatePostsWithFavoritesAndVotes(posts);
+            } else {
+                this.setState({ posts, newPostsAvailable: false })
+            }
+        })
+    }
+
     render() {
         const { posts, unsyncedPosts } = this.state;
         const allPosts = [...unsyncedPosts, ...posts];
@@ -100,6 +118,9 @@ export class Home extends Component {
             <div className="home">
                 <Header />
                 <div className="content-container">
+                    {this.state.newPostsAvailable && (
+                        <button className="btn-floating new-posts-available" onClick={this.loadNewPosts}>New Posts</button>
+                    )}
                     {this.state.fetching && (
                         <div className="loader"></div>
                     )}
