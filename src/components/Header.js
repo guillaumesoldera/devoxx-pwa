@@ -94,6 +94,8 @@ export class Header extends Component {
                         }
                     </div>
                 </nav>
+                <div id="offline-message" className="connection-message offline" style={{"opacity": 0}}>You are offline</div>
+                <div id="online-message" className="connection-message" style={{"opacity": 0}}>You are onligne</div>
             </div>
         );
     }

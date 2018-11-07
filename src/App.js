@@ -37,6 +37,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   </UserContext.Consumer>
 );
 
+const updateOnlineIndicator = (offlineMessage, onlineMessage) => {
+
+  const elem = navigator.onLine ? onlineMessage : offlineMessage;
+  if (elem) {
+    elem.classList.add('show');
+    setTimeout(() => {
+      elem.classList.remove('show');
+    }, 4000)
+  }
+}
+
+
 class App extends Component {
 
   state = {
@@ -51,6 +63,16 @@ class App extends Component {
         user: JSON.parse(user),
       })
     }
+    window.addEventListener('online',  () => {
+      const onlineMessage = document.getElementById('online-message');
+      const offlineMessage = document.getElementById('offline-message');
+      updateOnlineIndicator(offlineMessage, onlineMessage);
+    });
+    window.addEventListener('offline',  () => {
+      const onlineMessage = document.getElementById('online-message');
+      const offlineMessage = document.getElementById('offline-message');
+      updateOnlineIndicator(offlineMessage, onlineMessage)
+    });
   }
 
   loginUser = async (email, password) => {
