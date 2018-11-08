@@ -113,6 +113,7 @@ export class NewPost extends Component {
                     imageSrc,
                     openCamera: false,
                     mediaStream: undefined,
+                    ratio,
                 })
             };
 
@@ -195,7 +196,7 @@ export class NewPost extends Component {
                             </textarea>
                             {this.state.imgValidated && this.state.imageSrc && (
                                 <div className="pictures-validated-container">
-                                    <img src={this.state.imageSrc} />
+                                    <img height={75} width={this.state.ratio ? Math.round(this.state.ratio * 75) : 100} src={this.state.imageSrc} />
                                 </div>
                             )}
                             <div className="new-post-more">
