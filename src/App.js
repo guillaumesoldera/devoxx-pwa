@@ -67,6 +67,7 @@ class App extends Component {
       const onlineMessage = document.getElementById('online-message');
       const offlineMessage = document.getElementById('offline-message');
       updateOnlineIndicator(offlineMessage, onlineMessage);
+      // TODO reload posts ?
     });
     window.addEventListener('offline',  () => {
       const onlineMessage = document.getElementById('online-message');
