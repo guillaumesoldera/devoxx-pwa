@@ -13,7 +13,6 @@ export class Favourites extends Component {
     static contextType = UserContext;
 
     async componentDidMount() {
-        const { user } = this.context;
         navigator.serviceWorker.addEventListener('message', async (event) => {
             const eventPayload = JSON.parse(event.data);
             if (eventPayload.message === 'reloadPosts') {
@@ -22,6 +21,7 @@ export class Favourites extends Component {
                 this.setState({ posts })
             }
         });
+        const { user } = this.context;
         if (user) {
             const posts = await allPostsWithAuthors();
             const allFavorites = await favorites(user.id);

@@ -32,15 +32,24 @@ export class PostDetail extends Component {
         });
         const postDetail = await postDetails(this.props.postId);
         if (this.context.user) {
-            const _unsyncedComments = await localComments(this.props.postId);
-            let unsyncedComments = [];
+            const _unsyncedComments = await localComments(this.context.user.id, this.props.postId);
+            let unsyncedComments = []; 
             if (_unsyncedComments.length > 0) {
                 const me = await authorById(this.context.user.id)
                 unsyncedComments = _unsyncedComments.map(comment => ({ ...comment, author: me }))
             }
             await this.updatePostWithFavoritesAndVotes(postDetail, unsyncedComments);
         } else {
-            this.setState({ postDetail })
+            this.setState({
+                postDetail: {
+                    ...postDetail,
+                    post: {
+                        ...postDetail.post,
+                        votedUp: false,
+                        votedDown: false,
+                    }
+                }
+            });
         }
     }
 

@@ -15,8 +15,8 @@ export class Header extends Component {
     static contextType = UserContext;
 
     async componentDidMount() {
-        const { user } = this.context;
         navigator.serviceWorker.addEventListener('message', async (event) => {
+            const { user } = this.context;
             const eventPayload = JSON.parse(event.data);
             if (eventPayload.message === 'gotNotification') {
                 console.log('gotNotification')

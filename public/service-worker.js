@@ -45,14 +45,14 @@ self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
+        cacheNames.filter(function (cacheName) {
           // only clean our cache
           return cacheName === CACHE;
         }).map(function (cacheName) {
-          return caches.open(cacheName).then(function(cache) {
-            return cache.keys().then(function(existingRequests) {
+          return caches.open(cacheName).then(function (cache) {
+            return cache.keys().then(function (existingRequests) {
               return Promise.all(
-                existingRequests.map(function(existingRequest) {
+                existingRequests.map(function (existingRequest) {
                   // delete only css, html or js files
                   if (updatableURL.indexOf(existingRequest.url) !== -1) {
                     console.log('delete ' + existingRequest.url + ' from cache')
@@ -91,24 +91,24 @@ self.addEventListener('fetch', function (event) {
                 cache.put(event.request, response.clone());
                 return response;
               })
-              .then(value => {
-                if (event.request.url.endsWith('/api/posts')) {
-                  value.json()
-                    .then(valueAsJson => {
-                      matchingClone.json()
-                        .then(matchingAsJson => {
-                          if (valueAsJson.length !== matchingAsJson.length) {
-                          // afficher un truc au client pour qu'il se rafraichisse si le cache a bougé
-                            clients.matchAll().then(clients => {
-                              clients.forEach(client => {
-                                client.postMessage(JSON.stringify({ message: 'newPostsAvailable' }));
+                .then(value => {
+                  if (event.request.url.endsWith('/api/posts')) {
+                    value.json()
+                      .then(valueAsJson => {
+                        matchingClone.json()
+                          .then(matchingAsJson => {
+                            if (valueAsJson.length !== matchingAsJson.length) {
+                              // afficher un truc au client pour qu'il se rafraichisse si le cache a bougé
+                              clients.matchAll().then(clients => {
+                                clients.forEach(client => {
+                                  client.postMessage(JSON.stringify({ message: 'newPostsAvailable' }));
+                                })
                               })
-                            })
-                          }
-                        })
-                    })
+                            }
+                          })
+                      })
                   }
-              })
+                })
               return matching;
             } else {
               return fetch(event.request).then(function (response) {
@@ -187,12 +187,12 @@ db.version(1).stores({
 });
 
 self.addEventListener('message', function (event) {
-  console.log("SW Received Message: " + event.data);
+  console.log("SW received message: " + event.data);
   launchSync(event.data);
 });
 
 self.addEventListener('sync', function (event) {
-  console.log("sync Received: "+ event.tag);
+  console.log("sync Received: " + event.tag);
   launchSync(event.tag);
 });
 
@@ -218,14 +218,13 @@ function syncFavorites() {
         method: 'POST',
         body: JSON.stringify({ favorites }),
         headers: { 'content-type': 'application/json' }
+      }).then((response) => {
+        if (response.status === 200) {
+          return Promise.all(favorites.map(fav => db.favorites.update(fav.postId, { unsynced: 'false' })))
+        } else {
+          return Promise.reject('an error occurred while syncing favorites')
+        }
       })
-        .then((response) => {
-          if (response.status === 200) {
-            return Promise.all(favorites.map(fav => db.favorites.update(fav.postId, { unsynced: 'false' })))
-          } else {
-            return Promise.reject('an error occurred while syncing favorites')
-          }
-        })
     })
 }
 
@@ -246,12 +245,13 @@ function syncVotes() {
                   client.postMessage(JSON.stringify({ message: 'reloadPosts' }));
                 })
               })
+            }).then(() => {
+              console.log('mark votes as synced');
+              return db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
             })
         } else {
           return Promise.reject('an error occurred while syncing posts')
         }
-      }).then(() => {
-        return db.votes.where('unsynced').equals('true').modify({ unsynced: 'false' })
       })
     })
 }
@@ -274,11 +274,14 @@ function syncPosts() {
                 client.postMessage(JSON.stringify({ message: 'reloadPosts' }));
               })
             })
-          })
+          }).then(() => {
+            console.log('empty posts');
+            return db.posts.clear()
+          });
       } else {
         return Promise.reject('an error occurred while syncing posts')
       }
-    }).then(() => db.posts.clear());
+    })
 }
 
 function syncComments() {
@@ -299,11 +302,14 @@ function syncComments() {
                 client.postMessage(JSON.stringify({ message: 'reloadComments' }));
               })
             })
-          })
+          }).then(() => {
+            console.log('empty comments');
+            return db.comments.clear()
+          });
       } else {
         return Promise.reject('an error occurred while syncing comments')
       }
-    }).then(() => db.comments.clear());
+    })
 }
 
 
