@@ -59,37 +59,42 @@
         font-size: 21px;
         position: relative;
         cursor: pointer; }
-        .profile-detail .profile-infos-container .profile-metadata .profile-infos .profile-name::before {
-          content: "\F040";
-          font-size: 15px;
-          font-family: FontAwesome;
-          display: inline-block;
-          position: absolute;
-          top: 3px;
-          right: -30px;
-          border: 1px solid #924a11;
-          background-color: #FFFAF0;
-          width: 22px;
-          height: 22px;
-          text-align: center;
-          border-radius: 5px; }
+      .profile-detail .profile-infos-container .profile-metadata .profile-infos input.profile-name {
+        cursor: default; }
+      .profile-detail .profile-infos-container .profile-metadata .profile-infos span.profile-name::before {
+        content: "\F040";
+        font-size: 15px;
+        font-family: FontAwesome;
+        display: inline-block;
+        position: absolute;
+        top: 3px;
+        right: -30px;
+        border: 1px solid #924a11;
+        background-color: #FFFAF0;
+        width: 22px;
+        height: 22px;
+        text-align: center;
+        border-radius: 5px; }
   .profile-detail .profile-infos-container .profile-bio {
     line-height: 18px;
     position: relative;
     cursor: pointer; }
-    .profile-detail .profile-infos-container .profile-bio::before {
-      content: "\F040";
-      font-family: FontAwesome;
-      display: inline-block;
-      position: absolute;
-      bottom: -5px;
-      right: 0;
-      border: 1px solid #924a11;
-      background-color: #FFFAF0;
-      width: 22px;
-      height: 22px;
-      text-align: center;
-      border-radius: 5px; }
+  .profile-detail .profile-infos-container p.profile-bio {
+    cursor: default;
+    height: 6rem; }
+  .profile-detail .profile-infos-container span.profile-bio::before {
+    content: "\F040";
+    font-family: FontAwesome;
+    display: inline-block;
+    position: absolute;
+    bottom: -5px;
+    right: 0;
+    border: 1px solid #924a11;
+    background-color: #FFFAF0;
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    border-radius: 5px; }
 
 @media only screen and (min-width: 601px) and (max-width: 992px) {
   .profile-detail .posts-separator-title {

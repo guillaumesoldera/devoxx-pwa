@@ -6,14 +6,16 @@ import { NavLink, withRouter } from 'react-router-dom';
 import '../styles/Profile.css';
 import { favorites, votes, localPosts } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
-import { loadProfile } from '../services/profile';
+import { loadProfile, updateProfile } from '../services/profile';
 
 class _Profile extends Component {
 
     state = {
         imageSrc: '',
         porfile: undefined,
-        unsyncedPosts: []
+        unsyncedPosts: [],
+        fullName: '',
+        bio: ''
     }
 
     static contextType = UserContext;
@@ -30,7 +32,11 @@ class _Profile extends Component {
         const profile = await loadProfile(this.context.user.id);
         await this.updateProfileWithFavoritesAndVotes(profile, profile.author.profilePicture);
         const unsyncedPosts = await localPosts(this.context.user.id);
-        this.setState({ unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: profile.author })) })
+        this.setState({
+            unsyncedPosts: unsyncedPosts.map(post => ({ ...post, author: profile.author })),
+            bio: profile.author ? (profile.author.bio || '') : '',
+            fullName: profile.author ? (profile.author.fullName || '') : '',
+     })
     }
 
     updateProfileWithFavoritesAndVotes = async (profile, imageSrc) => {
@@ -111,18 +117,24 @@ class _Profile extends Component {
                 ctx.drawImage(photo, 0, 0, canvas.width, canvas.height);
                 const imageSrc = canvas.toDataURL('image/png');
                 //this.state.mediaStream.getTracks()[0].stop(); // stop camera
-                this.setState({
-                    imageSrc,
-                }, () => {
-                    if (this._picURL) {
-                        URL.revokeObjectURL(this._picURL);
-                    }
+                const fullName = this.state.fullName;
+                const bio = this.state.bio;
+                updateProfile(this.context.user.id, fullName, bio, imageSrc)
+                .then(newProfile => {
+                    this.setState({
+                        imageSrc,
+                    }, () => {
+                        if (this._picURL) {
+                            URL.revokeObjectURL(this._picURL);
+                        }
+                    })
                 })
             };
 
             photo.src = this._picURL;
         }
     }
+    
 
     modifyAvatar = () => {
         document.querySelector('input[type=file]').click();
@@ -132,6 +144,44 @@ class _Profile extends Component {
         if (this._picURL) {
             URL.revokeObjectURL(this._picURL);
         }
+    }
+
+    editFullName = () => {
+        this.setState({
+            editFullName: true,
+        })
+    }
+
+    editBio = () => {
+        this.setState({
+            editBio: true,
+        })
+    }
+
+    onChangeFullname = (e) => {
+        this.setState({
+            fullName: e.target.value
+        })
+    }
+
+    onChangeBio = (e) => {
+        this.setState({
+            bio: e.target.value
+        })
+    }
+
+    onBlurFullname = () => {
+        updateProfile(this.context.user.id, this.state.fullName, this.state.bio, this.state.imageSrc);
+        this.setState({
+            editFullName: false,
+        })
+    }
+
+    onBlurBio = () => {
+        updateProfile(this.context.user.id, this.state.fullName, this.state.bio, this.state.imageSrc);
+        this.setState({
+            editBio: false,
+        })
     }
 
     render() {
@@ -158,12 +208,19 @@ class _Profile extends Component {
                         <input type="file" accept="image/*" onChange={this.picChange} />
                         <canvas width="100" height="100"></canvas>
                         <div className="profile-infos">
-                            <span className="profile-name">{profile.author.fullName}</span>
+                            {!this.state.editFullName && <span className="profile-name" onClick={this.editFullName}>{this.state.fullName}</span>}
+                            {this.state.editFullName && <input className="profile-name" ref={(elem) => elem ? elem.focus() : {}} type="text" onBlur={this.onBlurFullname} onChange={this.onChangeFullname} value={this.state.fullName}/>}
                         </div>
                     </div>
-                    <div className="profile-bio">
-                        <p>{profile.author.bio}</p>
-                    </div>
+                    {
+                        !this.state.editBio && 
+                        <div className="profile-bio" onClick={this.editBio}>
+                            <p>{this.state.bio}</p>
+                        </div>
+                    }
+                    { this.state.editBio && (
+                        <textarea ref={(elem) => elem ? elem.focus(): {}}  className="profile-bio" onBlur={this.onBlurBio} onChange={this.onChangeBio} value={this.state.bio} />
+                    )}
                 </div>}
                 <h3 className="posts-separator-title">All posts</h3>
                 <ul>{allPosts.map((post, i) => <li key={`post-${i}`}><Post post={post} linkToPost={true} /></li>)}</ul>

@@ -70,6 +70,11 @@
                     font-size: 21px;
                     position: relative;
                     cursor: pointer;
+                }
+                input.profile-name {
+                    cursor: default;
+                }
+                span.profile-name {
                     &::before {
                         content: "\F040";
                         font-size: 15px;
@@ -93,6 +98,12 @@
             line-height: 18px;
             position: relative;
             cursor: pointer;
+        }
+        p.profile-bio {
+            cursor: default;
+            height: 6rem;
+        }
+        span.profile-bio {
             &::before {
                 content: "\F040";
                 font-family: FontAwesome;

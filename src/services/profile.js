@@ -13,3 +13,16 @@ export const loadProfile = async (id) => {
     }
 }
 
+export const updateProfile = async (id, fullName, bio, picture) => {
+    const updatedProfile = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+            authorId: id,
+            fullName,
+            bio,
+            picture
+        })
+    })
+    return updatedProfile.json();
+}

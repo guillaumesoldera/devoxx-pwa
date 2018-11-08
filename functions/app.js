@@ -219,6 +219,12 @@ app.post('/api/notify', async (req, res) => {
         .then(() => res.json({}))
 });
 
+app.post('/api/profile', async (req, res) => {
+    const {authorId, fullName, bio, picture} = req.body;
+    const updated = await updateAuthor(authorId, fullName, bio, picture)
+    res.json(updated);
+})
+
 app.get('/api/mocks', async (req, res) => {
     const author1 = await addAuthor('test@test', 'pass')
     await updateAuthor(author1.id, 'Jean mich', 'Bonjour je m\'aplle Jean michel et j\'aime le métal', 'https://randomuser.me/api/portraits/men/3.jpg')
