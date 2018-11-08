@@ -26,8 +26,8 @@ export class Header extends Component {
                 })
             }
         });
-        if (user) {
-            const allNotifications = await unseenNotifications(user.id);
+        if (this.context.user) {
+            const allNotifications = await unseenNotifications(this.context.user.id);
             this.setState({
                 notifications: allNotifications.length
             })
@@ -138,6 +138,8 @@ class _BackHeader extends Component {
                         {this.props.children}
                     </div>
                 </nav>
+                <div id="offline-message" className="connection-message offline" style={{"opacity": 0}}>You are offline</div>
+                <div id="online-message" className="connection-message" style={{"opacity": 0}}>You are onligne</div>
             </div>
         )
     }
