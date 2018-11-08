@@ -43,21 +43,6 @@
                 border: 1px solid $primary-color;
                 border-radius: 5px;
                 text-align: center;
-                cursor: pointer;
-            }
-            &::before {
-                content: "\F040";
-                font-family: FontAwesome;
-                display: inline-block;
-                position: absolute;
-                top: 0px;
-                left: 78px;
-                border: 1px solid $primary-color;
-                background-color: $main-bg-color;
-                width: 22px;
-                height: 22px;
-                text-align: center;
-                border-radius: 5px;
             }
             .profile-infos {
                 display: flex;
@@ -69,12 +54,12 @@
                     font-weight: 600;
                     font-size: 21px;
                     position: relative;
-                    cursor: pointer;
                 }
                 input.profile-name {
                     cursor: default;
                 }
-                span.profile-name {
+                span.profile-name.enabled {
+                    cursor: pointer;
                     &::before {
                         content: "\F040";
                         font-size: 15px;
@@ -94,16 +79,35 @@
             }
             
         }
+        .profile-metadata.enabled {
+            .profile-avatar {
+                cursor: pointer;
+            }
+            &::before {
+                content: "\F040";
+                font-family: FontAwesome;
+                display: inline-block;
+                position: absolute;
+                top: 0px;
+                left: 78px;
+                border: 1px solid $primary-color;
+                background-color: $main-bg-color;
+                width: 22px;
+                height: 22px;
+                text-align: center;
+                border-radius: 5px;
+            }
+        }
         .profile-bio {
             line-height: 18px;
             position: relative;
-            cursor: pointer;
         }
         p.profile-bio {
             cursor: default;
             height: 6rem;
         }
-        span.profile-bio {
+        div.profile-bio.enabled {
+            cursor: pointer;
             &::before {
                 content: "\F040";
                 font-family: FontAwesome;

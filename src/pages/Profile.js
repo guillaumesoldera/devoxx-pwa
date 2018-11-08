@@ -7,6 +7,7 @@ import '../styles/Profile.css';
 import { favorites, votes, localPosts } from '../stores/indexedDb';
 import { UserContext } from '../context/user';
 import { loadProfile, updateProfile } from '../services/profile';
+import { classSet } from '../utils/utils';
 
 class _Profile extends Component {
 
@@ -137,7 +138,9 @@ class _Profile extends Component {
     
 
     modifyAvatar = () => {
-        document.querySelector('input[type=file]').click();
+        if (navigator.onLine) {
+            document.querySelector('input[type=file]').click();
+        }
     }
 
     componentWillUnmount() {
@@ -147,15 +150,19 @@ class _Profile extends Component {
     }
 
     editFullName = () => {
-        this.setState({
-            editFullName: true,
-        })
+        if (navigator.onLine) {
+            this.setState({
+                editFullName: true,
+            })
+        }
     }
 
     editBio = () => {
-        this.setState({
-            editBio: true,
-        })
+        if (navigator.onLine) {
+            this.setState({
+                editBio: true,
+            })
+        }
     }
 
     onChangeFullname = (e) => {
@@ -201,20 +208,20 @@ class _Profile extends Component {
                     </ul>
                 </BackHeader>
                 {profile && profile.author && <div className="profile-infos-container">
-                    <div className="profile-metadata">
+                    <div className={classSet({"profile-metadata": true, "enabled": navigator.onLine})}>
                         {this.state.imageSrc
-                            ? <img onClick={this.modifyAvatar} src={imageSrc} className="profile-avatar" />
+                            ? <img onClick={this.modifyAvatar} src={imageSrc} className={classSet({"profile-avatar": true, "enabled": navigator.onLine})} />
                             : <div onClick={this.modifyAvatar} className="profile-avatar"><br />profile picture</div>}
                         <input type="file" accept="image/*" onChange={this.picChange} />
                         <canvas width="100" height="100"></canvas>
                         <div className="profile-infos">
-                            {!this.state.editFullName && <span className="profile-name" onClick={this.editFullName}>{this.state.fullName}</span>}
+                            {!this.state.editFullName && <span className={classSet({"profile-name": true, "enabled": navigator.onLine})} onClick={this.editFullName}>{this.state.fullName}</span>}
                             {this.state.editFullName && <input className="profile-name" ref={(elem) => elem ? elem.focus() : {}} type="text" onBlur={this.onBlurFullname} onChange={this.onChangeFullname} value={this.state.fullName}/>}
                         </div>
                     </div>
                     {
                         !this.state.editBio && 
-                        <div className="profile-bio" onClick={this.editBio}>
+                        <div className={classSet({"profile-bio": true, "enabled": navigator.onLine})} onClick={this.editBio}>
                             <p>{this.state.bio}</p>
                         </div>
                     }
