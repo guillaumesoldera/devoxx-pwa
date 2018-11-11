@@ -148,8 +148,21 @@ self.addEventListener('notificationclick', function (event) {
   event.waitUntil(
     clients.matchAll({
       type: "window"
-    }).then(function () {
-      if (clients.openWindow) {
+    })
+    .then((windowClients) => {
+      let matchingClient = null;
+      
+      for (let i = 0; i < windowClients.length; i++) {
+        const windowClient = windowClients[i];
+        if (windowClient.url.startsWith("https://airbeerandbeer.firebaseapp.com/")) {
+          matchingClient = windowClient;
+          break;
+        }
+      }
+      console.log('lookup clients')
+      if (matchingClient) {
+        return matchingClient.navigate(`https://airbeerandbeer.firebaseapp.com/notifications`);
+      } else {
         return clients.openWindow(`https://airbeerandbeer.firebaseapp.com/notifications`);
       }
     })
