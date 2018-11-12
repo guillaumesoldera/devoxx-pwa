@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <title>Devoxx - PWA Showcase</title>
+        <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+        <link rel="shortcut icon" href="../../assets/images/icons/icon-72x72.png">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+        <link rel="stylesheet" href="../../assets/css/style.css"/>
+        <style>
+            .btn {
+                position: relative;
+                padding: 8px 30px;
+                border: 0;
+                margin: 10px 1px;
+                cursor: pointer;
+                border-radius: 2px;
+                text-transform: uppercase;
+                text-decoration: none;
+                color: rgba(0,0,0,.84);
+                transition: background-color .2s ease,box-shadow .28s cubic-bezier(.4,0,.2,1);
+                border: 1px solid rgba(0,0,0,.84);
+            }
+            input {
+                line-height: 32px;
+                font-size: 21px;
+            }
+            #search-results {
+                display: flex;
+                flex-direction: column;
+            }
+            #log {
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <img src="../../assets/images/devoxx_brand.gif" width="183" height="25" class="responsive-img logo-vis" alt="Devoxx Belgium">
+            <h1><a href="../../index.html">PWA Showcase</a></h1>
+            <span class="twitter-account">@gsoldera / @fedysalah</span>
+        </nav>
+        <div class="content">
+            <h2>Offline - IndexedDB</h2>
+            <label id="hello">Last added : <span id="last-added"></span></label>
+            <div id="container">
+                <div id="add-container">
+                    <input id="firstname" placeholder="firstname">
+                    <input id="lastname" placeholder="lastname">
+                    <button class="btn" onclick="addPerson()">Submit</button>
+                </div>
+                <div id="search-container">
+                        <input id="search" placeholder="lastname to search">
+                        <button class="btn" onclick="search()">Search</button>
+                </div>
+                <div id="search-results"></div>
+            </div>
+            <div id="log"></div>
+        </div>
+        <script>
+            var db;
+            var objectStore;
+            var index;
+            var logContainer = document.getElementById('log');
+            var lastAdded = document.getElementById('last-added');
+            function addPerson() {
+                
+                var firstname = document.getElementById('firstname').value;
+                var lastname = document.getElementById('lastname').value;
+                var personObjectStore = db.transaction("persons", "readwrite").objectStore("persons");
+                var requestAdd = personObjectStore.add({id: new Date().getTime(), firstname, lastname});
+                requestAdd.onsuccess = function(event) {
+                    var span = document.createElement('span');
+                    span.innerHTML = event.target.result + ' added';
+                    logContainer.appendChild(span);
+                    lastAdded.innerHTML = firstname + ' ' + lastname;
+                };
+                requestAdd.onerror = function(event) {
+                    var span = document.createElement('span');
+                    span.innerHTML = 'Error : ' + event.target.errorCode;
+                    logContainer.appendChild(span);
+                };
+            }
+
+            function search() {
+                var searchContainer = document.getElementById('search-results');
+                searchContainer.innerHTML = '';
+                var searchByLastanme = document.getElementById('search').value
+                var store = db.transaction(['persons'], "readonly").objectStore('persons');;
+                    index = store.index('id');
+                    var cursorRequest = index.openCursor(null, 'prev');
+                    var persons = [];
+                    cursorRequest.onsuccess = function(e) {
+                        var cursor = event.target.result;
+                        if (cursor) {
+                            var value = cursor.value;
+                            if (value.lastname.toLowerCase().startsWith(searchByLastanme.toLowerCase())) {
+                                persons.push(cursor.value);
+                            }
+                            cursor.continue();
+                        }
+                        else {
+                            persons.forEach(p => {
+                                var person = document.createElement('span');
+                                person.innerHTML = p.firstname + ' ' + p.lastname;
+                                searchContainer.appendChild(person);
+                            })
+                        }
+                    };
+            }
+
+            window.addEventListener('load', function() {
+                if (window.indexedDB) {
+                    var request  = window.indexedDB.open("demo-devoxxpwa-database", 1);
+                request.onerror = function(event) {
+                    logContainer.innerHTML = "Database error: " + event.target.errorCode
+                };
+                request.onsuccess = function(event) {
+                    // load last added
+                    db = event.target.result;
+                    var store = db.transaction(['persons'], "readonly").objectStore('persons');;
+                    index = store.index('id');
+                    var cursorRequest = index.openCursor(null, 'prev');
+                    cursorRequest.onsuccess = function(e) {
+                        var cursor = e.target.result;
+                        if (cursor) {
+                            lastAdded.innerHTML = e.target.result.value.firstname + ' ' + e.target.result.value.lastname;
+                        }
+                        else {
+                            //print res etc....
+                        }
+                    };
+                };
+                request.onupgradeneeded = function(event) { 
+                    console.log('onupgradeneeded')
+                    db = event.target.result;
+                    objectStore = db.createObjectStore("persons", { keyPath: "id" });
+                    objectStore.createIndex("id", "id", { unique: true });
+                    
+                }
+                } else {
+                    document.getElementById('container').innerHTML = 'IndexedDB is not available'
+                } 
+            })
+        </script>
+    </body>
+</html>
